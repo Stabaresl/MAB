@@ -1,0 +1,35 @@
+# Dependencias
+/node_modules
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Entorno — las claves nunca entran al repositorio
+.env
+.env*.local
+
+# Material de referencia local, no forma parte del producto
+design-rules/
+.agents/
+.claude/skills/
+skills-lock.json
+assets/
+
+# El portafolio original pesa 110 MB: git no es el sitio para eso.
+# Las fotos que usa el catalogo ya estan procesadas en public/catalogo/.
+PORTAFOLIO*.pdf
+
+# Salidas de herramientas
+.playwright-mcp/
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log

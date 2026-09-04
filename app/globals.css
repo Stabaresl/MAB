@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Tokens del sistema de diseño de MAB.
+   Fuente de verdad: DESIGN.md en la raíz del proyecto. Ningún color, tamaño de
+   fuente ni radio debe escribirse en línea en un componente: si hace falta un
+   valor nuevo, se añade aquí como token y se referencia por nombre.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Superficies */
+  --color-canvas: #0f1720;
+  --color-surface-1: #16202c;
+  --color-surface-2: #1d2937;
+  --color-surface-3: #26313f;
+  --color-brand-navy: #131c28;
+  --color-hairline: #24303e;
+  --color-hairline-strong: #33414f;
+
+  /* Tinta */
+  --color-ink: #f2f5f8;
+  --color-ink-muted: #a7b3c0;
+  --color-ink-subtle: #71808f;
+  --color-ink-on-accent: #0f1720;
+
+  /* Acento — el naranja está solo, no acompaña a ningún otro cromatismo */
+  --color-accent: #e7622c;
+  --color-accent-hover: #f4794a;
+  --color-accent-text: #f08a52;
+  --color-accent-quiet: #2a1c15;
+
+  /* Semánticos */
+  --color-success: #2e9e5b;
+  --color-danger: #e5484d;
+  --color-warning: #d9a03c;
+
+  --color-inverse-canvas: #f2f5f8;
+  --color-inverse-ink: #0f1720;
+
+  /* Tipografía */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-text: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Radios — nada supera 12px salvo los indicadores circulares */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Movimiento */
+  --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Contenedor */
+  --container-page: 1240px;
+}
+
+@layer base {
+  /* `clip` y no `hidden`: `hidden` en el elemento raíz rompe position: sticky */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-text);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Los titulares son siempre romanos. El énfasis se lleva con peso o acento. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-style: normal;
+    font-weight: 700;
+    /* Un display largo no puede desbordar a 320px */
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--color-canvas),
+      0 0 0 4px var(--color-accent);
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-ink-on-accent);
+  }
+
+  /* Fondo de las capturas de producto mientras cargan */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Etiqueta en versalitas con tracking amplio: la firma del monograma. */
+  .label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.117em;
+    text-transform: uppercase;
+  }
+
+  /* Toda medida, referencia o material se ve como el dato que es. */
+  .spec {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  /* Un botón nunca envuelve a dos líneas, a ningún ancho. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-text);
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      background-color 140ms var(--ease-brand),
+      border-color 140ms var(--ease-brand),
+      transform 140ms var(--ease-brand);
+  }
+
+  .btn-primary {
+    background-color: var(--color-accent);
+    color: var(--color-ink-on-accent);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--color-ink);
+    border: 1px solid var(--color-hairline-strong);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-surface-2);
+    border-color: var(--color-ink-subtle);
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn[disabled],
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .field {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+    font-family: var(--font-text);
+    font-size: 15px;
+    transition: border-color 140ms var(--ease-brand);
+  }
+
+  .field::placeholder {
+    color: var(--color-ink-subtle);
+  }
+
+  .field:hover {
+    border-color: var(--color-hairline-strong);
+  }
+
+  /* El color no es el único portador del error: siempre va texto debajo. */
+  .field[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+
+  /*
+   * Tira que se desplaza en horizontal (filtros de categoría, pestañas del
+   * panel). La barra del sistema es gruesa, de otro color y roba altura en
+   * móvil, así que se sustituye por una fina y del sistema de diseño. El
+   * desplazamiento sigue siendo real: táctil, con rueda y con teclado.
+   */
+  .scroll-x {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-hairline-strong) transparent;
+  }
+
+  .scroll-x::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .scroll-x::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-x::-webkit-scrollbar-thumb {
+    background-color: var(--color-hairline-strong);
+    border-radius: 999px;
+  }
+
+  .page {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .page {
+      padding-inline: 32px;
+    }
+  }
+}

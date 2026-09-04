@@ -1,0 +1,400 @@
+{
+  "brand": {
+    "mark": "assets/raw/pag-01/04_938x950.png",
+    "obra": "assets/raw/pag-23/01_4024x2700.png",
+    "texture": "assets/raw/pag-01/03_5059x2846.png"
+  },
+  "categories": [
+    {
+      "slug": "zona-humeda",
+      "name": "Zona húmeda",
+      "description": "Lavaderos, pozuelos, soportes y válvulas en ABS y acrílico. Piezas listas para instalar en obra, en las medidas más pedidas por constructoras.",
+      "cover": "lavadero-60x60",
+      "products": [
+        {
+          "slug": "lavadero-60x60",
+          "name": "Lavadero de 60x60",
+          "specs": "60x60 cm · ABS",
+          "src": "assets/raw/pag-05/01_1024x1024.png"
+        },
+        {
+          "slug": "lavadero-60x46",
+          "name": "Lavadero de 60x46",
+          "specs": "60x46 cm · doble poceta con escurridor",
+          "src": "assets/raw/pag-06/05_2048x2048.png"
+        },
+        {
+          "slug": "soporte-para-lavadero",
+          "name": "Soporte para lavadero",
+          "specs": "Estructura de apoyo",
+          "src": "assets/raw/pag-05/05_800x800.png"
+        },
+        {
+          "slug": "valvula-para-lavadero",
+          "name": "Válvula para lavadero",
+          "specs": "Con tapón y rebosadero",
+          "src": "assets/raw/pag-05/04_800x800.png"
+        },
+        {
+          "slug": "pozuelo",
+          "name": "Pozuelo",
+          "specs": "ABS blanco",
+          "src": "assets/raw/pag-06/01_1024x1024.png"
+        },
+        {
+          "slug": "lavatrapero-40x36-abs",
+          "name": "Lavatrapero 40x36 en ABS",
+          "specs": "40x36 cm · ABS",
+          "src": "assets/raw/pag-06/02_1200x1200.png"
+        }
+      ]
+    },
+    {
+      "slug": "lavaplatos",
+      "name": "Lavaplatos",
+      "description": "Lavaplatos en ABS en todas las medidas, con y sin escurridor, en color gris y beige. Incluye desagües y canastillas.",
+      "cover": "lavaplatos-60x40-abs-gris",
+      "products": [
+        {
+          "slug": "lavaplatos-60x40-abs-gris",
+          "name": "Lavaplatos 60x40 en ABS gris",
+          "specs": "60x40 cm · ABS color gris",
+          "src": "assets/raw/pag-06/03_1024x1024.png"
+        },
+        {
+          "slug": "lavaplatos-60x40-abs-beige",
+          "name": "Lavaplatos 60x40 en ABS beige",
+          "specs": "60x40 cm · ABS color beige",
+          "src": "assets/raw/pag-06/04_1024x1024.png"
+        },
+        {
+          "slug": "desague-para-lavaplatos",
+          "name": "Desagüe para lavaplatos",
+          "specs": "Con canastilla y rejilla",
+          "src": "assets/raw/pag-10/05_1545x1545.png"
+        },
+        {
+          "slug": "desague-con-canastilla",
+          "name": "Desagüe con canastilla",
+          "specs": "Rosca estándar",
+          "src": "assets/raw/pag-15/05_800x800.png"
+        }
+      ]
+    },
+    {
+      "slug": "muebles-para-lavaderos",
+      "name": "Muebles para lavaderos",
+      "description": "Muebles en madera RH y PVC para lavadero y lavatrapero. Resistentes a la humedad y listos para instalar.",
+      "cover": "mueble-para-lavadero-madera-rh",
+      "products": [
+        {
+          "slug": "mueble-para-lavadero-madera-rh",
+          "name": "Mueble para lavadero en madera RH",
+          "specs": "Madera RH resistente a la humedad",
+          "src": "assets/raw/pag-07/04_768x768.png"
+        },
+        {
+          "slug": "mueble-lavamanos-con-cubierta",
+          "name": "Mueble para lavamanos con cubierta",
+          "specs": "Cubierta en vidrio templado",
+          "src": "assets/raw/pag-12/06_1500x1500.png"
+        }
+      ]
+    },
+    {
+      "slug": "duchas-y-monomando",
+      "name": "Duchas y monomando",
+      "description": "Duchas tipo lluvia y grifería monomando para lavamanos y cocina. Acabados en cromo y negro mate.",
+      "cover": "ducha-tipo-lluvia-negra",
+      "products": [
+        {
+          "slug": "ducha-tipo-lluvia-negra",
+          "name": "Ducha tipo lluvia negra",
+          "specs": "Negro mate · con monomando",
+          "src": "assets/raw/pag-09/08_1200x1200.png"
+        },
+        {
+          "slug": "monomando-para-lavamanos",
+          "name": "Monomando para lavamanos",
+          "specs": "Cromo · una sola manija",
+          "src": "assets/raw/pag-12/01_1000x1000.png"
+        },
+        {
+          "slug": "monomando-cuello-alto",
+          "name": "Monomando cuello alto",
+          "specs": "Cromo · para cocina",
+          "src": "assets/raw/pag-11/02_800x800.png"
+        },
+        {
+          "slug": "griferia-de-cocina-cuadrada",
+          "name": "Grifería de cocina cuadrada",
+          "specs": "Cromo · cuello cuadrado",
+          "src": "assets/raw/pag-11/03_1200x1200.png"
+        },
+        {
+          "slug": "mezclador-de-cocina",
+          "name": "Mezclador de cocina",
+          "specs": "Cromo · dos llaves",
+          "src": "assets/raw/pag-11/04_1391x1391.png"
+        },
+        {
+          "slug": "llave-para-lavamanos",
+          "name": "Llave para lavamanos",
+          "specs": "Cromo · agua fría",
+          "src": "assets/raw/pag-12/03_1200x1200.png"
+        }
+      ]
+    },
+    {
+      "slug": "rejillas",
+      "name": "Rejillas",
+      "description": "Rejillas, tragantes, tapas de registro y sifones en ABS y cromados. Cumplen las normas, especificaciones y medidas exigidas por la empresa de Gas Natural en todo el país.",
+      "cover": "rejilla-redonda-radial",
+      "products": [
+        {
+          "slug": "rejilla-redonda-radial",
+          "name": "Rejilla redonda radial",
+          "specs": "ABS blanco · todas las medidas",
+          "src": "assets/raw/pag-16/01_1024x1024.png"
+        },
+        {
+          "slug": "rejilla-cuadrada",
+          "name": "Rejilla cuadrada",
+          "specs": "ABS blanco · todas las medidas",
+          "src": "assets/raw/pag-16/02_800x800.png"
+        },
+        {
+          "slug": "rejilla-redonda-perforada",
+          "name": "Rejilla redonda perforada",
+          "specs": "ABS blanco · todas las medidas",
+          "src": "assets/raw/pag-16/03_1024x1024.png"
+        },
+        {
+          "slug": "rejilla-redonda-ranurada",
+          "name": "Rejilla redonda ranurada",
+          "specs": "ABS blanco · todas las medidas",
+          "src": "assets/raw/pag-16/06_800x800.png"
+        },
+        {
+          "slug": "rejilla-de-ventilacion-persiana",
+          "name": "Rejilla de ventilación tipo persiana",
+          "specs": "ABS blanco · ventilación de gas",
+          "src": "assets/raw/pag-14/07_1200x1200.png"
+        },
+        {
+          "slug": "rejilla-de-ventilacion-rectangular",
+          "name": "Rejilla de ventilación rectangular",
+          "specs": "ABS blanco · ventilación de gas",
+          "src": "assets/raw/pag-14/03_800x800.png"
+        },
+        {
+          "slug": "tragante-abs",
+          "name": "Tragante en ABS",
+          "specs": "Tipo cúpula · ABS blanco",
+          "src": "assets/raw/pag-14/01_800x800.png"
+        },
+        {
+          "slug": "tragante-metalico",
+          "name": "Tragante metálico",
+          "specs": "Tipo cúpula · aluminio",
+          "src": "assets/raw/pag-14/02_750x750.png"
+        },
+        {
+          "slug": "sifon-para-lavamanos",
+          "name": "Sifón para lavamanos",
+          "specs": "PVC blanco",
+          "src": "assets/raw/pag-10/02_800x800.png"
+        },
+        {
+          "slug": "sifon-flexible",
+          "name": "Sifón flexible",
+          "specs": "PVC blanco · corrugado",
+          "src": "assets/raw/pag-10/03_800x800.png"
+        },
+        {
+          "slug": "sifon-flexible-cromado",
+          "name": "Sifón flexible cromado",
+          "specs": "Acabado cromo",
+          "src": "assets/raw/pag-10/08_800x534.png"
+        },
+        {
+          "slug": "desague-click-clack",
+          "name": "Desagüe click-clack",
+          "specs": "Cromo · para lavamanos",
+          "src": "assets/raw/pag-10/04_1545x1545.png"
+        },
+        {
+          "slug": "valvula-de-paso",
+          "name": "Válvula de paso",
+          "specs": "Cromo · rosca estándar",
+          "src": "assets/raw/pag-10/06_1445x1445.png"
+        }
+      ]
+    },
+    {
+      "slug": "electricos",
+      "name": "Eléctricos",
+      "description": "Panel LED, sensores de movimiento, interruptores y tomacorrientes de marcas certificadas para obra residencial y comercial.",
+      "cover": "interruptores-y-tomas",
+      "products": [
+        {
+          "slug": "interruptores-y-tomas",
+          "name": "Interruptores y tomas",
+          "specs": "Línea completa · varios módulos",
+          "src": "assets/raw/pag-17/02_668x652.png"
+        },
+        {
+          "slug": "sensor-de-movimiento",
+          "name": "Sensor de movimiento",
+          "specs": "Techo y pared",
+          "src": "assets/raw/pag-17/04_1500x1500.png"
+        }
+      ]
+    },
+    {
+      "slug": "caja-para-gas-y-aire-acondicionado",
+      "name": "Caja para gas y aire acondicionado",
+      "description": "Cajas de registro y gabinetes para gas y aire acondicionado, con las medidas y especificaciones exigidas por la empresa de Gas Natural.",
+      "cover": "caja-de-registro-con-valvula",
+      "products": [
+        {
+          "slug": "caja-de-registro-con-valvula",
+          "name": "Caja de registro con válvula",
+          "specs": "Una válvula · ABS blanco",
+          "src": "assets/raw/pag-15/01_1024x1024.png"
+        },
+        {
+          "slug": "caja-de-registro-doble-valvula",
+          "name": "Caja de registro doble válvula",
+          "specs": "Agua fría y caliente · ABS blanco",
+          "src": "assets/raw/pag-15/03_1024x1024.png"
+        }
+      ]
+    },
+    {
+      "slug": "banos",
+      "name": "Baños",
+      "description": "Combos sanitarios, lavamanos, orinales, tinas y jacuzzi de marcas certificadas de alta resistencia, para proyecto completo.",
+      "cover": "combo-sanitario",
+      "products": [
+        {
+          "slug": "combo-sanitario",
+          "name": "Combo sanitario",
+          "specs": "Sanitario, lavamanos de pedestal y accesorios",
+          "src": "assets/raw/pag-19/04_1200x1200.png"
+        },
+        {
+          "slug": "sanitario-one-piece",
+          "name": "Sanitario one piece",
+          "specs": "Una sola pieza · porcelana",
+          "src": "assets/raw/pag-20/03_800x800.png"
+        },
+        {
+          "slug": "orinal",
+          "name": "Orinal",
+          "specs": "Porcelana · con fluxómetro",
+          "src": "assets/raw/pag-20/02_1000x1000.png"
+        },
+        {
+          "slug": "lavamanos-de-sobreponer",
+          "name": "Lavamanos de sobreponer",
+          "specs": "Ovalado · porcelana",
+          "src": "assets/raw/pag-12/04_1200x1200.png"
+        },
+        {
+          "slug": "lavamanos-de-pedestal",
+          "name": "Lavamanos de pedestal",
+          "specs": "Porcelana blanca",
+          "src": "assets/raw/pag-12/05_960x960.png"
+        },
+        {
+          "slug": "tina-con-jacuzzi",
+          "name": "Tina con jacuzzi",
+          "specs": "Acrílico · hidromasaje",
+          "src": "assets/raw/pag-19/03_800x800.png"
+        },
+        {
+          "slug": "accesorios-de-bano",
+          "name": "Accesorios de baño",
+          "specs": "Juego de 6 piezas · cromo",
+          "src": "assets/raw/pag-12/07_1200x1200.png"
+        }
+      ]
+    },
+    {
+      "slug": "seguridad",
+      "name": "Seguridad",
+      "description": "Citofonía, cámaras de seguridad, topellantas y cerraduras digitales para conjuntos residenciales y obra terminada.",
+      "cover": "cerradura-digital",
+      "products": [
+        {
+          "slug": "cerradura-digital",
+          "name": "Cerradura digital",
+          "specs": "Teclado y huella · negro",
+          "src": "assets/raw/pag-13/04_1080x1080.png"
+        }
+      ]
+    },
+    {
+      "slug": "cocina",
+      "name": "Cocina",
+      "description": "Estufas empotrables a gas y de inducción para entrega de apartamentos y remodelación.",
+      "cover": "estufa-empotrable-a-gas",
+      "products": [
+        {
+          "slug": "estufa-empotrable-a-gas",
+          "name": "Estufa empotrable a gas",
+          "specs": "4 puestos · acero inoxidable",
+          "src": "assets/raw/pag-13/06_1214x1214.png"
+        },
+        {
+          "slug": "estufa-de-induccion",
+          "name": "Estufa de inducción",
+          "specs": "4 puestos · vitrocerámica",
+          "src": "assets/raw/pag-13/07_1200x1200.png"
+        }
+      ]
+    }
+  ],
+  "ambientes": {
+    "source": "image/imagenes guia/imagenes hero.png",
+    "panels": {
+      "hero": [
+        512,
+        512,
+        1024,
+        768
+      ],
+      "griferia-negra": [
+        0,
+        0,
+        512,
+        256
+      ],
+      "ducha-lluvia": [
+        512,
+        0,
+        1024,
+        256
+      ],
+      "cocina-agua": [
+        0,
+        256,
+        512,
+        512
+      ],
+      "camara-concreto": [
+        0,
+        768,
+        512,
+        1024
+      ],
+      "lavamanos-negro": [
+        512,
+        768,
+        1024,
+        1024
+      ]
+    }
+  }
+}
