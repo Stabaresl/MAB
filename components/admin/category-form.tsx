@@ -56,7 +56,7 @@ export function CategoryForm({
       <FormFeedback error={error} success={ok} />
 
       <div>
-        <label htmlFor="name" className="label block text-ink-subtle">
+        <label htmlFor="name" className="label block text-ink-3">
           Nombre de la categoría
         </label>
         <input
@@ -74,7 +74,7 @@ export function CategoryForm({
       </div>
 
       <div>
-        <label htmlFor="description" className="label block text-ink-subtle">
+        <label htmlFor="description" className="label block text-ink-3">
           Descripción <span className="normal-case tracking-normal">(opcional)</span>
         </label>
         <textarea

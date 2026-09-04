@@ -39,19 +39,19 @@ export default async function EditarCategoriaPage({ params }: Params) {
           </h2>
 
           {enCategoria.length === 0 ? (
-            <p className="mt-4 rounded-lg border border-hairline bg-surface-1 p-6 text-ink-muted">
+            <p className="mt-4 rounded-lg border border-line bg-canvas p-6 text-ink-2">
               Esta categoría está vacía, así que se puede borrar.
             </p>
           ) : (
-            <ul className="mt-4 overflow-hidden rounded-lg border border-hairline">
+            <ul className="mt-4 overflow-hidden rounded-lg border border-line">
               {enCategoria.map((product) => (
                 <li
                   key={product.id}
-                  className="flex items-center justify-between gap-4 border-b border-hairline bg-surface-1 p-4 last:border-b-0"
+                  className="flex items-center justify-between gap-4 border-b border-line bg-canvas p-4 last:border-b-0"
                 >
                   <Link
                     href={`/admin/articulos/${product.id}`}
-                    className="min-w-0 truncate text-ink hover:text-accent-text"
+                    className="min-w-0 truncate text-ink hover:text-accent-ink"
                   >
                     {product.name}
                   </Link>

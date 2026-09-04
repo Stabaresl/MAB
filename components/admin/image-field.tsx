@@ -69,12 +69,12 @@ export function ImageField({
 
   return (
     <div>
-      <label htmlFor={name} className="label block text-ink-subtle">
+      <label htmlFor={name} className="label block text-ink-3">
         {label}
       </label>
 
       <div className="mt-3 flex flex-wrap items-start gap-5">
-        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-md border border-hairline bg-surface-2">
+        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-md border border-line bg-paper">
           {shown ? (
             // Es una URL temporal de blob o una de Supabase; `unoptimized` evita
             // que next/image intente procesar una previsualización local.
@@ -87,7 +87,7 @@ export function ImageField({
               className="object-contain p-2"
             />
           ) : (
-            <span className="flex h-full items-center justify-center text-center text-[12px] text-ink-subtle">
+            <span className="flex h-full items-center justify-center text-center text-[12px] text-ink-3">
               Sin
               <br />
               imagen
@@ -104,16 +104,16 @@ export function ImageField({
             accept={ACCEPTED_EXTENSIONS}
             onChange={onChange}
             aria-invalid={Boolean(shownError)}
-            className="block w-full text-[14px] text-ink-muted file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-md file:border-0 file:bg-surface-3 file:px-4 file:font-semibold file:text-ink hover:file:bg-hairline-strong"
+            className="block w-full text-[14px] text-ink-2 file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-md file:border-0 file:bg-paper-2 file:px-4 file:font-semibold file:text-ink hover:file:bg-line-2"
           />
-          <p className="mt-2 text-[13px] text-ink-subtle">
+          <p className="mt-2 text-[13px] text-ink-3">
             {hint ?? "JPG, PNG o WEBP. Máximo 5 MB. Se convierte a WebP al guardar."}
           </p>
           {preview && (
             <button
               type="button"
               onClick={clear}
-              className="mt-2 text-[13px] text-accent-text underline underline-offset-4 hover:text-accent"
+              className="mt-2 text-[13px] text-accent-ink underline underline-offset-4 hover:text-accent"
             >
               Quitar la imagen elegida
             </button>

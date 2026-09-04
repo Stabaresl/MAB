@@ -48,22 +48,22 @@ export default async function CategoriaPage({ params }: Params) {
 
   return (
     <div className="page py-14 md:py-20">
-      <nav aria-label="Ruta" className="spec text-ink-subtle">
+      <nav aria-label="Ruta" className="spec text-ink-3">
         <Link href="/catalogo" className="hover:text-ink">
           Catálogo
         </Link>
         <span aria-hidden="true" className="px-2">
           /
         </span>
-        <span className="text-ink-muted">{category.name}</span>
+        <span className="text-ink-2">{category.name}</span>
       </nav>
 
-      <header className="mt-6 border-b border-hairline pb-8">
+      <header className="mt-6 border-b border-line pb-8">
         <h1 className="text-[clamp(2rem,5.5vw,3.25rem)] leading-tight text-ink">{category.name}</h1>
         {category.description && (
-          <p className="mt-5 max-w-[62ch] text-ink-muted">{category.description}</p>
+          <p className="mt-5 max-w-[62ch] text-ink-2">{category.description}</p>
         )}
-        <p className="spec mt-5 text-ink-subtle">
+        <p className="spec mt-5 text-ink-3">
           {products.length} {products.length === 1 ? "artículo" : "artículos"}
         </p>
       </header>
@@ -77,7 +77,7 @@ export default async function CategoriaPage({ params }: Params) {
           ))}
         </ul>
       ) : (
-        <div className="mt-10 rounded-lg border border-hairline bg-surface-1 p-10 text-center">
+        <div className="card mt-10 p-10 text-center">
           <p className="text-ink">Todavía no hay artículos publicados en esta categoría.</p>
           <a
             href={whatsappLink(

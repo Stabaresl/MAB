@@ -26,11 +26,11 @@ export default async function AdminHomePage() {
         </Link>
       }
     >
-      <dl className="grid gap-px overflow-hidden rounded-lg border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
         {tarjetas.map((tarjeta) => (
-          <Link key={tarjeta.label} href={tarjeta.href} className="bg-surface-1 p-6 hover:bg-surface-2">
-            <dt className="label text-ink-subtle">{tarjeta.label}</dt>
-            <dd className="mt-3 font-display text-4xl font-extrabold text-ink">{tarjeta.value}</dd>
+          <Link key={tarjeta.label} href={tarjeta.href} className="bg-canvas p-6 hover:bg-paper">
+            <dt className="label text-ink-3">{tarjeta.label}</dt>
+            <dd className="mt-3 font-display text-4xl text-ink">{tarjeta.value}</dd>
           </Link>
         ))}
       </dl>
@@ -44,17 +44,17 @@ export default async function AdminHomePage() {
       )}
 
       <section className="mt-12">
-        <div className="flex items-end justify-between border-b border-hairline pb-4">
+        <div className="flex items-end justify-between border-b border-line pb-4">
           <h2 className="text-[21px] text-ink">Últimos artículos</h2>
-          <Link href="/admin/articulos" className="text-[14px] text-accent-text hover:text-accent">
+          <Link href="/admin/articulos" className="text-[14px] text-accent-ink hover:text-accent">
             Ver todos →
           </Link>
         </div>
 
         {recientes.length === 0 ? (
-          <div className="mt-6 rounded-lg border border-hairline bg-surface-1 p-10 text-center">
+          <div className="mt-6 rounded-lg border border-line bg-canvas p-10 text-center">
             <p className="text-ink">Todavía no hay artículos.</p>
-            <p className="mt-2 text-ink-muted">
+            <p className="mt-2 text-ink-2">
               Crea primero una categoría y después añade el primer artículo.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -71,16 +71,16 @@ export default async function AdminHomePage() {
             {recientes.map((product) => (
               <li
                 key={product.id}
-                className="flex items-center justify-between gap-4 border-b border-hairline py-4"
+                className="flex items-center justify-between gap-4 border-b border-line py-4"
               >
                 <div className="min-w-0">
                   <Link
                     href={`/admin/articulos/${product.id}`}
-                    className="text-ink hover:text-accent-text"
+                    className="text-ink hover:text-accent-ink"
                   >
                     {product.name}
                   </Link>
-                  <p className="spec mt-1 text-ink-subtle">
+                  <p className="spec mt-1 text-ink-3">
                     {product.category?.name ?? "Sin categoría"}
                   </p>
                 </div>

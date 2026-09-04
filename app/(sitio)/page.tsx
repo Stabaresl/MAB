@@ -1,11 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { ProductCard } from "@/components/product-card";
-import { getAllProducts, getCategories, getSettings } from "@/lib/catalog";
+import { CategoryCarousel } from "@/components/category-carousel";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
+import { getCategories, getSettings } from "@/lib/catalog";
 import { formatPhone, site, whatsappLink } from "@/lib/site";
 
 export const revalidate = 300;
+
+const PILARES = [
+  {
+    titulo: "Calidad garantizada",
+    texto: "Marcas establecidas en el mercado nacional e internacional, con respaldo.",
+    icono: "escudo",
+  },
+  {
+    titulo: "Productos certificados",
+    texto: "Cumplen las normas y medidas que exige la empresa de Gas Natural en todo el país.",
+    icono: "sello",
+  },
+  {
+    titulo: "Servicio confiable",
+    texto: "Más de 15 años cotizando y entregando a constructoras de todo el territorio.",
+    icono: "apreton",
+  },
+] as const;
 
 const PASOS = [
   {
@@ -26,59 +45,40 @@ const PASOS = [
     texto:
       "El pedido sale hacia tu proyecto en el tiempo acordado, sea ciudad, municipio o vereda, en cualquier parte de Colombia.",
   },
-];
+] as const;
+
+const VALORES = ["Calidad", "Responsabilidad", "Honestidad", "Compromiso", "Servicio"] as const;
 
 export default async function HomePage() {
-  const [categories, products, settings] = await Promise.all([
-    getCategories(),
-    getAllProducts(),
-    getSettings(),
-  ]);
-
-  const destacados = products.slice(0, 8);
+  const [categories, settings] = await Promise.all([getCategories(), getSettings()]);
 
   return (
     <>
       {/* Portada ------------------------------------------------------------ */}
-      <section className="relative overflow-hidden border-b border-hairline">
-        <div className="absolute inset-0">
-          <Image
-            src="/ambientes/hero.webp"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center opacity-[0.55]"
-          />
-          {/*
-            Dos capas: una vertical que asienta el texto sobre el fondo y otra
-            horizontal que deja respirar la foto a la derecha. Sin ellas el
-            titular pierde contraste sobre las zonas claras del azulejo.
-          */}
-          <div className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/90 to-canvas/45" />
-          <div className="absolute inset-0 bg-gradient-to-b from-canvas/70 via-transparent to-canvas" />
-        </div>
-
-        <div className="page relative grid gap-10 py-20 md:py-28 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end">
-          <div>
-            <p className="label text-accent-text">
+      <section className="relative overflow-hidden bg-paper">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] rounded-full bg-sky-soft blur-3xl"
+        />
+        <div className="page relative grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16">
+          <Reveal direccion="izquierda">
+            <p className="label inline-flex rounded-full bg-accent-soft px-3.5 py-1.5 text-accent-ink">
               {site.yearsInMarket} años distribuyendo calidad
             </p>
-            <h1 className="mt-5 text-[clamp(2.25rem,7vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.03em] text-ink">
-              Materiales y acabados
-              <br />
-              para tu obra, entregados
-              <br />
-              donde estés.
+
+            <h1 className="mt-6 max-w-[15ch] text-[clamp(2.15rem,5.6vw,3.9rem)] leading-[1.07] text-ink">
+              Soluciones de calidad para{" "}
+              <span className="text-accent-strong">cada proyecto</span>
             </h1>
-            <p className="mt-7 max-w-[46ch] text-[clamp(1rem,2.4vw,1.19rem)] leading-relaxed text-ink-muted">
-              Soluciones integrales en materiales de construcción y ferretería, con entrega
-              directa en cualquier ciudad de Colombia. Desde acabados de zona húmeda hasta
+
+            <p className="mt-6 max-w-[50ch] text-[clamp(1.02rem,2.2vw,1.19rem)] leading-relaxed text-ink-2">
+              Distribuimos implementos y acabados para ferretería y construcción, con entrega
+              directa en tu obra en cualquier ciudad de Colombia. Desde zona húmeda hasta
               eléctricos, seguridad y baños.
             </p>
 
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/catalogo" className="btn btn-primary">
+              <Link href="/catalogo" className="btn btn-brand">
                 Ver el catálogo
               </Link>
               <a
@@ -93,230 +93,335 @@ export default async function HomePage() {
                 Pedir cotización
               </a>
             </div>
-          </div>
 
-          <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline lg:mb-2">
-            <div className="bg-surface-1 p-5">
-              <dt className="label text-ink-subtle">Años en el mercado</dt>
-              <dd className="mt-2 font-display text-4xl font-extrabold text-ink">
-                {site.yearsInMarket}
-              </dd>
+            <p className="spec mt-6 text-ink-3">
+              O llámanos al {formatPhone(settings.whatsapp_primary)}
+            </p>
+          </Reveal>
+
+          {/* Composición de fotos: dos ambientes reales, desalineados a
+              propósito para que no lea como una rejilla de plantilla. */}
+          <Reveal direccion="derecha" retraso={0.1}>
+            <div className="relative mx-auto max-w-[520px] lg:max-w-none">
+              <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-lift)]">
+                <Image
+                  src="/ambientes/hero.webp"
+                  alt="Baño terminado con sanitario, lavamanos y ducha instalados"
+                  width={1024}
+                  height={512}
+                  priority
+                  className="h-full w-full object-cover"
+                />
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-card)]">
+                  <Image
+                    src="/ambientes/griferia-negra.webp"
+                    alt="Grifería negra montada sobre lavamanos"
+                    width={1024}
+                    height={512}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-card)]">
+                  <Image
+                    src="/ambientes/cocina-agua.webp"
+                    alt="Lavaplatos de acero inoxidable con grifería en uso"
+                    width={1024}
+                    height={512}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
             </div>
-            <div className="bg-surface-1 p-5">
-              <dt className="label text-ink-subtle">Categorías</dt>
-              <dd className="mt-2 font-display text-4xl font-extrabold text-ink">
-                {categories.length}
-              </dd>
-            </div>
-            <div className="bg-surface-1 p-5">
-              <dt className="label text-ink-subtle">Cobertura</dt>
-              <dd className="mt-2 font-display text-xl font-bold leading-tight text-ink">
-                Todo el territorio nacional
-              </dd>
-            </div>
-            <div className="bg-surface-1 p-5">
-              <dt className="label text-ink-subtle">Sede</dt>
-              <dd className="mt-2 font-display text-xl font-bold leading-tight text-ink">
-                {settings.city}
-              </dd>
-            </div>
-          </dl>
+          </Reveal>
         </div>
       </section>
 
-      {/* Franja de marca ---------------------------------------------------- */}
-      <section className="border-b border-hairline bg-brand-navy">
-        <div className="page flex items-center gap-5 py-7">
-          <span aria-hidden="true" className="h-10 w-px shrink-0 bg-ink" />
-          <p className="label text-[clamp(0.75rem,2.6vw,1.05rem)] text-ink">
-            Te mejoramos el precio de cualquier cotización
-          </p>
-        </div>
-      </section>
-
-      {/* Categorías --------------------------------------------------------- */}
-      <section className="page py-20 md:py-24">
-        <div className="flex flex-col gap-4 border-b border-hairline pb-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="label text-accent-text">Catálogo</p>
-            <h2 className="mt-3 text-[clamp(1.75rem,4.5vw,2.75rem)] leading-tight text-ink">
-              Todo lo que entra en un proyecto
-            </h2>
-          </div>
-          <Link href="/catalogo" className="text-accent-text hover:text-accent">
-            Ver el catálogo completo →
-          </Link>
-        </div>
-
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <li key={category.id}>
-              <Link
-                href={`/catalogo/${category.slug}`}
-                className="group flex h-full items-start gap-5 rounded-lg border border-hairline bg-surface-1 p-5 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-hairline-strong"
-              >
-                <div className="relative h-20 w-20 shrink-0 rounded-md bg-canvas/40">
-                  {category.image_url && (
-                    <Image
-                      src={category.image_url}
-                      alt=""
-                      fill
-                      sizes="80px"
-                      className="object-contain p-2"
-                    />
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-[19px] leading-snug text-ink">{category.name}</h3>
-                  <p className="spec mt-1 text-ink-subtle">
-                    {category.productCount}{" "}
-                    {category.productCount === 1 ? "artículo" : "artículos"}
-                  </p>
-                  {category.description && (
-                    <p className="mt-2 line-clamp-2 text-[14px] text-ink-muted">
-                      {category.description}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            </li>
+      {/* Pilares ------------------------------------------------------------ */}
+      <section className="page py-16 md:py-20">
+        <Stagger as="ul" className="grid gap-5 md:grid-cols-3">
+          {PILARES.map((pilar) => (
+            <StaggerItem as="li" key={pilar.titulo}>
+              <div className="card h-full p-6">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent-ink">
+                  <Icono nombre={pilar.icono} />
+                </span>
+                <h3 className="mt-5 font-text text-[18px] font-semibold text-ink">
+                  {pilar.titulo}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{pilar.texto}</p>
+              </div>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
+      </section>
+
+      {/* Categorías en carrusel --------------------------------------------- */}
+      <section className="border-y border-line bg-paper">
+        <div className="page py-16 md:py-24">
+          <Reveal>
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="label text-accent-ink">Todo para tu proyecto</p>
+                <h2 className="mt-3 max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
+                  Elige por tipo de material
+                </h2>
+              </div>
+              <Link
+                href="/catalogo"
+                className="group inline-flex items-center gap-2 font-semibold text-accent-ink"
+              >
+                Ver todas las categorías
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </Link>
+            </div>
+          </Reveal>
+
+          <div className="mt-10">
+            <CategoryCarousel
+              categorias={categories.map((c) => ({
+                id: c.id,
+                slug: c.slug,
+                name: c.name,
+                description: c.description,
+                imageUrl: c.image_url,
+                productCount: c.productCount,
+              }))}
+            />
+          </div>
+        </div>
       </section>
 
       {/* Cómo trabajamos ---------------------------------------------------- */}
-      <section className="border-y border-hairline bg-surface-1/40">
-        <div className="page py-20 md:py-24">
-          <p className="label text-accent-text">Cómo trabajamos</p>
-          <h2 className="mt-3 max-w-[20ch] text-[clamp(1.75rem,4.5vw,2.75rem)] leading-tight text-ink">
+      <section className="page py-16 md:py-24">
+        <Reveal>
+          <p className="label text-accent-ink">Cómo trabajamos</p>
+          <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
             Tres pasos entre tu obra y el material
           </h2>
+        </Reveal>
 
-          <ol className="mt-12 grid gap-px overflow-hidden rounded-lg border border-hairline bg-hairline md:grid-cols-3">
-            {PASOS.map((paso) => (
-              <li key={paso.numero} className="bg-canvas p-7">
-                <span className="spec text-accent-text">{paso.numero}</span>
-                <h3 className="mt-4 text-[21px] leading-snug text-ink">{paso.titulo}</h3>
-                <p className="mt-3 text-ink-muted">{paso.texto}</p>
-              </li>
-            ))}
-          </ol>
+        <Stagger as="ol" className="mt-12 grid gap-6 md:grid-cols-3" paso={0.1}>
+          {PASOS.map((paso, i) => (
+            <StaggerItem as="li" key={paso.numero} className="relative">
+              <div className="flex h-full flex-col">
+                <div className="flex items-center gap-4">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand font-display text-[19px] text-on-brand">
+                    {paso.numero}
+                  </span>
+                  {/* Línea de continuidad entre pasos, solo en escritorio */}
+                  {i < PASOS.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="hidden h-px flex-1 bg-line-2 md:block"
+                    />
+                  )}
+                </div>
+                <h3 className="mt-6 font-text text-[19px] font-semibold text-ink">
+                  {paso.titulo}
+                </h3>
+                <p className="mt-3 text-ink-2">{paso.texto}</p>
+              </div>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      {/* Calidad — bloque partido con imagen -------------------------------- */}
+      <section className="border-y border-line bg-brand">
+        <div className="page grid gap-12 py-16 md:py-24 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <Reveal direccion="izquierda">
+            <p className="label text-accent">Calidad</p>
+            <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-on-brand">
+              Materiales que cumplen la norma
+            </h2>
+            <p className="mt-6 max-w-[54ch] leading-relaxed text-on-brand/75">
+              Nuestros productos están fabricados con materiales de alta calidad que cumplen con
+              todas las normas exigidas, garantizando resistencia, durabilidad y seguridad.
+              Contamos con diseños funcionales y certificados que aseguran el cumplimiento de las
+              especificaciones requeridas por las empresas de servicios en todo el país.
+            </p>
+
+            <ul className="mt-8 flex flex-wrap gap-2.5">
+              {["Materiales de alta calidad", "Normas y certificaciones", "Seguridad y confianza"].map(
+                (item) => (
+                  <li
+                    key={item}
+                    className="rounded-full border border-on-brand/20 px-4 py-2 text-[14px] text-on-brand/85"
+                  >
+                    {item}
+                  </li>
+                ),
+              )}
+            </ul>
+          </Reveal>
+
+          <Reveal direccion="derecha" retraso={0.1}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="overflow-hidden rounded-xl">
+                <Image
+                  src="/ambientes/ducha-lluvia.webp"
+                  alt="Ducha tipo lluvia instalada en zona húmeda"
+                  width={1024}
+                  height={512}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="overflow-hidden rounded-xl">
+                <Image
+                  src="/ambientes/camara-concreto.webp"
+                  alt="Cámara de seguridad instalada en fachada"
+                  width={1024}
+                  height={512}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="col-span-2 overflow-hidden rounded-xl">
+                <Image
+                  src="/marca/obra.webp"
+                  alt="Edificio en construcción con grúa torre"
+                  width={1400}
+                  height={940}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* Destacados --------------------------------------------------------- */}
-      {destacados.length > 0 && (
-        <section className="page py-20 md:py-24">
-          <div className="flex flex-col gap-4 border-b border-hairline pb-6 md:flex-row md:items-end md:justify-between">
-            <h2 className="text-[clamp(1.75rem,4.5vw,2.75rem)] leading-tight text-ink">
-              Del catálogo
-            </h2>
-            <Link href="/catalogo" className="text-accent-text hover:text-accent">
-              Ver todos los artículos →
-            </Link>
-          </div>
-
-          <ul className="mt-8 grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {destacados.map((product) => (
-              <li key={product.id} className="min-w-0">
-                <ProductCard product={product} showCategory />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Quiénes somos ------------------------------------------------------ */}
-      <section className="border-t border-hairline">
-        <div className="page grid gap-12 py-20 md:py-24 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <div>
-            <p className="label text-accent-text">Quiénes somos</p>
-            <h2 className="mt-3 text-[clamp(1.75rem,4.5vw,2.75rem)] leading-tight text-ink">
+      {/* Quiénes somos + valores -------------------------------------------- */}
+      <section className="page py-16 md:py-24">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-20">
+          <Reveal>
+            <p className="label text-accent-ink">Quiénes somos</p>
+            <h2 className="mt-3 max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
               {site.yearsInMarket} años de excelencia
             </h2>
-            <p className="mt-6 max-w-[52ch] text-ink-muted">
-              Distribuciones M.A.B pone a su disposición una gama de productos para la
-              construcción de marcas exclusivas y de alta resistencia. Somos distribuidores a
-              nivel nacional, con una amplia cartera de clientes y variedad de marcas
-              certificadas.
+            <p className="mt-6 max-w-[56ch] text-[17px] leading-relaxed text-ink-2">
+              Somos una empresa distribuidora de implementos para ferreterías y construcciones,
+              con más de {site.yearsInMarket} años de experiencia en el mercado. Ofrecemos
+              productos de alta calidad de marcas exclusivas y certificadas, con el compromiso de
+              brindar las mejores soluciones para su negocio y construcción.
             </p>
-            <Link href="/nosotros" className="mt-7 inline-flex text-accent-text hover:text-accent">
-              Conocer la empresa →
-            </Link>
-          </div>
 
-          <dl className="grid gap-px overflow-hidden rounded-lg border border-hairline bg-hairline sm:grid-cols-2">
-            <div className="bg-surface-1 p-6">
-              <dt className="label text-ink-subtle">Misión</dt>
-              <dd className="mt-3 text-ink-muted">{site.mission}</dd>
+            <dl className="mt-10 grid gap-6 sm:grid-cols-2">
+              <div className="border-l-2 border-accent pl-5">
+                <dt className="label text-ink-3">Misión</dt>
+                <dd className="mt-2 text-[15px] leading-relaxed text-ink-2">{site.mission}</dd>
+              </div>
+              <div className="border-l-2 border-sky pl-5">
+                <dt className="label text-ink-3">Visión</dt>
+                <dd className="mt-2 text-[15px] leading-relaxed text-ink-2">{site.vision}</dd>
+              </div>
+            </dl>
+
+            <Link
+              href="/nosotros"
+              className="group mt-9 inline-flex items-center gap-2 font-semibold text-accent-ink"
+            >
+              Conocer la empresa
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </Link>
+          </Reveal>
+
+          <Reveal direccion="derecha" retraso={0.1}>
+            <div className="card p-7">
+              <p className="label text-ink-3">Nuestros valores</p>
+              <ul className="mt-5 flex flex-col">
+                {VALORES.map((valor, i) => (
+                  <li
+                    key={valor}
+                    className={`flex items-center gap-4 py-3.5 ${
+                      i < VALORES.length - 1 ? "border-b border-line" : ""
+                    }`}
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-bold text-accent-ink">
+                      {i + 1}
+                    </span>
+                    <span className="font-medium text-ink">{valor}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="bg-surface-1 p-6">
-              <dt className="label text-ink-subtle">Visión</dt>
-              <dd className="mt-3 text-ink-muted">{site.vision}</dd>
-            </div>
-          </dl>
+          </Reveal>
         </div>
       </section>
 
       {/* Clientes ----------------------------------------------------------- */}
-      <section className="border-t border-hairline bg-surface-1/40">
-        <div className="page py-20 md:py-24">
-          <p className="label text-accent-text">Referencias</p>
-          <h2 className="mt-3 text-[clamp(1.75rem,4.5vw,2.75rem)] leading-tight text-ink">
-            Constructoras que ya nos compran
-          </h2>
+      <section className="border-t border-line bg-paper">
+        <div className="page py-16 md:py-24">
+          <Reveal>
+            <p className="label text-accent-ink">Referencias</p>
+            <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
+              Constructoras que ya nos compran
+            </h2>
+          </Reveal>
 
-          <ul className="mt-10 grid gap-x-8 gap-y-px border-t border-hairline sm:grid-cols-2 lg:grid-cols-3">
+          <Stagger as="ul" className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" paso={0.04}>
             {site.clients.map((client) => (
-              <li
-                key={client}
-                className="flex items-center gap-4 border-b border-hairline py-4 text-ink-muted"
-              >
-                <span aria-hidden="true" className="h-4 w-px shrink-0 bg-accent" />
-                {client}
-              </li>
+              <StaggerItem as="li" key={client}>
+                <div className="flex h-full items-center gap-3.5 rounded-lg border border-line bg-canvas px-5 py-4">
+                  <span aria-hidden="true" className="h-8 w-1 shrink-0 rounded-full bg-accent" />
+                  <span className="font-medium text-ink-2">{client}</span>
+                </div>
+              </StaggerItem>
             ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Contacto ----------------------------------------------------------- */}
-      <section className="page py-20 md:py-24">
-        <div className="rounded-lg border border-hairline bg-brand-navy p-8 md:p-12">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-            <div>
-              <h2 className="max-w-[18ch] text-[clamp(1.75rem,4.5vw,2.75rem)] leading-tight text-ink">
-                ¿Tienes las especificaciones del proyecto?
-              </h2>
-              <p className="mt-5 max-w-[52ch] text-ink-muted">
-                Envíanoslas y te cotizamos al mejor precio del mercado. Si ya tienes otra
-                cotización, la mejoramos.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <a
-                href={whatsappLink(
-                  settings.whatsapp_primary,
-                  "Hola, quisiera cotizar materiales para mi proyecto.",
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary"
-              >
-                Escribir por WhatsApp
-              </a>
-              <a href={`mailto:${settings.email}`} className="btn btn-secondary">
-                Enviar un correo
-              </a>
-              <p className="spec mt-1 text-center text-ink-subtle">
-                {formatPhone(settings.whatsapp_primary)}
-                {settings.whatsapp_secondary && ` · ${formatPhone(settings.whatsapp_secondary)}`}
-              </p>
-            </div>
-          </div>
+          </Stagger>
         </div>
       </section>
     </>
+  );
+}
+
+/** Iconografía propia en SVG. Nunca emoji. */
+function Icono({ nombre }: { nombre: "escudo" | "sello" | "apreton" }) {
+  const comun = {
+    viewBox: "0 0 24 24",
+    className: "h-6 w-6",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  if (nombre === "escudo") {
+    return (
+      <svg {...comun}>
+        <path d="M12 3l7 3v5.5c0 4.2-2.9 7.6-7 9.5-4.1-1.9-7-5.3-7-9.5V6l7-3z" />
+        <path d="M9.2 11.8l2 2 3.6-3.8" />
+      </svg>
+    );
+  }
+
+  if (nombre === "sello") {
+    return (
+      <svg {...comun}>
+        <circle cx="12" cy="9.5" r="5.5" />
+        <path d="M9.2 9.4l1.9 1.9 3.6-3.7" />
+        <path d="M8.4 14.6L7 21l5-2.2L17 21l-1.4-6.4" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...comun}>
+      <path d="M3 11.5l3-3 4 3.4 2-1.6 2 1.6 4-3.4 3 3" />
+      <path d="M6.5 14.5l3.2 3.1a2 2 0 002.8 0l4.9-4.7" />
+    </svg>
   );
 }

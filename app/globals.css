@@ -2,54 +2,61 @@
 
 /* ---------------------------------------------------------------------------
    Tokens del sistema de diseño de MAB.
-   Fuente de verdad: DESIGN.md en la raíz del proyecto. Ningún color, tamaño de
-   fuente ni radio debe escribirse en línea en un componente: si hace falta un
-   valor nuevo, se añade aquí como token y se referencia por nombre.
+   Fuente de verdad: DESIGN.md en la raíz. Los colores salen muestreados del
+   logotipo de la empresa. Ningún componente escribe un color, un tamaño de
+   fuente ni un radio en línea: si hace falta un valor nuevo, se añade aquí
+   como token y se referencia por nombre.
    --------------------------------------------------------------------------- */
 @theme {
-  /* Superficies */
-  --color-canvas: #0f1720;
-  --color-surface-1: #16202c;
-  --color-surface-2: #1d2937;
-  --color-surface-3: #26313f;
-  --color-brand-navy: #131c28;
-  --color-hairline: #24303e;
-  --color-hairline-strong: #33414f;
+  /* Superficies — lienzo claro, el logo necesita fondo claro para leerse */
+  --color-canvas: #ffffff;
+  --color-paper: #f5f7f9;
+  --color-paper-2: #eaeff3;
+  --color-brand: #153144;
+  --color-brand-2: #315064;
+  --color-line: #e3e8ed;
+  --color-line-2: #ccd6de;
 
   /* Tinta */
-  --color-ink: #f2f5f8;
-  --color-ink-muted: #a7b3c0;
-  --color-ink-subtle: #71808f;
-  --color-ink-on-accent: #0f1720;
+  --color-ink: #10222f;
+  --color-ink-2: #3a4c5a;
+  --color-ink-3: #5c6d7a;
+  --color-on-brand: #f4f8fb;
 
-  /* Acento — el naranja está solo, no acompaña a ningún otro cromatismo */
-  --color-accent: #e7622c;
-  --color-accent-hover: #f4794a;
-  --color-accent-text: #f08a52;
-  --color-accent-quiet: #2a1c15;
+  /* Acento ámbar — del naranja del logotipo, subido de tono para que aguante
+     como fondo de botón sin perder el aire cálido de la marca */
+  --color-accent: #db8324;
+  --color-accent-hover: #c8721a;
+  --color-accent-soft: #fdf1e3;
+  --color-accent-ink: #7a4409;
+  /* Para display grande: contraste suficiente sin apagarse a marrón */
+  --color-accent-strong: #b8651a;
+  --color-on-accent: #10222f;
+
+  /* Azul claro del logotipo, para gráficos y realces fríos */
+  --color-sky: #8bb7d0;
+  --color-sky-soft: #eaf2f7;
 
   /* Semánticos */
-  --color-success: #2e9e5b;
-  --color-danger: #e5484d;
-  --color-warning: #d9a03c;
+  --color-success: #17794a;
+  --color-danger: #c0342c;
+  --color-warning: #a86a10;
 
-  --color-inverse-canvas: #f2f5f8;
-  --color-inverse-ink: #0f1720;
+  /* Tipografía: display cálido de serifa + texto humanista */
+  --font-display: var(--font-calistoga), Georgia, serif;
+  --font-text: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
-  /* Tipografía */
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-text: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+  /* Radios — generosos, la marca es amable, no industrial */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
 
-  /* Radios — nada supera 12px salvo los indicadores circulares */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  /* Sombras suaves, tintadas de navy en vez de negro puro */
+  --shadow-card: 0 1px 2px rgb(21 49 68 / 0.04), 0 8px 24px -12px rgb(21 49 68 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(21 49 68 / 0.05), 0 18px 40px -16px rgb(21 49 68 / 0.22);
 
-  /* Movimiento */
   --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
-
-  /* Contenedor */
   --container-page: 1240px;
 }
 
@@ -69,39 +76,41 @@
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-text);
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
 
-  /* Los titulares son siempre romanos. El énfasis se lleva con peso o acento. */
+  /* Los titulares son siempre romanos. El énfasis se lleva con color o escala. */
   h1,
   h2,
-  h3,
-  h4 {
+  h3 {
     font-family: var(--font-display);
     font-style: normal;
-    font-weight: 700;
+    font-weight: 400;
+    letter-spacing: -0.015em;
     /* Un display largo no puede desbordar a 320px */
     overflow-wrap: anywhere;
     min-width: 0;
   }
 
+  h4,
+  h5 {
+    font-family: var(--font-text);
+    font-weight: 600;
+  }
+
   :focus-visible {
-    outline: none;
-    box-shadow:
-      0 0 0 2px var(--color-canvas),
-      0 0 0 4px var(--color-accent);
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
     border-radius: var(--radius-sm);
   }
 
   ::selection {
-    background-color: var(--color-accent);
-    color: var(--color-ink-on-accent);
+    background-color: var(--color-accent-soft);
+    color: var(--color-accent-ink);
   }
 
-  /* Fondo de las capturas de producto mientras cargan */
   img {
     max-width: 100%;
     height: auto;
@@ -123,21 +132,24 @@
 }
 
 @layer components {
-  /* Etiqueta en versalitas con tracking amplio: la firma del monograma. */
+  /* Etiqueta en versalitas: encabeza secciones y nombra categorías. */
   .label {
-    font-family: var(--font-display);
+    font-family: var(--font-text);
     font-size: 12px;
     font-weight: 700;
     line-height: 1.2;
-    letter-spacing: 0.117em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  /* Toda medida, referencia o material se ve como el dato que es. */
+  /* Medidas y referencias: cifras alineadas, sin caer en monoespaciada. */
   .spec {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.45;
+    font-family: var(--font-text);
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.005em;
   }
 
   /* Un botón nunca envuelve a dos líneas, a ningún ancho. */
@@ -146,68 +158,96 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 44px;
-    padding: 0 20px;
+    min-height: 48px;
+    padding: 0 22px;
     border-radius: var(--radius-md);
     font-family: var(--font-text);
     font-size: 15px;
     font-weight: 600;
     white-space: nowrap;
+    cursor: pointer;
     transition:
-      background-color 140ms var(--ease-brand),
-      border-color 140ms var(--ease-brand),
-      transform 140ms var(--ease-brand);
+      background-color 180ms var(--ease-brand),
+      border-color 180ms var(--ease-brand),
+      color 180ms var(--ease-brand),
+      box-shadow 180ms var(--ease-brand),
+      transform 180ms var(--ease-brand);
   }
 
   .btn-primary {
     background-color: var(--color-accent);
-    color: var(--color-ink-on-accent);
+    color: var(--color-on-accent);
+    box-shadow: 0 1px 2px rgb(21 49 68 / 0.08);
   }
 
   .btn-primary:hover {
     background-color: var(--color-accent-hover);
+    color: var(--color-canvas);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-brand {
+    background-color: var(--color-brand);
+    color: var(--color-on-brand);
+  }
+
+  .btn-brand:hover {
+    background-color: var(--color-brand-2);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
   }
 
   .btn-secondary {
-    background-color: transparent;
+    background-color: var(--color-canvas);
     color: var(--color-ink);
-    border: 1px solid var(--color-hairline-strong);
+    border: 1px solid var(--color-line-2);
   }
 
   .btn-secondary:hover {
-    background-color: var(--color-surface-2);
-    border-color: var(--color-ink-subtle);
+    background-color: var(--color-paper);
+    border-color: var(--color-ink-3);
+    transform: translateY(-1px);
   }
 
   .btn:active {
-    transform: translateY(1px);
+    transform: translateY(0);
   }
 
   .btn[disabled],
   .btn[aria-disabled="true"] {
     opacity: 0.5;
     pointer-events: none;
+    transform: none;
   }
 
   .field {
     width: 100%;
-    min-height: 44px;
-    padding: 10px 12px;
-    background-color: var(--color-surface-2);
-    border: 1px solid var(--color-hairline);
+    min-height: 48px;
+    padding: 12px 14px;
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-line-2);
     border-radius: var(--radius-md);
     color: var(--color-ink);
     font-family: var(--font-text);
     font-size: 15px;
-    transition: border-color 140ms var(--ease-brand);
+    transition:
+      border-color 180ms var(--ease-brand),
+      box-shadow 180ms var(--ease-brand);
   }
 
   .field::placeholder {
-    color: var(--color-ink-subtle);
+    color: var(--color-ink-3);
   }
 
   .field:hover {
-    border-color: var(--color-hairline-strong);
+    border-color: var(--color-ink-3);
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-soft);
   }
 
   /* El color no es el único portador del error: siempre va texto debajo. */
@@ -215,29 +255,21 @@
     border-color: var(--color-danger);
   }
 
-  /*
-   * Tira que se desplaza en horizontal (filtros de categoría, pestañas del
-   * panel). La barra del sistema es gruesa, de otro color y roba altura en
-   * móvil, así que se sustituye por una fina y del sistema de diseño. El
-   * desplazamiento sigue siendo real: táctil, con rueda y con teclado.
-   */
-  .scroll-x {
-    overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-hairline-strong) transparent;
+  .card {
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 220ms var(--ease-brand),
+      box-shadow 220ms var(--ease-brand),
+      border-color 220ms var(--ease-brand);
   }
 
-  .scroll-x::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .scroll-x::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scroll-x::-webkit-scrollbar-thumb {
-    background-color: var(--color-hairline-strong);
-    border-radius: 999px;
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--color-line-2);
   }
 
   .page {
@@ -251,5 +283,82 @@
     .page {
       padding-inline: 32px;
     }
+  }
+
+
+  /*
+   * Apariciones al hacer scroll.
+   *
+   * El estado oculto vive detrás de `.js`, que pone un script en línea antes
+   * del primer pintado. Sin JavaScript la clase no existe, no hay regla que
+   * oculte nada y la página se lee entera: la animación es un añadido, nunca
+   * un requisito para ver el contenido.
+   */
+  .js [data-reveal],
+  .js [data-stagger-item] {
+    opacity: 0;
+    transition:
+      opacity 600ms var(--ease-brand),
+      transform 600ms var(--ease-brand);
+    will-change: opacity, transform;
+  }
+
+  .js [data-reveal="arriba"] {
+    transform: translateY(24px);
+  }
+
+  .js [data-reveal="izquierda"] {
+    transform: translateX(-26px);
+  }
+
+  .js [data-reveal="derecha"] {
+    transform: translateX(26px);
+  }
+
+  .js [data-reveal="escala"] {
+    transform: translateY(12px) scale(0.97);
+  }
+
+  .js [data-stagger-item] {
+    transform: translateY(18px);
+  }
+
+  .js [data-reveal][data-visto],
+  .js [data-stagger][data-visto] [data-stagger-item] {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal],
+    .js [data-stagger-item] {
+      transform: none !important;
+      transition-duration: 180ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+
+  /*
+   * Tira que se desplaza en horizontal. La barra del sistema es gruesa y roba
+   * altura en móvil, así que se sustituye por una fina del sistema de diseño.
+   */
+  .scroll-x {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-2) transparent;
+  }
+
+  .scroll-x::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .scroll-x::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-x::-webkit-scrollbar-thumb {
+    background-color: var(--color-line-2);
+    border-radius: 999px;
   }
 }

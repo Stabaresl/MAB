@@ -47,7 +47,7 @@ export function RequestResetForm() {
       <FormFeedback error={error} />
 
       <div>
-        <label htmlFor="email" className="label block text-ink-subtle">
+        <label htmlFor="email" className="label block text-ink-3">
           Correo de la cuenta
         </label>
         <input
@@ -66,7 +66,7 @@ export function RequestResetForm() {
         {pending ? "Enviando…" : "Enviar el enlace"}
       </button>
 
-      <Link href="/admin/login" className="text-center text-[14px] text-ink-subtle hover:text-ink">
+      <Link href="/admin/login" className="text-center text-[14px] text-ink-3 hover:text-ink">
         Volver a entrar
       </Link>
     </form>
@@ -103,7 +103,7 @@ export function NewPasswordForm() {
       <FormFeedback error={error} />
 
       <div>
-        <label htmlFor="password" className="label block text-ink-subtle">
+        <label htmlFor="password" className="label block text-ink-3">
           Contraseña nueva
         </label>
         <input
@@ -116,12 +116,12 @@ export function NewPasswordForm() {
           aria-invalid={Boolean(fieldErrors.password)}
           className="field mt-2"
         />
-        <p className="mt-1.5 text-[13px] text-ink-subtle">Mínimo 8 caracteres.</p>
+        <p className="mt-1.5 text-[13px] text-ink-3">Mínimo 8 caracteres.</p>
         <FieldError message={fieldErrors.password} />
       </div>
 
       <div>
-        <label htmlFor="confirm" className="label block text-ink-subtle">
+        <label htmlFor="confirm" className="label block text-ink-3">
           Repite la contraseña
         </label>
         <input

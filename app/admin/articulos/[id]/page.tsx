@@ -41,9 +41,9 @@ export default async function EditarArticuloPage({ params }: Params) {
         categories={categories.map((c) => ({ id: c.id, name: c.name }))}
       />
 
-      <section className="mt-16 max-w-[720px] border-t border-hairline pt-8">
+      <section className="mt-16 max-w-[720px] border-t border-line pt-8">
         <h2 className="text-[19px] text-ink">Eliminar este artículo</h2>
-        <p className="mt-2 text-ink-muted">
+        <p className="mt-2 text-ink-2">
           Se borra el artículo y su imagen. No se puede deshacer. Si solo quieres retirarlo del
           sitio, desmarca la casilla de publicado y guarda.
         </p>

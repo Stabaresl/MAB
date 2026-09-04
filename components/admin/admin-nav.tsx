@@ -14,7 +14,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Secciones del panel" className="border-b border-hairline bg-surface-1">
+    <nav aria-label="Secciones del panel" className="border-b border-line bg-paper">
       <div className="page scroll-x -mx-5 px-5 md:mx-0 md:px-0">
         <ul className="flex w-max gap-1 md:w-auto">
           {SECCIONES.map((seccion) => {
@@ -31,7 +31,7 @@ export function AdminNav() {
                   className={`inline-flex h-12 items-center whitespace-nowrap border-b-2 px-4 text-[15px] transition-colors ${
                     active
                       ? "border-accent text-ink"
-                      : "border-transparent text-ink-muted hover:text-ink"
+                      : "border-transparent text-ink-2 hover:text-ink"
                   }`}
                 >
                   {seccion.label}

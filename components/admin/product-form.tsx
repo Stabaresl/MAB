@@ -60,7 +60,7 @@ export function ProductForm({
 
   if (categories.length === 0) {
     return (
-      <div className="rounded-lg border border-hairline bg-surface-1 p-10 text-center">
+      <div className="rounded-lg border border-line bg-canvas p-10 text-center">
         <p className="text-ink">Antes de crear un artículo necesitas al menos una categoría.</p>
         <Link href="/admin/categorias" className="btn btn-primary mt-6">
           Crear una categoría
@@ -75,7 +75,7 @@ export function ProductForm({
         <FormFeedback error={error} success={ok} />
 
         <div>
-          <label htmlFor="name" className="label block text-ink-subtle">
+          <label htmlFor="name" className="label block text-ink-3">
             Nombre del artículo
           </label>
           <input
@@ -93,7 +93,7 @@ export function ProductForm({
         </div>
 
         <div>
-          <label htmlFor="categoryId" className="label block text-ink-subtle">
+          <label htmlFor="categoryId" className="label block text-ink-3">
             Categoría
           </label>
           <select
@@ -117,7 +117,7 @@ export function ProductForm({
         </div>
 
         <div>
-          <label htmlFor="specs" className="label block text-ink-subtle">
+          <label htmlFor="specs" className="label block text-ink-3">
             Medidas y material <span className="normal-case tracking-normal">(opcional)</span>
           </label>
           <input
@@ -130,14 +130,14 @@ export function ProductForm({
             className="field mt-2"
             placeholder="60x40 cm · ABS color gris"
           />
-          <p className="mt-1.5 text-[13px] text-ink-subtle">
+          <p className="mt-1.5 text-[13px] text-ink-3">
             Se muestra bajo el nombre, en la tarjeta y en la ficha.
           </p>
           <FieldError message={fieldErrors.specs} />
         </div>
 
         <div>
-          <label htmlFor="description" className="label block text-ink-subtle">
+          <label htmlFor="description" className="label block text-ink-3">
             Descripción <span className="normal-case tracking-normal">(opcional)</span>
           </label>
           <textarea
@@ -155,7 +155,7 @@ export function ProductForm({
 
         <ImageField currentUrl={product?.image_url} error={fieldErrors.image} />
 
-        <div className="flex items-start gap-3 rounded-md border border-hairline bg-surface-1 p-4">
+        <div className="flex items-start gap-3 rounded-md border border-line bg-canvas p-4">
           <input
             id="isPublished"
             name="isPublished"
@@ -165,14 +165,14 @@ export function ProductForm({
           />
           <label htmlFor="isPublished" className="cursor-pointer">
             <span className="block text-ink">Publicado</span>
-            <span className="mt-0.5 block text-[13px] text-ink-subtle">
+            <span className="mt-0.5 block text-[13px] text-ink-3">
               Si lo desmarcas, el artículo se guarda pero no aparece en el sitio.
             </span>
           </label>
         </div>
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-3 border-t border-hairline pt-6">
+      <div className="mt-10 flex flex-wrap gap-3 border-t border-line pt-6">
         <button type="submit" className="btn btn-primary" disabled={pending}>
           {pending ? "Guardando…" : editing ? "Guardar cambios" : "Crear artículo"}
         </button>

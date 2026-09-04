@@ -11,11 +11,11 @@ export default function RecuperarPage() {
         <h1 className="text-[clamp(1.6rem,5vw,2rem)] leading-tight text-ink">
           Recuperar la contraseña
         </h1>
-        <p className="mt-3 text-ink-muted">
+        <p className="mt-3 text-ink-2">
           Escribe el correo de la cuenta y te enviamos un enlace para ponerle una contraseña
           nueva.
         </p>
-        <div className="mt-8 rounded-lg border border-hairline bg-surface-1 p-6 md:p-8">
+        <div className="mt-8 rounded-lg border border-line bg-canvas p-6 md:p-8">
           <RequestResetForm />
         </div>
       </div>

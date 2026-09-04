@@ -41,9 +41,9 @@ export function CategoryList({ categories }: { categories: Row[] }) {
 
   if (categories.length === 0) {
     return (
-      <div className="rounded-lg border border-hairline bg-surface-1 p-10 text-center">
+      <div className="rounded-lg border border-line bg-canvas p-10 text-center">
         <p className="text-ink">Todavía no hay categorías.</p>
-        <p className="mt-2 text-ink-muted">
+        <p className="mt-2 text-ink-2">
           Crea la primera con el formulario de al lado. Sin categorías no se pueden crear
           artículos.
         </p>
@@ -55,11 +55,11 @@ export function CategoryList({ categories }: { categories: Row[] }) {
     <div>
       <FormFeedback error={error} success={ok} />
 
-      <ul className="mt-4 overflow-hidden rounded-lg border border-hairline">
+      <ul className="mt-4 overflow-hidden rounded-lg border border-line">
         {categories.map((row) => (
-          <li key={row.id} className="border-b border-hairline bg-surface-1 last:border-b-0">
+          <li key={row.id} className="border-b border-line bg-canvas last:border-b-0">
             <div className="flex flex-wrap items-center gap-4 p-4">
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-canvas/50">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-paper">
                 {row.imageUrl && (
                   <Image
                     src={row.imageUrl}
@@ -74,11 +74,11 @@ export function CategoryList({ categories }: { categories: Row[] }) {
               <div className="min-w-0 flex-1 basis-48">
                 <Link
                   href={`/admin/categorias/${row.id}`}
-                  className="text-ink hover:text-accent-text"
+                  className="text-ink hover:text-accent-ink"
                 >
                   {row.name}
                 </Link>
-                <p className="spec mt-1 text-ink-subtle">
+                <p className="spec mt-1 text-ink-3">
                   {row.productCount} {row.productCount === 1 ? "artículo" : "artículos"} · /
                   {row.slug}
                 </p>
@@ -103,7 +103,7 @@ export function CategoryList({ categories }: { categories: Row[] }) {
             </div>
 
             {confirming === row.id && (
-              <div className="flex flex-wrap items-center gap-3 border-t border-hairline bg-canvas/40 p-4">
+              <div className="flex flex-wrap items-center gap-3 border-t border-line bg-paper p-4">
                 {row.productCount > 0 ? (
                   <p className="text-[14px] text-ink">
                     «{row.name}» tiene {row.productCount}{" "}
@@ -119,7 +119,7 @@ export function CategoryList({ categories }: { categories: Row[] }) {
                       type="button"
                       onClick={() => onDelete(row)}
                       disabled={pending}
-                      className="btn h-11 bg-danger px-4 text-[14px] font-semibold text-ink hover:opacity-90"
+                      className="btn h-11 bg-danger px-4 text-[14px] font-semibold text-white hover:opacity-90"
                     >
                       {pending ? "Borrando…" : "Sí, borrar"}
                     </button>

@@ -112,7 +112,7 @@ export function ProductTable({
           </select>
         </div>
 
-        <div className="flex gap-1 rounded-md border border-hairline bg-surface-1 p-1">
+        <div className="flex gap-1 rounded-md border border-line bg-canvas p-1">
           {(["todos", "publicados", "borradores"] as const).map((value) => (
             <button
               key={value}
@@ -120,7 +120,7 @@ export function ProductTable({
               onClick={() => setFilter(value)}
               aria-pressed={filter === value}
               className={`h-9 rounded-sm px-3 text-[14px] capitalize transition-colors ${
-                filter === value ? "bg-surface-3 text-ink" : "text-ink-muted hover:text-ink"
+                filter === value ? "bg-paper-2 text-ink" : "text-ink-2 hover:text-ink"
               }`}
             >
               {value}
@@ -129,22 +129,22 @@ export function ProductTable({
         </div>
       </div>
 
-      <p aria-live="polite" className="spec mt-5 text-ink-subtle">
+      <p aria-live="polite" className="spec mt-5 text-ink-3">
         {visible.length} de {rows.length}
       </p>
 
       {visible.length === 0 ? (
-        <div className="mt-4 rounded-lg border border-hairline bg-surface-1 p-10 text-center">
+        <div className="mt-4 rounded-lg border border-line bg-canvas p-10 text-center">
           <p className="text-ink">Ningún artículo coincide con este filtro.</p>
         </div>
       ) : (
-        <ul className="mt-4 overflow-hidden rounded-lg border border-hairline">
+        <ul className="mt-4 overflow-hidden rounded-lg border border-line">
           {visible.map((row) => (
             <li
               key={row.id}
-              className="flex flex-wrap items-center gap-4 border-b border-hairline bg-surface-1 p-4 last:border-b-0"
+              className="flex flex-wrap items-center gap-4 border-b border-line bg-canvas p-4 last:border-b-0"
             >
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-canvas/50">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-paper">
                 {row.imageUrl && (
                   <Image
                     src={thumbUrl(row.imageUrl) ?? row.imageUrl}
@@ -159,11 +159,11 @@ export function ProductTable({
               <div className="min-w-0 flex-1 basis-48">
                 <Link
                   href={`/admin/articulos/${row.id}`}
-                  className="text-ink hover:text-accent-text"
+                  className="text-ink hover:text-accent-ink"
                 >
                   {row.name}
                 </Link>
-                <p className="spec mt-1 truncate text-ink-subtle">
+                <p className="spec mt-1 truncate text-ink-3">
                   {row.categoryName}
                   {row.specs && ` · ${row.specs}`}
                 </p>

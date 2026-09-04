@@ -18,22 +18,22 @@ export default async function ContactoPage() {
 
   return (
     <div className="page py-14 md:py-20">
-      <header className="border-b border-hairline pb-10">
-        <p className="label text-accent-text">Contacto</p>
+      <header className="border-b border-line pb-10">
+        <p className="label text-accent-ink">Contacto</p>
         <h1 className="mt-3 max-w-[18ch] text-[clamp(2rem,6vw,3.75rem)] leading-[1.05] text-ink">
           Cuéntanos qué necesita tu obra
         </h1>
-        <p className="mt-6 max-w-[58ch] text-[17px] leading-relaxed text-ink-muted">
+        <p className="mt-6 max-w-[58ch] text-[17px] leading-relaxed text-ink-2">
           Envíanos las especificaciones del proyecto — referencias, medidas y cantidades — y te
           cotizamos al mejor precio del mercado. El pedido llega directo a tu obra, en cualquier
           ciudad del país.
         </p>
       </header>
 
-      <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-hairline bg-hairline lg:grid-cols-2">
-        <section className="bg-surface-1 p-8 md:p-10">
-          <h2 className="label text-ink-subtle">WhatsApp</h2>
-          <p className="mt-4 text-ink-muted">
+      <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-line bg-line lg:grid-cols-2">
+        <section className="bg-canvas p-8 md:p-10">
+          <h2 className="label text-ink-3">WhatsApp</h2>
+          <p className="mt-4 text-ink-2">
             La vía más rápida. Escríbenos y respondemos con precio y disponibilidad.
           </p>
 
@@ -59,16 +59,16 @@ export default async function ContactoPage() {
           </div>
         </section>
 
-        <section className="bg-surface-1 p-8 md:p-10">
-          <h2 className="label text-ink-subtle">Correo y sede</h2>
+        <section className="bg-canvas p-8 md:p-10">
+          <h2 className="label text-ink-3">Correo y sede</h2>
 
           <dl className="mt-6 flex flex-col gap-6">
             <div>
-              <dt className="spec text-ink-subtle">Correo electrónico</dt>
+              <dt className="spec text-ink-3">Correo electrónico</dt>
               <dd className="mt-1">
                 <a
                   href={`mailto:${settings.email}`}
-                  className="break-words text-[17px] text-ink transition-colors hover:text-accent-text"
+                  className="break-words text-[17px] text-ink transition-colors hover:text-accent-ink"
                 >
                   {settings.email}
                 </a>
@@ -76,7 +76,7 @@ export default async function ContactoPage() {
             </div>
 
             <div>
-              <dt className="spec text-ink-subtle">Dirección</dt>
+              <dt className="spec text-ink-3">Dirección</dt>
               <dd className="mt-1 text-[17px] text-ink">
                 {settings.address}
                 <br />
@@ -85,12 +85,12 @@ export default async function ContactoPage() {
             </div>
 
             <div>
-              <dt className="spec text-ink-subtle">NIT</dt>
+              <dt className="spec text-ink-3">NIT</dt>
               <dd className="spec mt-1 text-ink">{settings.nit}</dd>
             </div>
 
             <div>
-              <dt className="spec text-ink-subtle">Cobertura</dt>
+              <dt className="spec text-ink-3">Cobertura</dt>
               <dd className="mt-1 text-[17px] text-ink">
                 Todo el territorio nacional — ciudad, municipio o vereda
               </dd>
@@ -99,7 +99,7 @@ export default async function ContactoPage() {
         </section>
       </div>
 
-      <section className="mt-12 rounded-lg border border-hairline bg-brand-navy p-8 md:p-10">
+      <section className="mt-12 rounded-lg border border-line bg-brand p-8 md:p-10">
         <div className="flex items-center gap-5">
           <span aria-hidden="true" className="h-10 w-px shrink-0 bg-ink" />
           <p className="label text-[clamp(0.75rem,2.4vw,1rem)] text-ink">

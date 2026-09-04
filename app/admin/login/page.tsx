@@ -42,15 +42,15 @@ export default async function LoginPage({
         <h1 className="mt-10 text-[clamp(1.75rem,5vw,2.25rem)] leading-tight text-ink">
           Panel de administración
         </h1>
-        <p className="mt-3 text-ink-muted">
+        <p className="mt-3 text-ink-2">
           Entra para gestionar el catálogo. Solo el administrador tiene acceso.
         </p>
 
-        <div className="mt-8 rounded-lg border border-hairline bg-surface-1 p-6 md:p-8">
+        <div className="mt-8 rounded-lg border border-line bg-canvas p-6 md:p-8">
           <LoginForm siguiente={siguiente} />
         </div>
 
-        <p className="mt-8 text-[14px] text-ink-subtle">
+        <p className="mt-8 text-[14px] text-ink-3">
           <Link href="/" className="hover:text-ink">
             ← Volver al sitio
           </Link>

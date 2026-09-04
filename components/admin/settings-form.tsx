@@ -41,11 +41,11 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
       <div className="flex flex-col gap-6">
         <FormFeedback error={error} success={ok} />
 
-        <fieldset className="flex flex-col gap-6 rounded-lg border border-hairline bg-surface-1 p-6">
-          <legend className="label px-2 text-ink-subtle">WhatsApp</legend>
+        <fieldset className="flex flex-col gap-6 rounded-lg border border-line bg-canvas p-6">
+          <legend className="label px-2 text-ink-3">WhatsApp</legend>
 
           <div>
-            <label htmlFor="whatsappPrimary" className="label block text-ink-subtle">
+            <label htmlFor="whatsappPrimary" className="label block text-ink-3">
               Número principal
             </label>
             <input
@@ -59,14 +59,14 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
               className="field spec mt-2"
               placeholder="3102672577"
             />
-            <p className="mt-1.5 text-[13px] text-ink-subtle">
+            <p className="mt-1.5 text-[13px] text-ink-3">
               10 dígitos, sin espacios ni indicativo. Es el número del botón de cada artículo.
             </p>
             <FieldError message={fieldErrors.whatsappPrimary} />
           </div>
 
           <div>
-            <label htmlFor="whatsappSecondary" className="label block text-ink-subtle">
+            <label htmlFor="whatsappSecondary" className="label block text-ink-3">
               Segundo número <span className="normal-case tracking-normal">(opcional)</span>
             </label>
             <input
@@ -83,11 +83,11 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           </div>
         </fieldset>
 
-        <fieldset className="flex flex-col gap-6 rounded-lg border border-hairline bg-surface-1 p-6">
-          <legend className="label px-2 text-ink-subtle">Datos de la empresa</legend>
+        <fieldset className="flex flex-col gap-6 rounded-lg border border-line bg-canvas p-6">
+          <legend className="label px-2 text-ink-3">Datos de la empresa</legend>
 
           <div>
-            <label htmlFor="email" className="label block text-ink-subtle">
+            <label htmlFor="email" className="label block text-ink-3">
               Correo electrónico
             </label>
             <input
@@ -103,7 +103,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           </div>
 
           <div>
-            <label htmlFor="address" className="label block text-ink-subtle">
+            <label htmlFor="address" className="label block text-ink-3">
               Dirección
             </label>
             <input
@@ -119,7 +119,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           </div>
 
           <div>
-            <label htmlFor="city" className="label block text-ink-subtle">
+            <label htmlFor="city" className="label block text-ink-3">
               Ciudad
             </label>
             <input
@@ -135,7 +135,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           </div>
 
           <div>
-            <label htmlFor="nit" className="label block text-ink-subtle">
+            <label htmlFor="nit" className="label block text-ink-3">
               NIT
             </label>
             <input
@@ -152,7 +152,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
         </fieldset>
       </div>
 
-      <div className="mt-8 border-t border-hairline pt-6">
+      <div className="mt-8 border-t border-line pt-6">
         <button type="submit" className="btn btn-primary" disabled={pending}>
           {pending ? "Guardando…" : "Guardar cambios"}
         </button>

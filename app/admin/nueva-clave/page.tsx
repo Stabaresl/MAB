@@ -11,10 +11,10 @@ export default function NuevaClavePage() {
         <h1 className="text-[clamp(1.6rem,5vw,2rem)] leading-tight text-ink">
           Elige una contraseña nueva
         </h1>
-        <p className="mt-3 text-ink-muted">
+        <p className="mt-3 text-ink-2">
           Llegaste desde el enlace del correo. Al guardar entrarás directamente al panel.
         </p>
-        <div className="mt-8 rounded-lg border border-hairline bg-surface-1 p-6 md:p-8">
+        <div className="mt-8 rounded-lg border border-line bg-canvas p-6 md:p-8">
           <NewPasswordForm />
         </div>
       </div>

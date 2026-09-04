@@ -35,9 +35,9 @@ export default async function CategoriasPage() {
         </div>
 
         <aside className="lg:order-2">
-          <div className="rounded-lg border border-hairline bg-surface-1 p-6 lg:sticky lg:top-6">
+          <div className="rounded-lg border border-line bg-canvas p-6 lg:sticky lg:top-6">
             <h2 className="text-[19px] text-ink">Nueva categoría</h2>
-            <p className="mt-2 text-[14px] text-ink-muted">
+            <p className="mt-2 text-[14px] text-ink-2">
               Aparece en el catálogo en cuanto la crees.
             </p>
             <div className="mt-6">

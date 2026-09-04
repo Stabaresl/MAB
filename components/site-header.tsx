@@ -15,27 +15,22 @@ export async function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/95 backdrop-blur">
-      <div className="page flex h-16 items-center justify-between gap-4 md:h-20">
-        {/*
-          El lockup completo trae "DISTRIBUCIONES" incrustado en el trazado, y a
-          la altura de una cabecera esa línea queda en cuatro píxeles ilegibles.
-          Aquí se usa solo el monograma y el nombre va en texto real: se lee a
-          cualquier tamaño y lo puede leer un lector de pantalla.
-        */}
-        <Link href="/" className="flex shrink-0 items-center gap-3" aria-label={`${site.name} — inicio`}>
+    <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur-md">
+      <div className="page flex h-18 items-center justify-between gap-4 py-3 md:h-22">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-2.5"
+          aria-label={`${site.name} — inicio`}
+        >
           <Image
-            src="/marca/mab-monograma.webp"
-            alt=""
-            width={196}
-            height={262}
+            src="/marca/mab-logo-color.webp"
+            alt={site.name}
+            width={433}
+            height={470}
             priority
-            className="h-8 w-auto md:h-10"
+            className="h-11 w-auto md:h-14"
           />
-          <span className="label hidden leading-tight text-ink min-[420px]:block">
-            Distribuciones
-            <span className="block text-accent-text">M.A.B</span>
-          </span>
+          <span className="sr-only">{site.name}</span>
         </Link>
 
         <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
@@ -43,7 +38,7 @@ export async function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-md px-3 py-2 text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
+              className="relative rounded-md px-3.5 py-2 font-medium text-ink-2 transition-colors hover:bg-paper hover:text-ink"
             >
               {link.label}
             </Link>
@@ -52,20 +47,24 @@ export async function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <a
-            href={whatsappLink(settings.whatsapp_primary, "Hola, quisiera una cotización.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary hidden sm:inline-flex"
-          >
-            Cotizar por WhatsApp
-          </a>
-          <a
             href={`tel:+57${settings.whatsapp_primary}`}
-            className="spec flex h-11 items-center rounded-md px-2 text-accent-text hover:bg-surface-2 hover:text-accent sm:hidden"
+            className="spec hidden h-11 items-center rounded-md px-2 text-ink-2 transition-colors hover:bg-paper hover:text-ink min-[420px]:flex md:hidden"
           >
             {formatPhone(settings.whatsapp_primary)}
           </a>
-          <MobileNav links={links} categories={categories.map((c) => ({ slug: c.slug, name: c.name }))} />
+          <a
+            href={whatsappLink(settings.whatsapp_primary, "Hola, quisiera una cotización.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary hidden md:inline-flex"
+          >
+            Pedir cotización
+          </a>
+          <MobileNav
+            links={links}
+            categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+            whatsapp={whatsappLink(settings.whatsapp_primary, "Hola, quisiera una cotización.")}
+          />
         </div>
       </div>
     </header>

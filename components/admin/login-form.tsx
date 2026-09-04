@@ -37,7 +37,7 @@ export function LoginForm({ siguiente }: { siguiente?: string }) {
       <FormFeedback error={error} />
 
       <div>
-        <label htmlFor="email" className="label block text-ink-subtle">
+        <label htmlFor="email" className="label block text-ink-3">
           Correo
         </label>
         <input
@@ -54,7 +54,7 @@ export function LoginForm({ siguiente }: { siguiente?: string }) {
       </div>
 
       <div>
-        <label htmlFor="password" className="label block text-ink-subtle">
+        <label htmlFor="password" className="label block text-ink-3">
           Contraseña
         </label>
         <input
@@ -75,7 +75,7 @@ export function LoginForm({ siguiente }: { siguiente?: string }) {
 
       <Link
         href="/admin/recuperar"
-        className="text-center text-[14px] text-ink-subtle hover:text-ink"
+        className="text-center text-[14px] text-ink-3 hover:text-ink"
       >
         Olvidé mi contraseña
       </Link>

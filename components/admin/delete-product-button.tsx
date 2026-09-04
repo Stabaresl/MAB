@@ -44,7 +44,7 @@ export function DeleteProductButton({ id, name }: { id: string; name: string }) 
             type="button"
             onClick={onDelete}
             disabled={pending}
-            className="btn h-11 bg-danger px-4 text-[14px] font-semibold text-ink hover:opacity-90"
+            className="btn h-11 bg-danger px-4 text-[14px] font-semibold text-white hover:opacity-90"
           >
             {pending ? "Borrando…" : "Sí, borrar"}
           </button>

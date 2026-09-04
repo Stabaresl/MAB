@@ -22,24 +22,24 @@ export function AdminShell({
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="border-b border-hairline bg-brand-navy">
+      <header className="border-b border-line bg-canvas">
         <div className="page flex h-16 items-center justify-between gap-4">
           <Link href="/admin" className="flex items-center gap-3" aria-label="Panel de MAB">
             <Image
-              src="/marca/mab-monograma.webp"
+              src="/marca/mab-logo-color.webp"
               alt=""
-              width={196}
-              height={262}
-              className="h-8 w-auto"
+              width={433}
+              height={470}
+              className="h-10 w-auto"
             />
-            <span className="label hidden text-ink-subtle sm:inline">Panel</span>
+            <span className="label hidden text-ink-3 sm:inline">Panel</span>
           </Link>
 
           <div className="flex items-center gap-2">
             <Link
               href="/"
               target="_blank"
-              className="hidden rounded-md px-3 py-2 text-[14px] text-ink-muted hover:bg-surface-2 hover:text-ink sm:inline-block"
+              className="hidden rounded-md px-3 py-2 text-[14px] font-medium text-ink-2 transition-colors hover:bg-paper hover:text-ink sm:inline-block"
             >
               Ver el sitio ↗
             </Link>
@@ -55,10 +55,10 @@ export function AdminShell({
       <AdminNav />
 
       <main className="page flex-1 py-10">
-        <div className="flex flex-col gap-4 border-b border-hairline pb-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-4 border-b border-line pb-6 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-[clamp(1.6rem,4vw,2.25rem)] leading-tight text-ink">{title}</h1>
-            {description && <p className="mt-2 max-w-[62ch] text-ink-muted">{description}</p>}
+            {description && <p className="mt-2 max-w-[62ch] text-ink-2">{description}</p>}
           </div>
           {action}
         </div>
@@ -66,8 +66,8 @@ export function AdminShell({
         <div className="mt-8">{children}</div>
       </main>
 
-      <footer className="border-t border-hairline py-6">
-        <p className="page spec text-ink-subtle">
+      <footer className="border-t border-line py-6">
+        <p className="page spec text-ink-3">
           {site.name} · Panel de administración
         </p>
       </footer>
