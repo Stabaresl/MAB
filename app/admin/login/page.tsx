@@ -30,11 +30,12 @@ export default async function LoginPage({
       <div className="w-full max-w-[420px]">
         <Link href="/" className="inline-flex" aria-label={`${site.name} — inicio`}>
           <Image
-            src="/marca/mab-logo.webp"
+            src="/marca/mab-logo-color.webp"
             alt={site.name}
-            width={417}
-            height={327}
+            width={433}
+            height={470}
             priority
+            sizes="60px"
             className="h-12 w-auto"
           />
         </Link>

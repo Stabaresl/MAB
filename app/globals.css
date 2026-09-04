@@ -43,7 +43,7 @@
   --color-warning: #a86a10;
 
   /* Tipografía: display cálido de serifa + texto humanista */
-  --font-display: var(--font-calistoga), Georgia, serif;
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
   --font-text: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
   /* Radios — generosos, la marca es amable, no industrial */
@@ -86,9 +86,8 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-style: normal;
     font-weight: 400;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.005em;
     /* Un display largo no puede desbordar a 320px */
     overflow-wrap: anywhere;
     min-width: 0;
@@ -132,6 +131,15 @@
 }
 
 @layer components {
+  /*
+   * Remate en itálica de un titular. Es la única itálica del sistema y solo
+   * aparece en display: cierra la frase en dos tiempos sin subir el peso ni
+   * meter un segundo color.
+   */
+  .remate {
+    font-style: italic;
+  }
+
   /* Etiqueta en versalitas: encabeza secciones y nombra categorías. */
   .label {
     font-family: var(--font-text);
@@ -177,14 +185,11 @@
   .btn-primary {
     background-color: var(--color-accent);
     color: var(--color-on-accent);
-    box-shadow: 0 1px 2px rgb(21 49 68 / 0.08);
   }
 
   .btn-primary:hover {
     background-color: var(--color-accent-hover);
     color: var(--color-canvas);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-card);
   }
 
   .btn-brand {
@@ -194,8 +199,6 @@
 
   .btn-brand:hover {
     background-color: var(--color-brand-2);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-card);
   }
 
   .btn-secondary {
@@ -207,7 +210,6 @@
   .btn-secondary:hover {
     background-color: var(--color-paper);
     border-color: var(--color-ink-3);
-    transform: translateY(-1px);
   }
 
   .btn:active {
@@ -255,21 +257,22 @@
     border-color: var(--color-danger);
   }
 
+  /*
+   * Tarjeta editorial: filete de un pixel y nada mas. Las sombras difusas
+   * apilaban un relieve falso sobre un lienzo claro y ensuciaban la retícula;
+   * el filete deja que manden la foto y el texto.
+   */
   .card {
     background-color: var(--color-canvas);
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-md);
     transition:
-      transform 220ms var(--ease-brand),
-      box-shadow 220ms var(--ease-brand),
-      border-color 220ms var(--ease-brand);
+      border-color 220ms var(--ease-brand),
+      background-color 220ms var(--ease-brand);
   }
 
   .card-hover:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lift);
-    border-color: var(--color-line-2);
+    border-color: var(--color-ink-3);
   }
 
   .page {
@@ -336,6 +339,24 @@
       transform: none !important;
       transition-duration: 180ms !important;
       transition-delay: 0ms !important;
+    }
+  }
+
+  /* Entrada de un elemento que acaba de aparecer en una lista filtrada. */
+  .entra {
+    animation: entra 260ms var(--ease-brand) both;
+  }
+
+  @keyframes entra {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.985);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entra {
+      animation: none;
     }
   }
 

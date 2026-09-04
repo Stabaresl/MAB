@@ -30,6 +30,7 @@ export function AdminShell({
               alt=""
               width={433}
               height={470}
+              sizes="50px"
               className="h-10 w-auto"
             />
             <span className="label hidden text-ink-3 sm:inline">Panel</span>

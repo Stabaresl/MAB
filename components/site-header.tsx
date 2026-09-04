@@ -28,6 +28,7 @@ export async function SiteHeader() {
             width={433}
             height={470}
             priority
+            sizes="60px"
             className="h-11 w-auto md:h-14"
           />
           <span className="sr-only">{site.name}</span>

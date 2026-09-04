@@ -48,6 +48,7 @@ export async function SiteFooter() {
             alt={site.name}
             width={433}
             height={470}
+            sizes="80px"
             className="h-16 w-auto"
           />
           <p className="mt-5 max-w-[34ch] text-ink-3">{site.tagline}.</p>

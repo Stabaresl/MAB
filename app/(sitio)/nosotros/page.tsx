@@ -10,7 +10,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Nosotros",
   description:
-    "Distribuciones M.A.B lleva más de 15 años distribuyendo materiales de construcción y ferretería a constructoras en todo el territorio nacional.",
+    "Distribuciones M.A.B lleva más de 15 años distribuyendo materiales de construcción y ferretería a clientes en todo el territorio nacional.",
 };
 
 export default async function NosotrosPage() {
@@ -62,6 +62,7 @@ export default async function NosotrosPage() {
             alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
             width={1024}
             height={512}
+            sizes="(max-width: 1024px) 92vw, 560px"
             className="h-full w-full object-cover"
           />
         </figure>
@@ -84,6 +85,7 @@ export default async function NosotrosPage() {
               alt="Edificio en construcción con grúa torre"
               width={1400}
               height={940}
+              sizes="(max-width: 1024px) 92vw, 560px"
               className="h-full w-full object-cover"
             />
           </figure>
@@ -91,7 +93,7 @@ export default async function NosotrosPage() {
       </section>
 
       <section className="mt-20 border-t border-line pt-12">
-        <p className="label text-accent-ink">Referencias</p>
+        <p className="label text-accent-ink">Clientes</p>
         <h2 className="mt-3 text-[clamp(1.6rem,4vw,2.4rem)] leading-tight text-ink">
           Algunos de nuestros clientes
         </h2>

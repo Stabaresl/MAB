@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Calistoga, Plus_Jakarta_Sans } from "next/font/google";
+import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 
 import { RevealObserver } from "@/components/motion/reveal-observer";
 import { siteUrl } from "@/lib/env";
@@ -8,15 +8,17 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 /**
- * Dos familias. Calistoga es una serifa de display redondeada y cálida: da a
- * los titulares un tono humano, lejos del grotesco geométrico que hace que
- * cualquier sitio parezca hecho con plantilla. Plus Jakarta Sans lleva el
- * texto: humanista, ancha y legible en pantallas pequeñas.
+ * Dos familias. Instrument Serif lleva los titulares: una serifa editorial de
+ * contraste alto, con una itálica que sirve para rematar una frase en dos
+ * tiempos — "Míralo por todos los lados, /incluso los que la foto esconde/".
+ * Plus Jakarta Sans lleva el texto: humanista, ancha y legible en pantallas
+ * pequeñas.
  */
-const calistoga = Calistoga({
+const serif = Instrument_Serif({
   subsets: ["latin"],
   weight: ["400"],
-  variable: "--font-calistoga",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
     siteName: site.name,
-    images: [{ url: "/marca/mab-placa.webp", width: 938, height: 950, alt: site.name }],
+    images: [{ url: "/marca/og.webp", width: 1200, height: 630, alt: site.name }],
   },
   robots: { index: true, follow: true },
 };
@@ -54,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es-CO"
-      className={`${calistoga.variable} ${jakarta.variable}`}
+      className={`${serif.variable} ${jakarta.variable}`}
       // El script de abajo añade la clase `js` antes de que React hidrate, así
       // que el atributo class del servidor y el del cliente no coinciden a
       // propósito. Es el mismo patrón que usan los conmutadores de tema.

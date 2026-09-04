@@ -22,6 +22,11 @@ assets/
 # Las fotos que usa el catalogo ya estan procesadas en public/catalogo/.
 PORTAFOLIO*.pdf
 
+# Material de origen pesado del visor 360. La secuencia ya esta procesada en
+# public/360/grifo-sprite.webp (407 KB); el ZIP son 11 MB de PNG en bruto.
+image/*.zip
+image/*.mp4
+
 # Salidas de herramientas
 .playwright-mcp/
 

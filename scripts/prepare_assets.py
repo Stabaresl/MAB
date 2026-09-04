@@ -94,44 +94,37 @@ def frame(img: Image.Image, size: int) -> Image.Image:
     return canvas
 
 
-# Bandas horizontales del logotipo corporativo, medidas sobre la pieza original
-# de 938x950 px de la pagina 1 del portafolio.
-BRAND_BANDS = {
-    "mab-monograma": (290, 570),   # solo el monograma M|A B
-    "mab-logo": (290, 635),        # monograma + DISTRIBUCIONES — cabecera
-    "mab-completo": (290, 746),    # lockup entero con el lema — pie y og:image
-}
-
-
 def prepare_brand(manifest: dict) -> None:
-    """Recorta el logotipo en sus tres variantes, con el navy a transparencia.
+    """Prepara el logotipo de la empresa a partir de image/logo.png.
 
-    El logotipo llega incrustado en un cuadrado navy. Separandolo del fondo se
-    puede colocar sobre cualquier superficie del sitio sin arrastrar un recuadro
-    de color distinto al de la seccion.
+    El fondo blanco se recorta a transparencia y se exportan tres piezas: el
+    lockup completo, una version pequena y el simbolo suelto para el favicon.
+    Antes se usaba el monograma naranja incrustado en el portafolio; se
+    descarto porque la marca vigente es esta.
     """
     BRAND_OUT.mkdir(parents=True, exist_ok=True)
-    source = Image.open(manifest["brand"]["mark"]).convert("RGB")
-    arr = np.asarray(source).astype(int)
-    background = border_ring(np.asarray(source)).mean(axis=0)
-    opaque = np.abs(arr - background).max(axis=2) > 18
+    fuente = Image.open(manifest["brand"]["logo"]).convert("RGBA")
+    arr = np.asarray(fuente).astype(int)
+    blanco = arr[:, :, :3].min(axis=2) > 238
+    alpha = np.where(blanco, 0, 255).astype(np.uint8)
+    fuente.putalpha(Image.fromarray(alpha, mode="L"))
 
-    rgba = source.convert("RGBA")
-    alpha = np.where(opaque, 255, 0).astype(np.uint8)
-    rgba.putalpha(Image.fromarray(alpha, mode="L"))
+    bbox = fuente.getbbox()
+    if bbox:
+        fuente = fuente.crop(bbox)
 
-    for name, (top, bottom) in BRAND_BANDS.items():
-        band = rgba.crop((0, top, rgba.width, bottom))
-        bbox = band.getbbox()
-        if bbox:
-            band = band.crop(bbox)
-        band.save(BRAND_OUT / f"{name}.webp", quality=92, method=6)
-        print(f"  {name}.webp  {band.width}x{band.height}")
+    for ancho, nombre in ((1200, "mab-logo-color"), (400, "mab-logo-color-sm")):
+        pieza = fuente.copy()
+        pieza.thumbnail((ancho, ancho), Image.LANCZOS)
+        pieza.save(BRAND_OUT / f"{nombre}.webp", quality=92, method=6)
+        print(f"  {nombre}.webp  {pieza.width}x{pieza.height}")
 
-    # El monograma sobre su navy original, para og:image y favicon.
-    plate = Image.open(manifest["brand"]["mark"]).convert("RGB")
-    plate.thumbnail((1200, 1200), Image.LANCZOS)
-    plate.save(BRAND_OUT / "mab-placa.webp", quality=88, method=6)
+    # El simbolo sin la palabra MAB: la parte superior del trazado.
+    simbolo = fuente.crop((0, 0, fuente.width, int(fuente.height * 0.62)))
+    simbolo = simbolo.crop(simbolo.getbbox())
+    simbolo.thumbnail((600, 600), Image.LANCZOS)
+    simbolo.save(BRAND_OUT / "mab-simbolo.webp", quality=92, method=6)
+    print(f"  mab-simbolo.webp  {simbolo.width}x{simbolo.height}")
 
 
 AMBIENTES_OUT = pathlib.Path("public/ambientes")

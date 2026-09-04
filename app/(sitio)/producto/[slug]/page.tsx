@@ -57,20 +57,32 @@ export default async function ProductoPage({ params }: Params) {
   const enquiry = productEnquiry(product.name, url);
 
   return (
-    <div className="page py-10 md:py-16">
-      <nav aria-label="Ruta" className="spec text-ink-3">
-        <Link href="/catalogo" className="hover:text-ink">
-          Catálogo
-        </Link>
-        <span aria-hidden="true" className="px-2">
-          /
-        </span>
-        <Link href={`/catalogo/${product.category.slug}`} className="hover:text-ink">
-          {product.category.name}
-        </Link>
+    <>
+      {/* Franja de ruta a todo el ancho: sitúa la pieza dentro del catálogo
+          antes de que empiece la ficha. */}
+      <nav aria-label="Ruta" className="border-b border-line bg-paper">
+        <div className="page flex items-center gap-2 py-3.5">
+          <Link href="/catalogo" className="label text-ink-3 transition-colors hover:text-ink">
+            Catálogo
+          </Link>
+          <span aria-hidden="true" className="text-line-2">
+            /
+          </span>
+          <Link
+            href={`/catalogo/${product.category.slug}`}
+            className="label text-ink-3 transition-colors hover:text-ink"
+          >
+            {product.category.name}
+          </Link>
+          <span aria-hidden="true" className="text-line-2">
+            /
+          </span>
+          <span className="label truncate text-ink">{product.name}</span>
+        </div>
       </nav>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+      <div className="page py-10 md:py-14">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
         <figure className="card relative aspect-square overflow-hidden bg-paper">
           {product.image_url ? (
             <Image
@@ -91,26 +103,46 @@ export default async function ProductoPage({ params }: Params) {
         <div className="flex flex-col">
           <Link
             href={`/catalogo/${product.category.slug}`}
-            className="label w-fit rounded-full bg-accent-soft px-3.5 py-1.5 text-accent-ink transition-colors hover:bg-accent hover:text-on-accent"
+            className="label w-fit text-accent-ink transition-colors hover:text-accent-strong"
           >
             {product.category.name}
           </Link>
 
-          <h1 className="mt-5 text-[clamp(1.85rem,5vw,3rem)] leading-[1.08] text-ink">
+          <h1 className="mt-4 text-[clamp(2rem,5.2vw,3.2rem)] leading-[1.06] text-ink">
             {product.name}
           </h1>
 
           {product.specs && (
-            <p className="spec mt-4 w-fit rounded-md border border-line bg-paper px-3.5 py-2 text-ink-2">
-              {product.specs}
-            </p>
+            <p className="spec mt-3 text-ink-3">{product.specs}</p>
           )}
 
           {product.description && (
-            <div className="mt-7 max-w-[62ch] whitespace-pre-line text-[17px] leading-relaxed text-ink-2">
+            <div className="mt-6 max-w-[62ch] whitespace-pre-line text-[17px] leading-relaxed text-ink-2">
               {product.description}
             </div>
           )}
+
+          {/* Ficha de datos: filas con filete, como una ficha técnica impresa.
+              Solo se listan los datos que existen; lo que hay que confirmar se
+              marca con una raya en vez de inventarse una cifra. */}
+          <dl className="mt-8 border-t border-line">
+            <div className="flex items-baseline justify-between gap-6 border-b border-line py-3">
+              <dt className="text-[15px] text-ink-2">Categoría</dt>
+              <dd className="spec text-ink">{product.category.name}</dd>
+            </div>
+            <div className="flex items-baseline justify-between gap-6 border-b border-line py-3">
+              <dt className="text-[15px] text-ink-2">Medidas y material</dt>
+              <dd className="spec text-right text-ink">{product.specs ?? "—"}</dd>
+            </div>
+            <div className="flex items-baseline justify-between gap-6 border-b border-line py-3">
+              <dt className="text-[15px] text-ink-2">Referencia</dt>
+              <dd className="spec text-ink">Consultar</dd>
+            </div>
+            <div className="flex items-baseline justify-between gap-6 border-b border-line py-3">
+              <dt className="text-[15px] text-ink-2">Entrega</dt>
+              <dd className="spec text-right text-ink">Todo el territorio nacional</dd>
+            </div>
+          </dl>
 
           <div className="card mt-9 bg-paper p-6">
             <h2 className="label text-ink-3">Pedir precio</h2>
@@ -163,6 +195,7 @@ export default async function ProductoPage({ params }: Params) {
           </ul>
         </section>
       )}
-    </div>
+      </div>
+    </>
   );
 }

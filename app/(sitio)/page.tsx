@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { CategoryCarousel } from "@/components/category-carousel";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
+import { TurntableStrip, TurntableViewer } from "@/components/turntable-viewer";
 import { getCategories, getSettings } from "@/lib/catalog";
 import { formatPhone, site, whatsappLink } from "@/lib/site";
 
@@ -21,7 +22,7 @@ const PILARES = [
   },
   {
     titulo: "Servicio confiable",
-    texto: "Más de 15 años cotizando y entregando a constructoras de todo el territorio.",
+    texto: "Más de 15 años cotizando y entregando a clientes de todo el territorio nacional.",
     icono: "apreton",
   },
 ] as const;
@@ -66,9 +67,10 @@ export default async function HomePage() {
               {site.yearsInMarket} años distribuyendo calidad
             </p>
 
-            <h1 className="mt-6 max-w-[15ch] text-[clamp(2.15rem,5.6vw,3.9rem)] leading-[1.07] text-ink">
-              Soluciones de calidad para{" "}
-              <span className="text-accent-strong">cada proyecto</span>
+            <h1 className="mt-6 max-w-[16ch] text-[clamp(2.3rem,6vw,4.2rem)] leading-[1.05] text-ink">
+              Soluciones de calidad
+              <br />
+              para <span className="remate">cada proyecto</span>
             </h1>
 
             <p className="mt-6 max-w-[50ch] text-[clamp(1.02rem,2.2vw,1.19rem)] leading-relaxed text-ink-2">
@@ -103,33 +105,36 @@ export default async function HomePage() {
               propósito para que no lea como una rejilla de plantilla. */}
           <Reveal direccion="derecha" retraso={0.1}>
             <div className="relative mx-auto max-w-[520px] lg:max-w-none">
-              <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-lift)]">
+              <div className="overflow-hidden border border-line">
                 <Image
                   src="/ambientes/hero.webp"
                   alt="Baño terminado con sanitario, lavamanos y ducha instalados"
                   width={1024}
                   height={512}
                   priority
+                  sizes="(max-width: 1024px) 92vw, 560px"
                   className="h-full w-full object-cover"
                 />
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-4">
-                <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-card)]">
+                <div className="overflow-hidden border border-line">
                   <Image
                     src="/ambientes/griferia-negra.webp"
                     alt="Grifería negra montada sobre lavamanos"
                     width={1024}
                     height={512}
+                    sizes="(max-width: 1024px) 46vw, 272px"
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="overflow-hidden rounded-xl border border-line shadow-[var(--shadow-card)]">
+                <div className="overflow-hidden border border-line">
                   <Image
                     src="/ambientes/cocina-agua.webp"
                     alt="Lavaplatos de acero inoxidable con grifería en uso"
                     width={1024}
                     height={512}
+                    sizes="(max-width: 1024px) 46vw, 272px"
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -166,7 +171,7 @@ export default async function HomePage() {
               <div>
                 <p className="label text-accent-ink">Todo para tu proyecto</p>
                 <h2 className="mt-3 max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-                  Elige por tipo de material
+                  Elige por <span className="remate">tipo de material</span>
                 </h2>
               </div>
               <Link
@@ -199,12 +204,77 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Vista 360 ----------------------------------------------------------- */}
+      <section className="border-y border-line bg-canvas">
+        <div className="page py-16 md:py-24">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:gap-20">
+            <Reveal direccion="izquierda">
+              <p className="label text-accent-ink">Vista 360°</p>
+              <h2 className="mt-4 max-w-[15ch] text-[clamp(2rem,4.8vw,3.2rem)] leading-[1.08] text-ink">
+                Gírala y ve el detalle
+                <br />
+                <span className="remate">que la foto esconde</span>
+              </h2>
+              <p className="mt-6 max-w-[54ch] leading-relaxed text-ink-2">
+                Estamos montando el visor de 360° para las referencias del catálogo. Abajo hay una
+                muestra: una vuelta completa en 36 pasos, para revisar la curva del cuello, el
+                remate de la manija y la base antes de pedir el precio.
+              </p>
+
+              <dl className="mt-10 grid gap-x-8 gap-y-6 border-t border-line pt-8 sm:grid-cols-3">
+                {[
+                  ["36 pasos", "Un fotograma cada 10°, para que la vuelta se vea continua."],
+                  ["Sin instalar nada", "Corre en el navegador. No hay complemento que bajar."],
+                  ["Arrastre o teclado", "Se gira con el dedo, con el ratón o con las flechas."],
+                ].map(([titulo, texto]) => (
+                  <div key={titulo}>
+                    <dt className="font-text text-[15px] font-semibold text-ink">{titulo}</dt>
+                    <dd className="mt-1.5 text-[14px] leading-relaxed text-ink-3">{texto}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
+
+            <Reveal direccion="derecha" retraso={0.1}>
+              <div className="mx-auto max-w-[460px] lg:max-w-none">
+                <TurntableViewer
+                  sprite="/360/grifo-sprite.webp"
+                  poster="/360/grifo-poster.webp"
+                  nombre="grifo monomando"
+                  acabado="muestra de visualización"
+                />
+                <p className="mt-3 text-[13px] leading-relaxed text-ink-3">
+                  Modelo de demostración del visor. Las referencias que vendemos están en el{" "}
+                  <Link href="/catalogo" className="font-semibold text-accent-ink hover:underline">
+                    catálogo
+                  </Link>
+                  .
+                </p>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Doce de los treinta y seis pasos, del mismo sprite. */}
+          <Reveal className="mt-16">
+            <div className="border-t border-line pt-8">
+              <TurntableStrip sprite="/360/grifo-sprite.webp" />
+              <div className="mt-4 flex items-baseline justify-between gap-4">
+                <p className="text-[14px] italic text-ink-3">
+                  Doce de los treinta y seis pasos con que se levanta la vuelta.
+                </p>
+                <span className="label text-ink-3">000° — 360°</span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* Cómo trabajamos ---------------------------------------------------- */}
       <section className="page py-16 md:py-24">
         <Reveal>
           <p className="label text-accent-ink">Cómo trabajamos</p>
           <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-            Tres pasos entre tu obra y el material
+            Tres pasos entre tu obra <span className="remate">y el material</span>
           </h2>
         </Reveal>
 
@@ -240,7 +310,7 @@ export default async function HomePage() {
           <Reveal direccion="izquierda">
             <p className="label text-accent">Calidad</p>
             <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-on-brand">
-              Materiales que cumplen la norma
+              Materiales que <span className="remate">cumplen la norma</span>
             </h2>
             <p className="mt-6 max-w-[54ch] leading-relaxed text-on-brand/75">
               Nuestros productos están fabricados con materiales de alta calidad que cumplen con
@@ -271,6 +341,7 @@ export default async function HomePage() {
                   alt="Ducha tipo lluvia instalada en zona húmeda"
                   width={1024}
                   height={512}
+                  sizes="(max-width: 1024px) 46vw, 300px"
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -280,6 +351,7 @@ export default async function HomePage() {
                   alt="Cámara de seguridad instalada en fachada"
                   width={1024}
                   height={512}
+                  sizes="(max-width: 1024px) 46vw, 300px"
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -289,6 +361,7 @@ export default async function HomePage() {
                   alt="Edificio en construcción con grúa torre"
                   width={1400}
                   height={940}
+                  sizes="(max-width: 1024px) 92vw, 600px"
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -303,7 +376,7 @@ export default async function HomePage() {
           <Reveal>
             <p className="label text-accent-ink">Quiénes somos</p>
             <h2 className="mt-3 max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-              {site.yearsInMarket} años de excelencia
+              {site.yearsInMarket} años <span className="remate">de excelencia</span>
             </h2>
             <p className="mt-6 max-w-[56ch] text-[17px] leading-relaxed text-ink-2">
               Somos una empresa distribuidora de implementos para ferreterías y construcciones,
@@ -364,10 +437,13 @@ export default async function HomePage() {
       <section className="border-t border-line bg-paper">
         <div className="page py-16 md:py-24">
           <Reveal>
-            <p className="label text-accent-ink">Referencias</p>
+            <p className="label text-accent-ink">Clientes</p>
             <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-              Constructoras que ya nos compran
+              Algunos de nuestros clientes
             </h2>
+            <p className="mt-5 max-w-[54ch] text-ink-2">
+              Empresas que ya cuentan con nosotros para el suministro de sus proyectos.
+            </p>
           </Reveal>
 
           <Stagger as="ul" className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" paso={0.04}>
