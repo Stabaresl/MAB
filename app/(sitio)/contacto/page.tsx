@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { getSettings } from "@/lib/catalog";
-import { formatPhone, site, whatsappLink } from "@/lib/site";
+import { enquiryBody, formatPhone, gmailLink, site, whatsappLink } from "@/lib/site";
 
 export const revalidate = 300;
 
@@ -67,7 +67,13 @@ export default async function ContactoPage() {
               <dt className="spec text-ink-3">Correo electrónico</dt>
               <dd className="mt-1">
                 <a
-                  href={`mailto:${settings.email}`}
+                  href={gmailLink(
+                    settings.email,
+                    "Solicitud de cotización",
+                    enquiryBody(),
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="break-words text-[17px] text-ink transition-colors hover:text-accent-ink"
                 >
                   {settings.email}
@@ -98,15 +104,6 @@ export default async function ContactoPage() {
           </dl>
         </section>
       </div>
-
-      <section className="mt-12 rounded-lg border border-line bg-brand p-8 md:p-10">
-        <div className="flex items-center gap-5">
-          <span aria-hidden="true" className="h-10 w-px shrink-0 bg-ink" />
-          <p className="label text-[clamp(0.75rem,2.4vw,1rem)] text-ink">
-            Te mejoramos el precio de cualquier cotización
-          </p>
-        </div>
-      </section>
     </div>
   );
 }

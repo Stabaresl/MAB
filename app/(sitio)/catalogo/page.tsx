@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { CategoryCarousel } from "@/components/category-carousel";
+import { CategoryBelt } from "@/components/category-belt";
 import { CategoryGrid } from "@/components/category-grid";
 import { Reveal } from "@/components/motion/reveal";
 import { getCategories, getSettings } from "@/lib/catalog";
@@ -37,15 +37,17 @@ export default async function CatalogoPage() {
         </div>
       </section>
 
-      {/* Carrusel: la vista rápida, para recorrer las categorías de un vistazo */}
-      <section className="page py-14 md:py-16">
-        <Reveal>
-          <h2 className="text-[clamp(1.5rem,3.4vw,2rem)] leading-tight text-ink">
-            Recorre las categorías
-          </h2>
-        </Reveal>
+      {/* Cinturón: la vista rápida, para recorrer las categorías de un vistazo */}
+      <section className="py-14 md:py-16">
+        <div className="page">
+          <Reveal>
+            <h2 className="text-[clamp(1.5rem,3.4vw,2rem)] leading-tight text-ink">
+              Recorre las categorías
+            </h2>
+          </Reveal>
+        </div>
         <div className="mt-8">
-          <CategoryCarousel
+          <CategoryBelt
             categorias={categories.map((c) => ({
               id: c.id,
               slug: c.slug,

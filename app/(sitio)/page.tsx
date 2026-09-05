@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { CategoryCarousel } from "@/components/category-carousel";
+import { CategoryBelt } from "@/components/category-belt";
+import { ClientWall } from "@/components/client-wall";
+import { HeroMedia } from "@/components/hero-media";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
-import { TurntableStrip, TurntableViewer } from "@/components/turntable-viewer";
-import { getCategories, getSettings } from "@/lib/catalog";
+import { Onda } from "@/components/onda";
+import { ReferenceIndex } from "@/components/reference-index";
+import { getAllProducts, getCategories, getSettings } from "@/lib/catalog";
+import type { ProductCard as ProductCardData } from "@/lib/catalog";
 import { formatPhone, site, whatsappLink } from "@/lib/site";
 
 export const revalidate = 300;
@@ -50,8 +54,52 @@ const PASOS = [
 
 const VALORES = ["Calidad", "Responsabilidad", "Honestidad", "Compromiso", "Servicio"] as const;
 
+/** Cuántas referencias se enseñan en la portada: dos filas de cuatro. */
+const DESTACADOS = 8;
+
+/**
+ * Una referencia por categoría, hasta llenar la rejilla.
+ *
+ * Coger las ocho primeras de la lista daría ocho rejillas seguidas, porque
+ * vienen ordenadas por nombre. Repartiendo por categoría, la portada enseña de
+ * qué va el catálogo: una ducha, un lavadero, un panel LED, una cámara.
+ */
+function repartirPorCategoria(productos: ProductCardData[], cuantos: number): ProductCardData[] {
+  const porCategoria = new Map<string, ProductCardData[]>();
+  for (const producto of productos) {
+    const cola = porCategoria.get(producto.category.slug);
+    if (cola) cola.push(producto);
+    else porCategoria.set(producto.category.slug, [producto]);
+  }
+
+  const elegidos: ProductCardData[] = [];
+  let vuelta = 0;
+  // Se dan vueltas a las categorías hasta llenar; la condición de corte mira el
+  // total disponible para no quedarse girando cuando ya no queda nada.
+  while (elegidos.length < Math.min(cuantos, productos.length)) {
+    let sumoAlguno = false;
+    for (const cola of porCategoria.values()) {
+      const producto = cola[vuelta];
+      if (!producto) continue;
+      sumoAlguno = true;
+      elegidos.push(producto);
+      if (elegidos.length === cuantos) return elegidos;
+    }
+    if (!sumoAlguno) break;
+    vuelta += 1;
+  }
+  return elegidos;
+}
+
 export default async function HomePage() {
-  const [categories, settings] = await Promise.all([getCategories(), getSettings()]);
+  const [categories, settings, productos] = await Promise.all([
+    getCategories(),
+    getSettings(),
+    getAllProducts(),
+  ]);
+
+  const destacados = repartirPorCategoria(productos, DESTACADOS);
+  const totalArticulos = categories.reduce((suma, c) => suma + c.productCount, 0);
 
   return (
     <>
@@ -61,13 +109,15 @@ export default async function HomePage() {
           aria-hidden="true"
           className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] rounded-full bg-sky-soft blur-3xl"
         />
-        <div className="page relative grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-16">
-          <Reveal direccion="izquierda">
-            <p className="label inline-flex rounded-full bg-accent-soft px-3.5 py-1.5 text-accent-ink">
+        <div className="page relative grid gap-12 py-16 md:py-24 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-stretch lg:gap-16">
+          {/* La columna de texto se centra sola dentro de su fila; el que
+              manda la altura es el vídeo, que la llena entera. */}
+          <Reveal direccion="izquierda" className="flex flex-col justify-center">
+            <p className="label inline-flex w-fit rounded-full bg-accent-soft px-3.5 py-1.5 text-accent-ink">
               {site.yearsInMarket} años distribuyendo calidad
             </p>
 
-            <h1 className="mt-6 max-w-[16ch] text-[clamp(2.3rem,6vw,4.2rem)] leading-[1.05] text-ink">
+            <h1 className="mt-6 max-w-[20ch] text-[clamp(2.15rem,5.4vw,3.8rem)] leading-[1.06] text-ink">
               Soluciones de calidad
               <br />
               para <span className="remate">cada proyecto</span>
@@ -80,7 +130,7 @@ export default async function HomePage() {
             </p>
 
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/catalogo" className="btn btn-brand">
+              <Link href="/catalogo" className="btn btn-primary">
                 Ver el catálogo
               </Link>
               <a
@@ -101,45 +151,18 @@ export default async function HomePage() {
             </p>
           </Reveal>
 
-          {/* Composición de fotos: dos ambientes reales, desalineados a
-              propósito para que no lea como una rejilla de plantilla. */}
-          <Reveal direccion="derecha" retraso={0.1}>
-            <div className="relative mx-auto max-w-[520px] lg:max-w-none">
-              <div className="overflow-hidden border border-line">
-                <Image
-                  src="/ambientes/hero.webp"
-                  alt="Baño terminado con sanitario, lavamanos y ducha instalados"
-                  width={1024}
-                  height={512}
-                  priority
-                  sizes="(max-width: 1024px) 92vw, 560px"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+          {/*
+            Una sola pieza, no un mosaico. Las tres fotos pequeñas competían
+            entre sí y ninguna se veía: salen de un collage de 1024px partido en
+            seis, así que a tamaño de portada llegaban blandas. Esta es la única
+            toma del material que aguanta el ancho — la obra, a 2400px.
 
-              <div className="mt-4 grid grid-cols-2 gap-4">
-                <div className="overflow-hidden border border-line">
-                  <Image
-                    src="/ambientes/griferia-negra.webp"
-                    alt="Grifería negra montada sobre lavamanos"
-                    width={1024}
-                    height={512}
-                    sizes="(max-width: 1024px) 46vw, 272px"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="overflow-hidden border border-line">
-                  <Image
-                    src="/ambientes/cocina-agua.webp"
-                    alt="Lavaplatos de acero inoxidable con grifería en uso"
-                    width={1024}
-                    height={512}
-                    sizes="(max-width: 1024px) 46vw, 272px"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
+            Cuando llegue el vídeo va exactamente aquí: mismo hueco, mismo
+            fundido, mismo sangrado. Se cambia `<HeroMedia>` por dentro y no se
+            toca nada más de la portada.
+          */}
+          <Reveal direccion="derecha" retraso={0.1} className="lg:h-full">
+            <HeroMedia />
           </Reveal>
         </div>
       </section>
@@ -163,9 +186,10 @@ export default async function HomePage() {
         </Stagger>
       </section>
 
-      {/* Categorías en carrusel --------------------------------------------- */}
-      <section className="border-y border-line bg-paper">
-        <div className="page py-16 md:py-24">
+      {/* Categorías en cinturón ---------------------------------------------- */}
+      <section className="bg-paper">
+        <Onda posicion="arriba" className="text-canvas" />
+        <div className="page pt-6 md:pt-10">
           <Reveal>
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
@@ -188,83 +212,63 @@ export default async function HomePage() {
               </Link>
             </div>
           </Reveal>
-
-          <div className="mt-10">
-            <CategoryCarousel
-              categorias={categories.map((c) => ({
-                id: c.id,
-                slug: c.slug,
-                name: c.name,
-                description: c.description,
-                imageUrl: c.image_url,
-                productCount: c.productCount,
-              }))}
-            />
-          </div>
         </div>
+
+        {/* La cinta va de borde a borde: encerrada en el contenedor parecería
+            una fila cortada, y así se entiende que sigue más allá. */}
+        <div className="mt-10">
+          <CategoryBelt
+            categorias={categories.map((c) => ({
+              id: c.id,
+              slug: c.slug,
+              name: c.name,
+              description: c.description,
+              imageUrl: c.image_url,
+              productCount: c.productCount,
+            }))}
+          />
+        </div>
+        <Onda posicion="abajo" className="text-canvas" />
       </section>
 
-      {/* Vista 360 ----------------------------------------------------------- */}
-      <section className="border-y border-line bg-canvas">
+      {/* Artículos del catálogo ----------------------------------------------
+          Aquí estaba el visor de 360°, que enseñaba un grifo de demostración
+          que MAB no vende: gastaba la mejor posición de la portada en algo que
+          no llevaba a ninguna parte. Estas son referencias reales, con su foto
+          y su enlace, y salen de la misma base que administra la empresa: al
+          publicar un artículo nuevo, entra aquí solo. */}
+      <section className="lavado-frio">
         <div className="page py-16 md:py-24">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:gap-20">
-            <Reveal direccion="izquierda">
-              <p className="label text-accent-ink">Vista 360°</p>
-              <h2 className="mt-4 max-w-[15ch] text-[clamp(2rem,4.8vw,3.2rem)] leading-[1.08] text-ink">
-                Gírala y ve el detalle
-                <br />
-                <span className="remate">que la foto esconde</span>
-              </h2>
-              <p className="mt-6 max-w-[54ch] leading-relaxed text-ink-2">
-                Estamos montando el visor de 360° para las referencias del catálogo. Abajo hay una
-                muestra: una vuelta completa en 36 pasos, para revisar la curva del cuello, el
-                remate de la manija y la base antes de pedir el precio.
-              </p>
-
-              <dl className="mt-10 grid gap-x-8 gap-y-6 border-t border-line pt-8 sm:grid-cols-3">
-                {[
-                  ["36 pasos", "Un fotograma cada 10°, para que la vuelta se vea continua."],
-                  ["Sin instalar nada", "Corre en el navegador. No hay complemento que bajar."],
-                  ["Arrastre o teclado", "Se gira con el dedo, con el ratón o con las flechas."],
-                ].map(([titulo, texto]) => (
-                  <div key={titulo}>
-                    <dt className="font-text text-[15px] font-semibold text-ink">{titulo}</dt>
-                    <dd className="mt-1.5 text-[14px] leading-relaxed text-ink-3">{texto}</dd>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
-
-            <Reveal direccion="derecha" retraso={0.1}>
-              <div className="mx-auto max-w-[460px] lg:max-w-none">
-                <TurntableViewer
-                  sprite="/360/grifo-sprite.webp"
-                  poster="/360/grifo-poster.webp"
-                  nombre="grifo monomando"
-                  acabado="muestra de visualización"
-                />
-                <p className="mt-3 text-[13px] leading-relaxed text-ink-3">
-                  Modelo de demostración del visor. Las referencias que vendemos están en el{" "}
-                  <Link href="/catalogo" className="font-semibold text-accent-ink hover:underline">
-                    catálogo
-                  </Link>
-                  .
+          <Reveal>
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="label text-accent-ink">Del catálogo</p>
+                <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
+                  Algunas de las <span className="remate">referencias</span>
+                </h2>
+                <p className="mt-5 max-w-[54ch] text-ink-2">
+                  {totalArticulos} artículos publicados en {categories.length} categorías.
+                  Trabajamos con más referencias de las que caben aquí: si no ves la tuya,
+                  pregúntanos.
                 </p>
               </div>
-            </Reveal>
-          </div>
-
-          {/* Doce de los treinta y seis pasos, del mismo sprite. */}
-          <Reveal className="mt-16">
-            <div className="border-t border-line pt-8">
-              <TurntableStrip sprite="/360/grifo-sprite.webp" />
-              <div className="mt-4 flex items-baseline justify-between gap-4">
-                <p className="text-[14px] italic text-ink-3">
-                  Doce de los treinta y seis pasos con que se levanta la vuelta.
-                </p>
-                <span className="label text-ink-3">000° — 360°</span>
-              </div>
+              <Link
+                href="/catalogo"
+                className="group inline-flex shrink-0 items-center gap-2 font-semibold text-accent-ink"
+              >
+                Ver el catálogo completo
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </Link>
             </div>
+          </Reveal>
+
+          <Reveal className="mt-10">
+            <ReferenceIndex productos={destacados} />
           </Reveal>
         </div>
       </section>
@@ -304,15 +308,22 @@ export default async function HomePage() {
         </Stagger>
       </section>
 
-      {/* Calidad — bloque partido con imagen -------------------------------- */}
-      <section className="border-y border-line bg-brand">
-        <div className="page grid gap-12 py-16 md:py-24 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <Reveal direccion="izquierda">
-            <p className="label text-accent">Calidad</p>
-            <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-on-brand">
+      {/* Calidad — bloque partido con imagen --------------------------------
+          Sobre arena y no sobre navy: el fondo oscuro obligaba a escribir el
+          rótulo en color y dejaba el párrafo en un gris translúcido. Aquí la
+          sección se separa igual, con la tinta de siempre. */}
+      <section className="bg-warm">
+        <Onda posicion="arriba" className="text-canvas" />
+        <div className="page grid gap-12 py-10 md:py-16 lg:grid-cols-2 lg:items-center lg:gap-16">
+          {/* El texto va segundo en escritorio y primero en el código: en
+              móvil se lee antes el titular que la foto, que es el orden que
+              tiene sentido cuando la columna es una sola. */}
+          <Reveal direccion="derecha" className="lg:order-2">
+            <p className="label text-accent-ink">Calidad</p>
+            <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
               Materiales que <span className="remate">cumplen la norma</span>
             </h2>
-            <p className="mt-6 max-w-[54ch] leading-relaxed text-on-brand/75">
+            <p className="mt-6 max-w-[54ch] leading-relaxed text-ink-2">
               Nuestros productos están fabricados con materiales de alta calidad que cumplen con
               todas las normas exigidas, garantizando resistencia, durabilidad y seguridad.
               Contamos con diseños funcionales y certificados que aseguran el cumplimiento de las
@@ -324,7 +335,7 @@ export default async function HomePage() {
                 (item) => (
                   <li
                     key={item}
-                    className="rounded-full border border-on-brand/20 px-4 py-2 text-[14px] text-on-brand/85"
+                    className="rounded-full border border-warm-line bg-canvas px-4 py-2 text-[14px] text-ink-2"
                   >
                     {item}
                   </li>
@@ -333,41 +344,22 @@ export default async function HomePage() {
             </ul>
           </Reveal>
 
-          <Reveal direccion="derecha" retraso={0.1}>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="overflow-hidden rounded-xl">
-                <Image
-                  src="/ambientes/ducha-lluvia.webp"
-                  alt="Ducha tipo lluvia instalada en zona húmeda"
-                  width={1024}
-                  height={512}
-                  sizes="(max-width: 1024px) 46vw, 300px"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="overflow-hidden rounded-xl">
-                <Image
-                  src="/ambientes/camara-concreto.webp"
-                  alt="Cámara de seguridad instalada en fachada"
-                  width={1024}
-                  height={512}
-                  sizes="(max-width: 1024px) 46vw, 300px"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="col-span-2 overflow-hidden rounded-xl">
-                <Image
-                  src="/marca/obra.webp"
-                  alt="Edificio en construcción con grúa torre"
-                  width={1400}
-                  height={940}
-                  sizes="(max-width: 1024px) 92vw, 600px"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+          {/* Una sola foto. Con tres, el fundido partía una por la mitad y
+              leía como un defecto; y ninguna de las tres se veía bien a ese
+              tamaño. */}
+          <Reveal direccion="izquierda" retraso={0.1} className="lg:order-1">
+            <div className="funde-der sangra-izq relative aspect-[3/2] w-full overflow-hidden rounded-xl lg:aspect-[4/3] lg:rounded-none">
+              <Image
+                src="/ambientes/ducha-lluvia.webp"
+                alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
+                fill
+                sizes="(max-width: 1024px) 92vw, 55vw"
+                className="object-cover"
+              />
             </div>
           </Reveal>
         </div>
+        <Onda posicion="abajo" className="text-canvas" />
       </section>
 
       {/* Quiénes somos + valores -------------------------------------------- */}
@@ -434,8 +426,9 @@ export default async function HomePage() {
       </section>
 
       {/* Clientes ----------------------------------------------------------- */}
-      <section className="border-t border-line bg-paper">
-        <div className="page py-16 md:py-24">
+      <section className="bg-paper">
+        <Onda posicion="arriba" className="text-canvas" />
+        <div className="page pb-16 pt-8 md:pb-24 md:pt-12">
           <Reveal>
             <p className="label text-accent-ink">Clientes</p>
             <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
@@ -446,16 +439,9 @@ export default async function HomePage() {
             </p>
           </Reveal>
 
-          <Stagger as="ul" className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" paso={0.04}>
-            {site.clients.map((client) => (
-              <StaggerItem as="li" key={client}>
-                <div className="flex h-full items-center gap-3.5 rounded-lg border border-line bg-canvas px-5 py-4">
-                  <span aria-hidden="true" className="h-8 w-1 shrink-0 rounded-full bg-accent" />
-                  <span className="font-medium text-ink-2">{client}</span>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
+          <Reveal className="mt-10">
+            <ClientWall />
+          </Reveal>
         </div>
       </section>
     </>

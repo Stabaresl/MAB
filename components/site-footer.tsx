@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { SealbyteMark } from "@/components/sealbyte-mark";
 import { getCategories, getSettings } from "@/lib/catalog";
-import { formatPhone, site, whatsappLink } from "@/lib/site";
+import { enquiryBody, formatPhone, gmailLink, site, whatsappLink } from "@/lib/site";
 
 export async function SiteFooter() {
   const [categories, settings] = await Promise.all([getCategories(), getSettings()]);
@@ -13,11 +13,13 @@ export async function SiteFooter() {
     <footer className="mt-28 border-t border-line bg-paper">
       {/* Cierre comercial antes de los datos: es lo último que se lee. */}
       <div className="page py-16 md:py-20">
-        <div className="rounded-xl bg-brand px-7 py-10 md:px-12 md:py-14">
+        <div className="rounded-xl border border-warm-line bg-warm-2 px-7 py-10 md:px-12 md:py-14">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div>
-              <p className="label text-accent">Distribuimos calidad, construimos confianza</p>
-              <h2 className="mt-4 max-w-[20ch] text-[clamp(1.6rem,4vw,2.5rem)] leading-[1.15] text-on-brand">
+              <p className="label text-accent-ink">
+                Distribuimos calidad, construimos confianza
+              </p>
+              <h2 className="mt-4 max-w-[20ch] text-[clamp(1.6rem,4vw,2.5rem)] leading-[1.15] text-ink">
                 Te mejoramos el precio de cualquier cotización
               </h2>
             </div>
@@ -111,7 +113,9 @@ export async function SiteFooter() {
             )}
             <li>
               <a
-                href={`mailto:${settings.email}`}
+                href={gmailLink(settings.email, "Solicitud de cotización", enquiryBody())}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="-mx-2 block break-words rounded-md px-2 py-2 text-ink-2 transition-colors hover:bg-canvas hover:text-ink"
               >
                 {settings.email}
@@ -123,9 +127,39 @@ export async function SiteFooter() {
 
       <div className="border-t border-line">
         <div className="page flex flex-col items-start justify-between gap-5 py-6 sm:flex-row sm:items-center">
-          <p className="text-[14px] text-ink-3">
-            © {year} {site.name}. Todos los derechos reservados.
-          </p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <p className="text-[14px] text-ink-3">
+              © {year} {site.name}. Todos los derechos reservados.
+            </p>
+
+            {/*
+              Entrada al panel. Va aquí, discreta, porque el administrador es
+              una sola persona y los visitantes no tienen nada que hacer dentro;
+              pero tenerla a mano evita que MAB dependa de recordar una dirección
+              escrita a mano. Esconderla no da seguridad —esa la ponen la sesión
+              y las políticas de la base—, así que tampoco se disfraza.
+            */}
+            <Link
+              href="/admin"
+              rel="nofollow"
+              className="inline-flex items-center gap-1.5 text-[14px] text-ink-3 transition-colors hover:text-accent-ink"
+            >
+              <svg
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="7" width="10" height="6.5" rx="1.5" />
+                <path d="M5.5 7V5a2.5 2.5 0 015 0v2" />
+              </svg>
+              Entrar al panel
+            </Link>
+          </div>
 
           <a
             href={site.developer.url}

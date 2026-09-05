@@ -7,7 +7,14 @@ import { ProductCard } from "@/components/product-card";
 import { getProductBySlug, getRelatedProducts, getSettings } from "@/lib/catalog";
 import { siteUrl } from "@/lib/env";
 import { getProductSlugs } from "@/lib/supabase/public";
-import { formatPhone, productEnquiry, site, whatsappLink } from "@/lib/site";
+import {
+  enquiryBody,
+  formatPhone,
+  gmailLink,
+  productEnquiry,
+  site,
+  whatsappLink,
+} from "@/lib/site";
 
 export const revalidate = 300;
 
@@ -65,7 +72,7 @@ export default async function ProductoPage({ params }: Params) {
           <Link href="/catalogo" className="label text-ink-3 transition-colors hover:text-ink">
             Catálogo
           </Link>
-          <span aria-hidden="true" className="text-line-2">
+          <span aria-hidden="true" className="text-ink-3">
             /
           </span>
           <Link
@@ -74,7 +81,7 @@ export default async function ProductoPage({ params }: Params) {
           >
             {product.category.name}
           </Link>
-          <span aria-hidden="true" className="text-line-2">
+          <span aria-hidden="true" className="text-ink-3">
             /
           </span>
           <span className="label truncate text-ink">{product.name}</span>
@@ -161,9 +168,13 @@ export default async function ProductoPage({ params }: Params) {
                 Consultar por WhatsApp
               </a>
               <a
-                href={`mailto:${settings.email}?subject=${encodeURIComponent(
-                  `Consulta: ${product.name}`,
-                )}&body=${encodeURIComponent(enquiry)}`}
+                href={gmailLink(
+                  settings.email,
+                  `Cotización: ${product.name}`,
+                  enquiryBody(product.name),
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn btn-secondary flex-1"
               >
                 Escribir un correo

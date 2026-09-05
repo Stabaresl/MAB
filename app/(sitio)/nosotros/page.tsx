@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
-import { getSettings } from "@/lib/catalog";
-import { site, whatsappLink } from "@/lib/site";
+import { ClientWall } from "@/components/client-wall";
+import { site } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -13,9 +12,7 @@ export const metadata: Metadata = {
     "Distribuciones M.A.B lleva más de 15 años distribuyendo materiales de construcción y ferretería a clientes en todo el territorio nacional.",
 };
 
-export default async function NosotrosPage() {
-  const settings = await getSettings();
-
+export default function NosotrosPage() {
   return (
     <div className="page py-14 md:py-20">
       <header className="border-b border-line pb-10">
@@ -56,7 +53,7 @@ export default async function NosotrosPage() {
           </p>
         </div>
 
-        <figure className="overflow-hidden rounded-lg border border-line">
+        <figure className="funde-izq sangra-der aspect-[2/1] overflow-hidden rounded-lg border border-line lg:rounded-none lg:border-0">
           <Image
             src="/ambientes/ducha-lluvia.webp"
             alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
@@ -74,12 +71,12 @@ export default async function NosotrosPage() {
           Llevamos el material hasta la obra
         </h2>
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
-          <p className="max-w-[62ch] text-ink-2">
+          <p className="max-w-[62ch] text-ink-2 lg:order-2">
             Entregamos tus materiales directamente en la obra, en el tiempo acordado y en
             cualquier parte de Colombia, sea ciudad, municipio o vereda. Con una red logística
             confiable garantizamos que lleguen en perfectas condiciones para tu proyecto.
           </p>
-          <figure className="overflow-hidden rounded-lg border border-line">
+          <figure className="funde-der sangra-izq aspect-[3/2] overflow-hidden rounded-lg border border-line lg:order-1 lg:rounded-none lg:border-0">
             <Image
               src="/marca/obra.webp"
               alt="Edificio en construcción con grúa torre"
@@ -98,40 +95,8 @@ export default async function NosotrosPage() {
           Algunos de nuestros clientes
         </h2>
 
-        <ul className="mt-8 grid gap-x-8 gap-y-px border-t border-line sm:grid-cols-2 lg:grid-cols-3">
-          {site.clients.map((client) => (
-            <li
-              key={client}
-              className="flex items-center gap-4 border-b border-line py-4 text-ink-2"
-            >
-              <span aria-hidden="true" className="h-4 w-px shrink-0 bg-accent" />
-              {client}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mt-20">
-        <div className="rounded-lg border border-line bg-brand p-8 md:p-12">
-          <h2 className="max-w-[20ch] text-[clamp(1.6rem,4vw,2.4rem)] leading-tight text-ink">
-            Te mejoramos el precio de cualquier cotización
-          </h2>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={whatsappLink(
-                settings.whatsapp_primary,
-                "Hola, quisiera cotizar materiales para mi proyecto.",
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary"
-            >
-              Escribir por WhatsApp
-            </a>
-            <Link href="/catalogo" className="btn btn-secondary">
-              Ver el catálogo
-            </Link>
-          </div>
+        <div className="mt-8 border-t border-line pt-8">
+          <ClientWall />
         </div>
       </section>
     </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { fold } from "@/lib/slug";
-import type { CategoriaCarrusel } from "@/components/category-carousel";
+import type { CategoriaCarrusel } from "@/components/category-belt";
 
 /**
  * Rejilla de categorías con buscador.

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 
 import { RevealObserver } from "@/components/motion/reveal-observer";
 import { siteUrl } from "@/lib/env";
@@ -8,16 +8,24 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 /**
- * Dos familias. Instrument Serif lleva los titulares: una serifa editorial de
- * contraste alto, con una itálica que sirve para rematar una frase en dos
- * tiempos — "Míralo por todos los lados, /incluso los que la foto esconde/".
+ * Dos familias.
+ *
+ * Fraunces lleva los titulares. Sustituye a Instrument Serif, que era una
+ * serifa de periódico —contraste altísimo, remates de aguja— y ponía al sitio
+ * un tono de esquela. Fraunces es una serifa variable con dos ejes que no trae
+ * casi ninguna otra: `SOFT` redondea los ángulos y `WONK` deja que la letra se
+ * salga un poco de la norma. Con ambos altos la voz se vuelve cálida sin caer
+ * en lo infantil, que es justo el punto que le faltaba.
+ *
  * Plus Jakarta Sans lleva el texto: humanista, ancha y legible en pantallas
  * pequeñas.
  */
-const serif = Instrument_Serif({
+const serif = Fraunces({
   subsets: ["latin"],
-  weight: ["400"],
   style: ["normal", "italic"],
+  // Sin `weight`: así se sirve la fuente variable entera y quedan disponibles
+  // los ejes. Declarar pesos sueltos entrega estáticas y `axes` deja de valer.
+  axes: ["SOFT", "WONK", "opsz"],
   variable: "--font-serif",
   display: "swap",
 });

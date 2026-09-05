@@ -79,3 +79,54 @@ export function productEnquiry(productName: string, url?: string): string {
   const base = `Hola, estoy interesado en el producto "${productName}".`;
   return url ? `${base} ${url}` : base;
 }
+
+/**
+ * Enlace de correo que abre la ventana de redacción de Gmail.
+ *
+ * Un `mailto:` normal se lo queda el programa que el sistema tenga puesto por
+ * defecto, que en Windows suele ser Outlook aunque quien escribe use Gmail: se
+ * abre una ventana ajena, sin la cuenta, y el correo no sale. Este enlace va
+ * directo a Gmail con destinatario, asunto y cuerpo ya escritos.
+ *
+ * El precio de esto es que quien no use Gmail verá una pantalla de acceso; a
+ * cambio, la inmensa mayoría escribe sin fricción. `su` es el asunto y `body`
+ * el cuerpo, en la interfaz de redacción (`view=cm`) a pantalla completa
+ * (`fs=1`).
+ */
+export function gmailLink(to: string, subject: string, body: string): string {
+  const parametros = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to,
+    su: subject,
+    body,
+  });
+  return `https://mail.google.com/mail/?${parametros.toString()}`;
+}
+
+/**
+ * Cuerpo de correo con los huecos que MAB necesita para cotizar. Llegar a un
+ * formulario en blanco hace que la mitad de los correos no diga ni qué obra es;
+ * con la plantilla, el vendedor recibe referencia, cantidad y destino.
+ */
+export function enquiryBody(producto?: string): string {
+  const asunto = producto
+    ? `Quisiera cotizar el artículo "${producto}".`
+    : "Quisiera cotizar materiales para mi proyecto.";
+
+  return [
+    `Hola, equipo de ${site.name}:`,
+    "",
+    asunto,
+    "",
+    "Referencias y cantidades:",
+    "Ciudad o municipio de entrega:",
+    "Fecha en que lo necesito:",
+    "",
+    "Nombre:",
+    "Empresa u obra:",
+    "Teléfono de contacto:",
+    "",
+    "Gracias.",
+  ].join("\n");
+}

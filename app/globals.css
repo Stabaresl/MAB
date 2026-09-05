@@ -8,14 +8,18 @@
    como token y se referencia por nombre.
    --------------------------------------------------------------------------- */
 @theme {
-  /* Superficies — lienzo claro, el logo necesita fondo claro para leerse */
-  --color-canvas: #ffffff;
-  --color-paper: #f5f7f9;
-  --color-paper-2: #eaeff3;
+  /* Superficies — claras, pero nunca blanco puro.
+     El blanco de pantalla es luz, no papel: cansa la vista y hace que la foto
+     de producto, que llega recortada sobre transparencia, parezca flotar en el
+     vacío. Este lienzo es un hueso muy pálido; la tinta sigue rindiendo 15:1
+     encima, así que no se pierde nada de legibilidad. */
+  --color-canvas: #f8f7f4;
+  --color-paper: #eeede8;
+  --color-paper-2: #e4e2db;
   --color-brand: #153144;
   --color-brand-2: #315064;
-  --color-line: #e3e8ed;
-  --color-line-2: #ccd6de;
+  --color-line: #dfddd6;
+  --color-line-2: #c9c6bd;
 
   /* Tinta */
   --color-ink: #10222f;
@@ -23,19 +27,31 @@
   --color-ink-3: #5c6d7a;
   --color-on-brand: #f4f8fb;
 
-  /* Acento ámbar — del naranja del logotipo, subido de tono para que aguante
-     como fondo de botón sin perder el aire cálido de la marca */
-  --color-accent: #db8324;
-  --color-accent-hover: #c8721a;
-  --color-accent-soft: #fdf1e3;
-  --color-accent-ink: #7a4409;
-  /* Para display grande: contraste suficiente sin apagarse a marrón */
-  --color-accent-strong: #b8651a;
-  --color-on-accent: #10222f;
+  /* Acento azul pizarra — sale del propio logotipo, del azul acero de las
+     ventanas. Es la tercera vuelta: primero fue ámbar y luego terracota, y las
+     dos leían como naranja. Al venir de la marca, la página entera queda en una
+     sola familia y el acento no compite con el navy, lo continúa.
+     6.65:1 sobre el lienzo y 7.12:1 con blanco encima. */
+  --color-accent: #2e5c7e;
+  --color-accent-hover: #26506e;
+  --color-accent-soft: #e6eef4;
+  --color-accent-ink: #24496a;
+  /* Para display grande: contraste suficiente sin caer en el negro azulado */
+  --color-accent-strong: #1d3f5c;
+  --color-on-accent: #ffffff;
 
-  /* Azul claro del logotipo, para gráficos y realces fríos */
+  /* Superficies cálidas — la alternativa al bloque navy, y el contrapunto de
+     temperatura al acento azul. Un panel de arena separa una sección sin apagar
+     el texto ni pedir un color de letra especial: la tinta rinde 13.7:1 encima.
+     Van un punto más hondas que antes para seguir despegándose del lienzo, que
+     ya no es blanco. */
+  --color-warm: #f2ebe1;
+  --color-warm-2: #e9e0d2;
+  --color-warm-line: #ddd0bd;
+
+  /* Azul claro del logotipo, para gráficos y para el lavado pastel frío */
   --color-sky: #8bb7d0;
-  --color-sky-soft: #eaf2f7;
+  --color-sky-soft: #e9f0f5;
 
   /* Semánticos */
   --color-success: #17794a;
@@ -52,9 +68,7 @@
   --radius-lg: 16px;
   --radius-xl: 24px;
 
-  /* Sombras suaves, tintadas de navy en vez de negro puro */
-  --shadow-card: 0 1px 2px rgb(21 49 68 / 0.04), 0 8px 24px -12px rgb(21 49 68 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(21 49 68 / 0.05), 0 18px 40px -16px rgb(21 49 68 / 0.22);
+  /* Sin sombras. El relieve lo lleva el filete de un pixel: ver `.card`. */
 
   --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
   --container-page: 1240px;
@@ -81,12 +95,21 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Los titulares son siempre romanos. El énfasis se lleva con color o escala. */
+  /*
+   * Titulares.
+   *
+   * Los tres ejes variables de Fraunces son lo que le quita la seriedad:
+   * `SOFT` redondea los remates, `WONK` deja que algunas letras se salgan de la
+   * norma y `opsz` engorda los trazos finos para que a tamaño grande no se
+   * afile como una serifa de periódico. Sin esto la familia se dibuja en su
+   * ajuste neutro y suena igual de solemne que la anterior.
+   */
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
     font-weight: 400;
+    font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 72;
     letter-spacing: -0.005em;
     /* Un display largo no puede desbordar a 320px */
     overflow-wrap: anywhere;
@@ -189,16 +212,6 @@
 
   .btn-primary:hover {
     background-color: var(--color-accent-hover);
-    color: var(--color-canvas);
-  }
-
-  .btn-brand {
-    background-color: var(--color-brand);
-    color: var(--color-on-brand);
-  }
-
-  .btn-brand:hover {
-    background-color: var(--color-brand-2);
   }
 
   .btn-secondary {
@@ -361,6 +374,88 @@
   }
 
   /*
+   * Lavado pastel.
+   *
+   * Una sección que entra desde el blanco, se tiñe por el centro y vuelve al
+   * blanco. Da color sin meter un bloque plano —que obligaría a recalcular el
+   * contraste de todo el texto— y sin sumar un acento nuevo: el tinte sale del
+   * azul y del terracota que ya tiene el sistema, rebajados a pastel.
+   *
+   * El texto sigue yendo sobre un fondo casi blanco en los extremos y sobre el
+   * pastel en el centro; el más oscuro de los dos, `sky-soft`, deja la tinta
+   * principal en 13.8:1, así que ninguna combinación baja de AA.
+   */
+  .lavado-frio {
+    background-image: linear-gradient(
+      180deg,
+      var(--color-canvas) 0%,
+      var(--color-sky-soft) 42%,
+      var(--color-sky-soft) 58%,
+      var(--color-canvas) 100%
+    );
+  }
+
+  .lavado-calido {
+    background-image: linear-gradient(
+      180deg,
+      var(--color-canvas) 0%,
+      var(--color-accent-soft) 42%,
+      var(--color-accent-soft) 58%,
+      var(--color-canvas) 100%
+    );
+  }
+
+  /*
+   * Cinturón de categorías.
+   *
+   * Es una pista con desplazamiento real, no una animación: así el visitante
+   * puede empujarla —dedo, rueda, arrastre, flechas— y el avance automático es
+   * solo alguien más sumando a `scrollLeft`. Con una animación de `transform`
+   * el movimiento salía gratis pero la cinta era intocable.
+   *
+   * La lista va duplicada; el componente resta la mitad al pasarla, y como la
+   * segunda copia empieza igual que la primera el salto no se ve.
+   *
+   * Sin ajuste a rejilla (`scroll-snap`): la cinta está siempre en marcha y el
+   * imán pelearía con ella tirando de vuelta a cada cuadro.
+   */
+  .cinturon {
+    display: flex;
+    overflow-x: auto;
+    /* La barra sobra: hay flechas, y la cinta ya se ve que se mueve. */
+    scrollbar-width: none;
+    /* Sin esto, el gesto lateral del móvil dispara el «atrás» del navegador. */
+    overscroll-behavior-x: contain;
+    /* Las piezas no aparecen ni desaparecen de golpe en los bordes. */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .cinturon::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cinturon {
+      -webkit-mask-image: none;
+      mask-image: none;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-line-2) transparent;
+    }
+
+    .cinturon::-webkit-scrollbar {
+      display: block;
+      height: 6px;
+    }
+
+    /* Sin avance automático la copia sobra: duplicaría la lista para quien la
+       recorre a mano. */
+    .cinturon-copia {
+      display: none;
+    }
+  }
+
+  /*
    * Tira que se desplaza en horizontal. La barra del sistema es gruesa y roba
    * altura en móvil, así que se sustituye por una fina del sistema de diseño.
    */
@@ -381,5 +476,79 @@
   .scroll-x::-webkit-scrollbar-thumb {
     background-color: var(--color-line-2);
     border-radius: 999px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilidades propias.
+
+   Van en la capa `utilities` y no en `components` por una razón concreta: en
+   capas de CSS manda el orden de capa por encima de la especificidad, así que
+   una regla en `components` la pisa cualquier utilidad de Tailwind aunque lleve
+   más peso. `.sangra-der` convive en el mismo elemento con `mx-auto`, y desde
+   `components` perdía siempre.
+   --------------------------------------------------------------------------- */
+@layer utilities {
+  /*
+   * Foto que se funde con la página por el lado donde está el texto.
+   *
+   * Es una máscara, no un degradado encima: la foto se vuelve transparente de
+   * verdad y deja pasar el fondo que haya debajo, sea blanco, papel o arena. Un
+   * degradado del color de la sección haría lo mismo de lejos, pero habría que
+   * repintarlo cada vez que cambia el fondo, y sobre el panel de arena se vería
+   * el parche.
+   *
+   * La foto ocupa la mitad de la sección, así que la máscara se apaga del todo
+   * justo en su borde interior: para cuando el ojo llega al centro de la
+   * sección, ya no queda foto, solo página.
+   *
+   * Solo a partir de 1024px. Por debajo la foto no va al lado del texto sino
+   * encima o debajo, y difuminar un costado no querría decir nada.
+   */
+  @media (min-width: 1024px) {
+    .funde-izq {
+      -webkit-mask-image: linear-gradient(to left, #000 44%, transparent 98%);
+      mask-image: linear-gradient(to left, #000 44%, transparent 98%);
+    }
+
+    .funde-der {
+      -webkit-mask-image: linear-gradient(to right, #000 44%, transparent 98%);
+      mask-image: linear-gradient(to right, #000 44%, transparent 98%);
+    }
+
+    /*
+     * Sangra la foto hasta el borde de la pantalla.
+     *
+     * Va con el fundido: así la foto solo tiene un canto, el del monitor, y el
+     * otro lado se disuelve. Alineada al contenedor tenía un corte a navaja por
+     * la derecha que delataba que era un recuadro con un lado borroso.
+     *
+     * La cuenta es la distancia del borde del contenedor al de la ventana: la
+     * mitad de lo que sobra a los lados, más el relleno interior. `100vw`
+     * incluye la barra de desplazamiento, así que puede pasarse unos píxeles;
+     * `overflow-x: clip` en el elemento raíz los recorta sin abrir scroll.
+     */
+    .sangra-der,
+    .sangra-izq {
+      /* Lo que hay del borde del contenedor al de la ventana: la mitad de lo
+         que sobra a los lados, más el relleno interior. */
+      --sangrado: calc((100vw - min(100vw, var(--container-page))) / 2 + 32px);
+      /* El ancho tiene que crecer explícitamente. Con `width: 100%` puesto por
+         una utilidad, un margen negativo solo corre lo que viene detrás y la
+         caja se queda igual de estrecha: la foto no llegaba al borde. */
+      width: calc(100% + var(--sangrado));
+      max-width: none;
+    }
+
+    .sangra-der {
+      margin-right: calc(-1 * var(--sangrado));
+    }
+
+    /* El espejo de la anterior, para las secciones con la foto a la izquierda.
+       Alternar el lado es lo que evita que media página se lea como la misma
+       plantilla repetida cuatro veces. */
+    .sangra-izq {
+      margin-left: calc(-1 * var(--sangrado));
+    }
   }
 }
