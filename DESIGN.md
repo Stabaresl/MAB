@@ -247,12 +247,38 @@ flota directamente sobre la sección y el texto se ordena como un índice —nú
 nombre, categoría— con la foto de la fila señalada en un panel que acompaña el
 desplazamiento. El puntero y el tabulador la cambian igual.
 
-**Muro de clientes.** Sin logotipos: el portafolio no los trae y bajarlos de
-internet daría marcas de terceros sin permiso, en resoluciones dispares. Trece
-imágenes de distinta calidad en fila se ven peor que trece nombres bien
-compuestos, así que el peso lo lleva la tipografía —serifa de display, párrafo
-continuo, rombos de separación— y se lee como el reparto de un cartel. Cuando la
-empresa consiga los archivos, entran sin tocar nada más.
+**Vitrina de clientes.** Cada ficha crece según lo cerca que esté del centro de
+la pista y vuelve a su tamaño al alejarse, así que la fila tiene un foco en vez
+de trece casillas iguales; el puntero encima adelanta ese mismo aumento. El
+componente escribe `--cercania` (0 en los extremos, 1 en el medio) en cada
+fotograma y el CSS lo traduce a escala y opacidad: la interpolación la lleva el
+compositor y la transformación no toca la maquetación.
+
+Tres copias de la lista, no dos. Con dos, la vitrina empieza y acaba en un
+extremo y se ve medio ancho de pista vacío hasta que el avance la llena; con
+tres se arranca en la del medio, que siempre tiene fichas a los dos lados. Y la
+vuelta se mide entre dos fichas equivalentes, no dividiendo el ancho total:
+la pista lleva relleno lateral para que los extremos puedan llegar al centro, y
+ese relleno no forma parte de la vuelta.
+
+Los logotipos van **en su color**. Se probó repintarlos en la tinta del sitio,
+que es el tratamiento habitual de un muro de clientes, y se descartó: el color es
+parte de la marca y es por lo que se reconoce a un cliente. De los trece hay
+archivo de cinco —los demás no tienen sitio alcanzable o no lo publican—, así
+que todas las fichas llevan el nombre debajo y la que no tiene logotipo no se
+lee como un hueco.
+
+**Personaje de la portada del pie.** Va detrás de la tarjeta de cierre, con el
+filo superior cruzándole a la altura del codo: de ahí para abajo lo tapa la
+tarjeta, así que el brazo descansa sobre el canto en vez de quedar en el aire.
+La altura no es un número redondo por casualidad —el codo está al 65% de la
+figura contando desde los pies, medido sobre el archivo— y va volteado para que
+el brazo doblado caiga del lado de la tarjeta.
+
+**Botón de cotización.** Abre las dos vías, WhatsApp y correo, en vez de llevar
+directo a una. En una compra de obra, con referencias y cantidades, el correo es
+a menudo lo que hace falta. Es un menú de verdad: se cierra al pulsar fuera, con
+Escape y al elegir, y el foco vuelve al botón.
 
 **Entrada al panel.** Un enlace discreto en la barra inferior del pie. El
 administrador es una sola persona, pero tener la puerta a mano evita depender de

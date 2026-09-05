@@ -11,24 +11,34 @@ next-env.d.ts
 .env
 .env*.local
 
-# Material de referencia local, no forma parte del producto
-design-rules/
+# Herramientas y material de referencia local. Nada de esto forma parte del
+# producto: son reglas, habilidades y ajustes del entorno de quien desarrolla.
+.claude/
 .agents/
-.claude/skills/
+.cursor/
+.windsurf/
+CLAUDE.md
+AGENTS.md
+design-rules/
 skills-lock.json
+
+# Material de origen: de aqui salen los archivos de public/, pero lo que el
+# sitio sirve ya esta procesado y versionado alli.
 assets/
 
 # El portafolio original pesa 110 MB: git no es el sitio para eso.
 # Las fotos que usa el catalogo ya estan procesadas en public/catalogo/.
 PORTAFOLIO*.pdf
 
-# Material de origen pesado del visor 360. La secuencia ya esta procesada en
-# public/360/grifo-sprite.webp (407 KB); el ZIP son 11 MB de PNG en bruto.
+# Material de origen pesado. Los ZIP y los videos en bruto no se sirven: lo que
+# usa el sitio esta en public/portada/, ya comprimido.
 image/*.zip
 image/*.mp4
 
 # Salidas de herramientas
 .playwright-mcp/
+*.tmp
+scratchpad/
 
 # Supabase local
 supabase/.branches

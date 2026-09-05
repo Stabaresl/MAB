@@ -39,8 +39,8 @@ export default function NosotrosPage() {
         </div>
       </section>
 
-      <section className="mt-20 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
-        <div>
+      <section className="mt-20 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-stretch lg:gap-16">
+        <div className="flex flex-col justify-center">
           <p className="label text-accent-ink">Calidad certificada</p>
           <h2 className="mt-3 text-[clamp(1.6rem,4vw,2.4rem)] leading-tight text-ink">
             Piezas que cumplen la norma
@@ -53,7 +53,7 @@ export default function NosotrosPage() {
           </p>
         </div>
 
-        <figure className="funde-izq sangra-der aspect-[2/1] overflow-hidden rounded-lg border border-line lg:rounded-none lg:border-0">
+        <figure className="funde-izq sangra-der aspect-[2/1] overflow-hidden rounded-lg border border-line lg:aspect-auto lg:h-full lg:rounded-none lg:border-0">
           <Image
             src="/ambientes/ducha-lluvia.webp"
             alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
@@ -65,18 +65,23 @@ export default function NosotrosPage() {
         </figure>
       </section>
 
+      {/* El titular entra en la rejilla, en la misma columna que su párrafo.
+          Fuera de ella se quedaba arriba a la izquierda mientras la foto pasaba
+          a ese lado, y el bloque se leía partido en dos mitades ajenas. */}
       <section className="mt-20 border-t border-line pt-12">
-        <p className="label text-accent-ink">Logística y entrega</p>
-        <h2 className="mt-3 max-w-[22ch] text-[clamp(1.6rem,4vw,2.4rem)] leading-tight text-ink">
-          Llevamos el material hasta la obra
-        </h2>
-        <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
-          <p className="max-w-[62ch] text-ink-2 lg:order-2">
-            Entregamos tus materiales directamente en la obra, en el tiempo acordado y en
-            cualquier parte de Colombia, sea ciudad, municipio o vereda. Con una red logística
-            confiable garantizamos que lleguen en perfectas condiciones para tu proyecto.
-          </p>
-          <figure className="funde-der sangra-izq aspect-[3/2] overflow-hidden rounded-lg border border-line lg:order-1 lg:rounded-none lg:border-0">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-stretch">
+          <div className="flex flex-col justify-center lg:order-2">
+            <p className="label text-accent-ink">Logística y entrega</p>
+            <h2 className="mt-3 max-w-[22ch] text-[clamp(1.6rem,4vw,2.4rem)] leading-tight text-ink">
+              Llevamos el material hasta la obra
+            </h2>
+            <p className="mt-6 max-w-[62ch] text-ink-2">
+              Entregamos tus materiales directamente en la obra, en el tiempo acordado y en
+              cualquier parte de Colombia, sea ciudad, municipio o vereda. Con una red logística
+              confiable garantizamos que lleguen en perfectas condiciones para tu proyecto.
+            </p>
+          </div>
+          <figure className="funde-der sangra-izq aspect-[3/2] overflow-hidden rounded-lg border border-line lg:order-1 lg:aspect-auto lg:h-full lg:rounded-none lg:border-0">
             <Image
               src="/marca/obra.webp"
               alt="Edificio en construcción con grúa torre"

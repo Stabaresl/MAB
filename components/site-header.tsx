@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { MobileNav } from "@/components/mobile-nav";
+import { QuoteMenu } from "@/components/quote-menu";
 import { getCategories, getSettings } from "@/lib/catalog";
-import { formatPhone, site, whatsappLink } from "@/lib/site";
+import { enquiryBody, formatPhone, gmailLink, site, whatsappLink } from "@/lib/site";
 
 export async function SiteHeader() {
   const [categories, settings] = await Promise.all([getCategories(), getSettings()]);
@@ -53,14 +54,11 @@ export async function SiteHeader() {
           >
             {formatPhone(settings.whatsapp_primary)}
           </a>
-          <a
-            href={whatsappLink(settings.whatsapp_primary, "Hola, quisiera una cotización.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary hidden md:inline-flex"
-          >
-            Pedir cotización
-          </a>
+          <QuoteMenu
+            className="hidden md:block"
+            whatsapp={whatsappLink(settings.whatsapp_primary, "Hola, quisiera una cotización.")}
+            gmail={gmailLink(settings.email, "Solicitud de cotización", enquiryBody())}
+          />
           <MobileNav
             links={links}
             categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}

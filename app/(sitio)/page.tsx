@@ -312,13 +312,13 @@ export default async function HomePage() {
           Sobre arena y no sobre navy: el fondo oscuro obligaba a escribir el
           rótulo en color y dejaba el párrafo en un gris translúcido. Aquí la
           sección se separa igual, con la tinta de siempre. */}
-      <section className="bg-warm">
+      <section className="overflow-hidden bg-warm">
         <Onda posicion="arriba" className="text-canvas" />
-        <div className="page grid gap-12 py-10 md:py-16 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <div className="page grid gap-12 py-10 md:py-16 lg:grid-cols-2 lg:items-stretch lg:gap-16">
           {/* El texto va segundo en escritorio y primero en el código: en
               móvil se lee antes el titular que la foto, que es el orden que
               tiene sentido cuando la columna es una sola. */}
-          <Reveal direccion="derecha" className="lg:order-2">
+          <Reveal direccion="derecha" className="flex flex-col justify-center lg:order-2">
             <p className="label text-accent-ink">Calidad</p>
             <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
               Materiales que <span className="remate">cumplen la norma</span>
@@ -347,8 +347,8 @@ export default async function HomePage() {
           {/* Una sola foto. Con tres, el fundido partía una por la mitad y
               leía como un defecto; y ninguna de las tres se veía bien a ese
               tamaño. */}
-          <Reveal direccion="izquierda" retraso={0.1} className="lg:order-1">
-            <div className="funde-der sangra-izq relative aspect-[3/2] w-full overflow-hidden rounded-xl lg:aspect-[4/3] lg:rounded-none">
+          <Reveal direccion="izquierda" retraso={0.1} className="lg:order-1 lg:h-full">
+            <div className="funde-der sangra-izq relative aspect-[3/2] w-full overflow-hidden rounded-xl lg:-my-16 lg:aspect-auto lg:h-[calc(100%+8rem)] lg:rounded-none">
               <Image
                 src="/ambientes/ducha-lluvia.webp"
                 alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
@@ -377,20 +377,11 @@ export default async function HomePage() {
               brindar las mejores soluciones para su negocio y construcción.
             </p>
 
-            <dl className="mt-10 grid gap-6 sm:grid-cols-2">
-              <div className="border-l-2 border-accent pl-5">
-                <dt className="label text-ink-3">Misión</dt>
-                <dd className="mt-2 text-[15px] leading-relaxed text-ink-2">{site.mission}</dd>
-              </div>
-              <div className="border-l-2 border-sky pl-5">
-                <dt className="label text-ink-3">Visión</dt>
-                <dd className="mt-2 text-[15px] leading-relaxed text-ink-2">{site.vision}</dd>
-              </div>
-            </dl>
-
+            {/* La misión y la visión viven en «Nosotros». Repetirlas aquí solo
+                alargaba la portada y le quitaba sentido al enlace de abajo. */}
             <Link
               href="/nosotros"
-              className="group mt-9 inline-flex items-center gap-2 font-semibold text-accent-ink"
+              className="group mt-8 inline-flex items-center gap-2 font-semibold text-accent-ink"
             >
               Conocer la empresa
               <span

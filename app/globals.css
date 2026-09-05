@@ -456,6 +456,67 @@
   }
 
   /*
+   * Vitrina de clientes.
+   *
+   * Misma pista con desplazamiento que el cinturón, pero cada ficha crece según
+   * lo cerca que esté del centro. Ese `--cercania` lo escribe el componente en
+   * cada fotograma —va de 0 en los extremos a 1 en el medio— y aquí solo se
+   * traduce a escala y opacidad. Repartir así el trabajo deja la interpolación
+   * en manos del compositor: la transformación no toca la maquetación.
+   *
+   * El relleno lateral vale medio ancho de pista menos media ficha. Así la
+   * primera y la última también pueden llegar al centro —sin él los extremos
+   * nunca crecen— y, de paso, la vitrina arranca con la primera ficha ya
+   * centrada en vez de con medio ancho en blanco.
+   */
+  .vitrina {
+    display: flex;
+    gap: 12px;
+    padding-inline: calc(50% - 100px);
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .vitrina::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vitrina-ficha {
+    --cercania: 0;
+    flex: 0 0 200px;
+    transform: scale(calc(1 + var(--cercania) * 0.26));
+    opacity: calc(0.62 + var(--cercania) * 0.38);
+    transition:
+      transform 220ms var(--ease-brand),
+      opacity 220ms var(--ease-brand);
+  }
+
+  /* El puntero encima adelanta el mismo aumento sin esperar al centro. */
+  .vitrina-ficha:hover,
+  .vitrina-ficha:focus-within {
+    --cercania: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vitrina-ficha {
+      transform: none;
+      opacity: 1;
+    }
+
+    .vitrina {
+      padding-inline: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-line-2) transparent;
+    }
+
+    .vitrina::-webkit-scrollbar {
+      display: block;
+      height: 6px;
+    }
+  }
+
+  /*
    * Tira que se desplaza en horizontal. La barra del sistema es gruesa y roba
    * altura en móvil, así que se sustituye por una fina del sistema de diseño.
    */
