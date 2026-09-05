@@ -25,7 +25,7 @@ function notConfigured(query: string): boolean {
   if (!warnedMissingConfig) {
     warnedMissingConfig = true;
     console.warn(
-      "Supabase no esta configurado (falta NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY). " +
+      "Supabase no esta configurado (falta SUPABASE_URL o SUPABASE_ANON_KEY). " +
         "El catalogo se sirve vacio. Define las variables en .env.local o en Vercel.",
     );
   }

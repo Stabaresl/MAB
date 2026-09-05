@@ -3,6 +3,21 @@
  *
  * Una variable ausente se convierte en un error con nombre y explicación, no en
  * un `undefined` que revienta tres capas más abajo con un mensaje inútil.
+ *
+ * NINGUNA lleva el prefijo `NEXT_PUBLIC_`, y eso es deliberado aunque en un
+ * proyecto de Next con Supabase lo habitual sea lo contrario.
+ *
+ * El prefijo existe para que Next incruste el valor en el paquete que se
+ * descarga el navegador. Aquí no hace falta: el sitio no habla con Supabase
+ * desde el navegador en ningún punto. El catálogo lo leen componentes de
+ * servidor, la sesión la refresca el middleware, y el acceso al panel y todas
+ * las escrituras pasan por Server Actions. Con el prefijo, la URL y la clave
+ * viajaban a cada visitante sin que nadie las usara allí.
+ *
+ * Consecuencia práctica, para quien venga después: si algún día se necesita un
+ * cliente de Supabase en el navegador, estas funciones NO valen —`process.env`
+ * sin prefijo no existe en el cliente—. Habrá que pasar los valores desde el
+ * servidor como props, o volver a poner el prefijo a conciencia.
  */
 
 function required(name: string, value: string | undefined, hint: string): string {
@@ -25,29 +40,29 @@ function required(name: string, value: string | undefined, hint: string): string
  * de "configurado y fallando".
  */
 export function isSupabaseConfigured(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
 }
 
 export function supabaseUrl(): string {
   return required(
-    "NEXT_PUBLIC_SUPABASE_URL",
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    "SUPABASE_URL",
+    process.env.SUPABASE_URL,
     "Es la URL del proyecto de Supabase (Project Settings → API).",
   );
 }
 
 export function supabaseAnonKey(): string {
   return required(
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    "Es la clave pública anon de Supabase (Project Settings → API).",
+    "SUPABASE_ANON_KEY",
+    process.env.SUPABASE_ANON_KEY,
+    "Es la clave anon de Supabase (Project Settings → API).",
   );
 }
 
 /**
  * Clave de servicio: salta las políticas RLS por completo. Solo se usa en
- * scripts de mantenimiento que corren fuera del navegador. Nunca debe llevar el
- * prefijo NEXT_PUBLIC_ ni importarse desde un componente de cliente.
+ * scripts de mantenimiento que corren fuera del navegador. Nunca debe estar
+ * puesta en el servidor de producción ni importarse desde la aplicación.
  */
 export function supabaseServiceRoleKey(): string {
   return required(
@@ -59,7 +74,7 @@ export function supabaseServiceRoleKey(): string {
 
 /** URL pública del sitio, para enlaces absolutos en metadatos y WhatsApp. */
 export function siteUrl(): string {
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  const explicit = process.env.SITE_URL;
   if (explicit) return explicit.replace(/\/$/, "");
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;

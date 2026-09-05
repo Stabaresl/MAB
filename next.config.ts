@@ -7,7 +7,7 @@ import type { NextConfig } from "next";
  * arranca igual y el fallo se ve en el panel, no en una pantalla en blanco.
  */
 function supabaseImageHost(): NextConfig["images"] {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.SUPABASE_URL;
   if (!url) return {};
   try {
     const { hostname } = new URL(url);
@@ -17,7 +17,7 @@ function supabaseImageHost(): NextConfig["images"] {
       ],
     };
   } catch {
-    console.warn("NEXT_PUBLIC_SUPABASE_URL no es una URL válida; next/image servirá solo imágenes locales.");
+    console.warn("SUPABASE_URL no es una URL válida; next/image servirá solo imágenes locales.");
     return {};
   }
 }

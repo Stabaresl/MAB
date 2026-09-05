@@ -140,11 +140,19 @@ Production, Preview y Development:
 
 | Variable | De dónde sale |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | la misma pantalla, clave `anon` |
+| `SUPABASE_URL` | Supabase → Project Settings → API |
+| `SUPABASE_ANON_KEY` | la misma pantalla, clave `anon` |
 
-Se leen también al compilar, así que **añadirlas no basta: hay que volver a
-desplegar** para que entren en el paquete.
+Se leen también al compilar —el catálogo se prerenderiza—, así que **añadirlas
+no basta: hay que volver a desplegar**.
+
+Ninguna lleva el prefijo `NEXT_PUBLIC_`, y no es un descuido. Ese prefijo sirve
+para incrustar el valor en el paquete que descarga el navegador, y aquí nada del
+navegador habla con Supabase: el catálogo lo leen componentes de servidor, la
+sesión la refresca el middleware y las escrituras pasan por Server Actions. Con
+el prefijo, la URL y la clave viajaban a cada visitante sin que allí las usara
+nadie —y Vercel, con razón, se niega a guardar como privado un valor marcado
+como público—.
 
 `SUPABASE_SERVICE_ROLE_KEY` **no va en Vercel**. Salta las políticas RLS por
 completo, y la aplicación no la usa en ningún punto: solo la piden

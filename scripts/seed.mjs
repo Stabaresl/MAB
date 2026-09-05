@@ -15,12 +15,12 @@ import { readFileSync } from "node:fs";
 
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const url = process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !serviceKey) {
   console.error(
-    "Faltan NEXT_PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY.\n" +
+    "Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY.\n" +
       "Ejecuta con: node --env-file=.env.local scripts/seed.mjs",
   );
   process.exit(1);

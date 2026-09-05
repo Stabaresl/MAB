@@ -44,7 +44,7 @@ export async function updateSession(request: NextRequest) {
    */
   if (!isSupabaseConfigured()) {
     console.error(
-      "Middleware: faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY. " +
+      "Middleware: faltan SUPABASE_URL o SUPABASE_ANON_KEY. " +
         "El sitio público se sirve sin sesión y el panel queda cerrado. " +
         "En Vercel: Settings → Environment Variables, y volver a desplegar.",
     );
