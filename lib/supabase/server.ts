@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-import { supabaseAnonKey, supabaseUrl } from "@/lib/env";
+import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "@/lib/env";
 import type { Database } from "@/lib/database.types";
 
 /**
@@ -38,8 +38,14 @@ export async function createClient() {
  * Devuelve la sesión del administrador, o null si no hay ninguna.
  * `getUser()` valida el token contra Supabase; `getSession()` solo lee la
  * cookie y por eso no sirve para decidir permisos.
+ *
+ * Sin credenciales en el entorno devuelve null en vez de reventar. Eso deja que
+ * la pantalla de acceso se pinte y explique lo que falta, que es más útil que
+ * un 500 justo en la página donde alguien va a mirar cuando algo no funciona.
  */
 export async function getAdminUser() {
+  if (!isSupabaseConfigured()) return null;
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return null;

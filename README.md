@@ -132,3 +132,23 @@ desde una terminal. No se importa desde ningún archivo de `app/`.
 Los scripts de `scripts/` son de uso puntual: extrajeron las fotos del portafolio
 en PDF, las recortaron sobre transparencia y generaron el componente del logo de
 Sealbyte. No hacen falta para el día a día del sitio.
+
+## Despliegue en Vercel
+
+Tres variables de entorno, en **Settings → Environment Variables**, marcadas para
+Production, Preview y Development:
+
+| Variable | De dónde sale |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | la misma pantalla, clave `anon` |
+| `SUPABASE_SERVICE_ROLE_KEY` | la misma pantalla, clave `service_role` — **secreta** |
+
+Las dos primeras se leen también al compilar, así que **añadirlas no basta: hay
+que volver a desplegar** para que entren en el paquete.
+
+Si faltan, el sitio público se sirve igual con el catálogo vacío y el panel manda
+a la pantalla de acceso, que lo explica. Antes reventaba con un
+`MIDDLEWARE_INVOCATION_FAILED` en todas las rutas: el middleware corre en cada
+petición, así que una variable ausente tumbaba también las páginas que no
+necesitan sesión para nada.

@@ -1,10 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { supabaseAnonKey, supabaseUrl } from "@/lib/env";
+import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "@/lib/env";
 
 /** Rutas del panel que sí puede ver alguien sin sesión. */
 const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/recuperar", "/admin/nueva-clave"];
+
+/** ¿La ruta pertenece al panel y exige sesión? */
+function exigeSesion(pathname: string): boolean {
+  if (!pathname.startsWith("/admin")) return false;
+  return !PUBLIC_ADMIN_ROUTES.some(
+    (ruta) => pathname === ruta || pathname.startsWith(`${ruta}/`),
+  );
+}
 
 /**
  * Refresca la sesión de Supabase en cada petición y cierra el panel a quien no
@@ -18,6 +26,36 @@ const PUBLIC_ADMIN_ROUTES = ["/admin/login", "/admin/recuperar", "/admin/nueva-c
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const { pathname } = request.nextUrl;
+
+  /*
+   * Sin credenciales de Supabase no hay sesión que refrescar.
+   *
+   * El middleware corre en TODAS las rutas, así que si aquí se lanza una
+   * excepción no falla una página: falla el sitio entero, con un
+   * MIDDLEWARE_INVOCATION_FAILED en cada dirección. Eso es lo que pasaba
+   * cuando las variables no estaban puestas en Vercel — el catálogo, que no
+   * necesita sesión para nada, se caía junto con el panel.
+   *
+   * Así que se sale por las buenas: las páginas públicas se sirven (el
+   * catálogo saldrá vacío, y `lib/catalog.ts` lo avisa en el registro) y el
+   * panel manda a la pantalla de acceso, que es donde el problema se ve y se
+   * explica en vez de quedar en un 500 sin pistas.
+   */
+  if (!isSupabaseConfigured()) {
+    console.error(
+      "Middleware: faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY. " +
+        "El sitio público se sirve sin sesión y el panel queda cerrado. " +
+        "En Vercel: Settings → Environment Variables, y volver a desplegar.",
+    );
+    if (exigeSesion(pathname)) {
+      const login = request.nextUrl.clone();
+      login.pathname = "/admin/login";
+      login.searchParams.set("siguiente", pathname);
+      return NextResponse.redirect(login);
+    }
+    return response;
+  }
 
   const supabase = createServerClient(supabaseUrl(), supabaseAnonKey(), {
     cookies: {
@@ -43,13 +81,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-  const isAdminArea = pathname.startsWith("/admin");
-  const isPublicAdminRoute = PUBLIC_ADMIN_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  );
-
-  if (isAdminArea && !isPublicAdminRoute && !user) {
+  if (exigeSesion(pathname) && !user) {
     const login = request.nextUrl.clone();
     login.pathname = "/admin/login";
     // Para devolver al administrador a donde iba después de entrar.

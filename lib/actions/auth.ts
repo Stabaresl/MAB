@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
-import { siteUrl } from "@/lib/env";
+import { isSupabaseConfigured, siteUrl } from "@/lib/env";
 import { failure, loginSchema, success, fieldErrorsFrom, type ActionResult } from "@/lib/validation";
 
 /**
@@ -22,6 +22,16 @@ export async function signIn(formData: FormData): Promise<ActionResult<never>> {
 
   if (!parsed.success) {
     return failure("Revisa los datos de acceso.", fieldErrorsFrom(parsed.error));
+  }
+
+  // Sin credenciales en el entorno no hay contra qué autenticar. Se dice cuál
+  // es el problema en vez de dejar que reviente: quien administra el sitio no
+  // tiene por qué deducir una variable ausente de un error de red.
+  if (!isSupabaseConfigured()) {
+    return failure(
+      "El sitio no tiene configurada la conexión con la base de datos. " +
+        "Faltan las variables de entorno de Supabase en el despliegue.",
+    );
   }
 
   const supabase = await createClient();
