@@ -17,6 +17,7 @@ next-env.d.ts
 .agents/
 .cursor/
 .windsurf/
+.mcp.json
 CLAUDE.md
 AGENTS.md
 design-rules/
