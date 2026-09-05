@@ -19,9 +19,9 @@ import { site } from "@/lib/site";
  * nunca. Trece medidas por fotograma no cuestan nada, y solo se escribe en el
  * elemento cuando el valor cambia lo suficiente como para verse.
  *
- * De los trece clientes del portafolio hay logotipo de cinco: los demás no
- * tienen sitio alcanzable o no publican el archivo. Todas las fichas llevan el
- * nombre debajo, así que la que no tiene logotipo no se lee como un hueco.
+ * De los trece clientes del portafolio hay logotipo de seis: los demás no tienen
+ * sitio alcanzable o no publican el archivo. Todas las fichas llevan el nombre
+ * debajo, así que la que no tiene logotipo no se lee como un hueco.
  */
 
 /** Clientes de los que hay archivo, por el nombre exacto de `lib/site.ts`. */
@@ -31,6 +31,7 @@ const LOGOTIPOS: Record<string, string> = {
   "Infante Vives": "infantevives",
   Prodesa: "prodesa",
   "CFC Constructora": "cfc",
+  "Gran Morada": "granmorada",
 };
 
 const VELOCIDAD = 26;          // píxeles por segundo del avance automático
@@ -225,7 +226,7 @@ export function ClientWall() {
                     height={200}
                     draggable={false}
                     sizes="200px"
-                    className="max-h-8 w-auto max-w-[85%] object-contain"
+                    className="max-h-9 w-auto max-w-[85%] rounded-md object-contain"
                   />
                 ) : (
                   <span aria-hidden="true" className="flex h-8 items-center">

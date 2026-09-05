@@ -21,6 +21,7 @@ from __future__ import annotations
 import pathlib
 import sys
 
+import numpy as np
 from PIL import Image
 
 ENTRADA = pathlib.Path("assets/logos")
@@ -28,6 +29,36 @@ SALIDA = pathlib.Path("public/clientes")
 
 ALTO = 200                # alto de exportacion; el ancho sale de la proporcion
 ANCHO_MAXIMO = 800        # tope para los logotipos muy apaisados
+
+
+def recortar(imagen: Image.Image) -> Image.Image:
+    """Quita el aire sobrante, venga en transparencia o en color plano.
+
+    La mayoria de los logotipos llegan sobre transparencia y basta con el
+    encuadre del alfa. Otros vienen como una pieza opaca sobre su propio color
+    de marca —Gran Morada es blanco sobre morado, y ese morado es parte del
+    logotipo, no un fondo que sobre—: ahi el alfa cubre el archivo entero y hay
+    que recortar por color, tomando el de la esquina como referencia.
+    """
+    arr = np.asarray(imagen)
+    if (arr[:, :, 3] > 20).mean() < 0.98:
+        return imagen.crop(imagen.getbbox() or (0, 0, imagen.width, imagen.height))
+
+    rgb = arr[:, :, :3].astype(int)
+    esquina = rgb[0, 0]
+    contenido = np.abs(rgb - esquina).max(axis=2) > 18
+    filas, columnas = np.where(contenido)
+    if len(columnas) == 0:
+        return imagen
+
+    # Un respiro alrededor, para que la pieza no quede pegada al canto.
+    margen = max(imagen.width, imagen.height) // 22
+    return imagen.crop((
+        max(0, int(columnas.min()) - margen),
+        max(0, int(filas.min()) - margen),
+        min(imagen.width, int(columnas.max()) + 1 + margen),
+        min(imagen.height, int(filas.max()) + 1 + margen),
+    ))
 
 
 def main() -> int:
@@ -38,10 +69,7 @@ def main() -> int:
 
     SALIDA.mkdir(parents=True, exist_ok=True)
     for archivo in archivos:
-        imagen = Image.open(archivo).convert("RGBA")
-        caja = imagen.getbbox()
-        if caja:
-            imagen = imagen.crop(caja)
+        imagen = recortar(Image.open(archivo).convert("RGBA"))
         imagen.thumbnail((ANCHO_MAXIMO, ALTO), Image.LANCZOS)
 
         salida = SALIDA / f"{archivo.stem}.webp"

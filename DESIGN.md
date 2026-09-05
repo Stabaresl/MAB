@@ -264,9 +264,13 @@ ese relleno no forma parte de la vuelta.
 Los logotipos van **en su color**. Se probó repintarlos en la tinta del sitio,
 que es el tratamiento habitual de un muro de clientes, y se descartó: el color es
 parte de la marca y es por lo que se reconoce a un cliente. De los trece hay
-archivo de cinco —los demás no tienen sitio alcanzable o no lo publican—, así
-que todas las fichas llevan el nombre debajo y la que no tiene logotipo no se
-lee como un hueco.
+archivo de seis —los demás no tienen sitio alcanzable, lo tienen caído o no lo
+publican—, así que todas las fichas llevan el nombre debajo y la que no tiene
+logotipo no se lee como un hueco.
+
+La separación entre fichas es holgada por necesidad, no por gusto: la del centro
+crece un 26% y su vecina otro tanto, así que con el espaciado normal se tocaban
+al crecer.
 
 **Personaje de la portada del pie.** Va detrás de la tarjeta de cierre, con el
 filo superior cruzándole a la altura del codo: de ahí para abajo lo tapa la
