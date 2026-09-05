@@ -339,6 +339,20 @@
     transform: translateY(18px);
   }
 
+  /*
+   * En una sola columna la entrada lateral no tiene de dónde venir, y encima
+   * hace daño: el bloque ocupa todo el ancho útil, así que desplazarlo 26px lo
+   * saca de la pantalla y el móvil aparece con barra horizontal —y con ese
+   * rebote lateral al desplazarse— hasta que el bloque se revela. Por debajo
+   * del cambio a dos columnas todo entra desde abajo.
+   */
+  @media (max-width: 1023px) {
+    .js [data-reveal="izquierda"],
+    .js [data-reveal="derecha"] {
+      transform: translateY(24px);
+    }
+  }
+
   .js [data-reveal][data-visto],
   .js [data-stagger][data-visto] [data-stagger-item] {
     opacity: 1;
@@ -433,6 +447,34 @@
 
   .cinturon::-webkit-scrollbar {
     display: none;
+  }
+
+  /*
+   * En móvil la cinta deja de pasear y se convierte en algo que se empuja con
+   * el dedo.
+   *
+   * Con el avance automático, en una pantalla de 360px la cinta se quedaba casi
+   * siempre con media tarjeta cortada a cada lado: la de la izquierda mostraba
+   * el final de una palabra y la de la derecha se iba por el filo. Con el
+   * imán de desplazamiento cada tarjeta se planta alineada con el margen del
+   * texto, y la siguiente asoma lo justo para que se vea que hay más.
+   *
+   * El difuminado pasa a ser solo del lado derecho: por la izquierda ya no hay
+   * nada cortado que suavizar, y desvanecer la primera tarjeta la haría parecer
+   * a medio cargar.
+   */
+  @media (max-width: 767px) {
+    .cinturon {
+      scroll-snap-type: x mandatory;
+      padding-inline-start: 20px;
+      scroll-padding-inline-start: 20px;
+      -webkit-mask-image: linear-gradient(to right, #000 86%, transparent);
+      mask-image: linear-gradient(to right, #000 86%, transparent);
+    }
+
+    .cinturon > * {
+      scroll-snap-align: start;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -349,9 +349,16 @@ export default async function HomePage() {
               tamaño. */}
           <Reveal direccion="izquierda" retraso={0.1} className="lg:order-1 lg:h-full">
             <div className="funde-der sangra-izq relative aspect-[3/2] w-full overflow-hidden rounded-xl lg:-my-16 lg:aspect-auto lg:h-[calc(100%+8rem)] lg:rounded-none">
+              {/*
+                El fotograma sale del mismo vídeo que la portada, y no del
+                collage de ambientes que entregó la empresa: aquellos paneles
+                miden 512px de ancho de verdad —el archivo de 1024 es ese mismo
+                panel ampliado al doble, no hay original mayor— y a este tamaño
+                se veían blandos. 1366px de píxeles reales se sostienen.
+              */}
               <Image
-                src="/ambientes/ducha-lluvia.webp"
-                alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
+                src="/ambientes/cocina-terminada.webp"
+                alt="Cocina terminada con grifería y mesones instalados"
                 fill
                 sizes="(max-width: 1024px) 92vw, 55vw"
                 className="object-cover"

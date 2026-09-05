@@ -195,7 +195,7 @@ export async function SiteFooter() {
             <Link
               href="/admin"
               rel="nofollow"
-              className="inline-flex items-center gap-1.5 text-[14px] text-ink-3 transition-colors hover:text-accent-ink"
+              className="-my-1.5 inline-flex items-center gap-1.5 rounded-md py-1.5 text-[14px] text-ink-3 transition-colors hover:text-accent-ink"
             >
               <svg
                 viewBox="0 0 16 16"

@@ -74,7 +74,10 @@ export default async function ContactoPage() {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="break-words text-[17px] text-ink transition-colors hover:text-accent-ink"
+                  // El relleno no es decorativo: sin él el enlace mide 22px de
+                  // alto y en un móvil hay que apuntar. Los márgenes negativos
+                  // devuelven la alineación con el resto de la columna.
+                  className="-mx-2 -my-1 inline-block break-words rounded-md px-2 py-1.5 text-[17px] text-ink transition-colors hover:bg-paper hover:text-accent-ink"
                 >
                   {settings.email}
                 </a>

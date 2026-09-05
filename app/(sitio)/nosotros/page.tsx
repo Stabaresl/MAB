@@ -54,11 +54,16 @@ export default function NosotrosPage() {
         </div>
 
         <figure className="funde-izq sangra-der aspect-[2/1] overflow-hidden rounded-lg border border-line lg:aspect-auto lg:h-full lg:rounded-none lg:border-0">
+          {/* Fotograma del vídeo de portada: 1366px reales. El panel del
+              collage que había antes tiene 512px de ancho de origen —el archivo
+              de 1024 es una ampliación al doble— y a este tamaño se veía
+              blando. Aquí, además, se ven las piezas de las que habla el texto:
+              lavamanos, grifería y sanitario ya instalados. */}
           <Image
-            src="/ambientes/ducha-lluvia.webp"
-            alt="Ducha tipo lluvia instalada en una zona húmeda terminada"
-            width={1024}
-            height={512}
+            src="/ambientes/piezas-instaladas.webp"
+            alt="Lavamanos, grifería y sanitario instalados en una vivienda terminada"
+            width={1366}
+            height={768}
             sizes="(max-width: 1024px) 92vw, 560px"
             className="h-full w-full object-cover"
           />

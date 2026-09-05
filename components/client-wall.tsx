@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { site } from "@/lib/site";
+import { useEsMovil } from "@/lib/use-es-movil";
 
 /**
  * Carrusel de clientes.
@@ -61,6 +62,7 @@ export function ClientWall() {
   const arrastre = useRef<{ x: number; scroll: number } | null>(null);
   const huboArrastre = useRef(false);
   const [pausado, setPausado] = useState(false);
+  const esMovil = useEsMovil();
 
   // Tres copias, no dos. Con dos, la vitrina empieza y acaba en un extremo de
   // la lista y se ve medio ancho de pista vacío hasta que el avance la llena.
@@ -179,6 +181,27 @@ export function ClientWall() {
     };
   }, []);
 
+  /*
+   * En móvil no hay carrusel: hay una rejilla.
+   *
+   * El aumento por cercanía necesita un centro y sitio a los lados para que se
+   * note; en 360px de ancho no hay ni una cosa ni la otra, y lo que se veía era
+   * una ficha a medias, otra entera y otra a medias, todas del mismo tamaño. En
+   * dos columnas caben los trece clientes de un vistazo, que es justo lo que
+   * esta sección quiere demostrar.
+   */
+  if (esMovil) {
+    return (
+      <ul className="grid grid-cols-2 gap-3">
+        {site.clients.map((cliente) => (
+          <li key={cliente}>
+            <Ficha cliente={cliente} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <div>
       <div className="flex items-center justify-end gap-2">
@@ -210,37 +233,51 @@ export function ClientWall() {
           // Solo la primera copia existe para el lector de pantalla: las otras
           // dos están ahí para que la vuelta sea continua.
           const copia = indice >= site.clients.length;
-          const archivo = LOGOTIPOS[cliente];
           return (
             <li
               key={`${cliente}-${indice}`}
               className="vitrina-ficha"
               {...(copia ? { "aria-hidden": true } : {})}
             >
-              <div className="card flex h-[132px] flex-col items-center justify-center gap-3 px-4 py-4">
-                {archivo ? (
-                  <Image
-                    src={`/clientes/${archivo}.webp`}
-                    alt=""
-                    width={400}
-                    height={200}
-                    draggable={false}
-                    sizes="200px"
-                    className="max-h-9 w-auto max-w-[85%] rounded-md object-contain"
-                  />
-                ) : (
-                  <span aria-hidden="true" className="flex h-8 items-center">
-                    <Rombo />
-                  </span>
-                )}
-                <span className="text-balance text-center font-display text-[15px] leading-tight text-ink-2">
-                  {cliente}
-                </span>
-              </div>
+              <Ficha cliente={cliente} />
             </li>
           );
         })}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * Una ficha de cliente: logotipo si lo hay, y el nombre siempre.
+ *
+ * El nombre no es un pie del logotipo, es el dato: de los trece clientes solo
+ * seis publican un archivo utilizable, y con el nombre debajo de todas las
+ * fichas la que no tiene logotipo se lee como una más y no como un hueco.
+ */
+function Ficha({ cliente }: { cliente: string }) {
+  const archivo = LOGOTIPOS[cliente];
+
+  return (
+    <div className="card flex h-[132px] flex-col items-center justify-center gap-3 px-4 py-4">
+      {archivo ? (
+        <Image
+          src={`/clientes/${archivo}.webp`}
+          alt=""
+          width={400}
+          height={200}
+          draggable={false}
+          sizes="200px"
+          className="max-h-9 w-auto max-w-[85%] rounded-md object-contain"
+        />
+      ) : (
+        <span aria-hidden="true" className="flex h-8 items-center">
+          <Rombo />
+        </span>
+      )}
+      <span className="text-balance text-center font-display text-[15px] leading-tight text-ink-2">
+        {cliente}
+      </span>
     </div>
   );
 }

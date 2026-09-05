@@ -15,10 +15,12 @@ export function MobileNav({
   links,
   categories,
   whatsapp,
+  gmail,
 }: {
   links: Enlace[];
   categories: Categoria[];
   whatsapp: string;
+  gmail: string;
 }) {
   const [abierto, setAbierto] = useState(false);
   const pathname = usePathname();
@@ -107,15 +109,29 @@ export function MobileNav({
             ))}
           </ul>
 
-          <a
-            href={whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            tabIndex={abierto ? undefined : -1}
-            className="btn btn-primary mt-5 w-full"
-          >
-            Pedir cotización
-          </a>
+          {/* Las mismas dos vías que ofrece el menú de escritorio. Con solo
+              WhatsApp, quien prefiere escribir un correo se quedaba sin salida
+              en el móvil, que es donde se ve la mayor parte del sitio. */}
+          <div className="mt-5 flex flex-col gap-2.5">
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={abierto ? undefined : -1}
+              className="btn btn-primary w-full"
+            >
+              Cotizar por WhatsApp
+            </a>
+            <a
+              href={gmail}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={abierto ? undefined : -1}
+              className="btn btn-secondary w-full"
+            >
+              Cotizar por Gmail
+            </a>
+          </div>
 
           {categories.length > 0 && (
             <>

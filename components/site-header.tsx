@@ -16,7 +16,22 @@ export async function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-canvas/85 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-line">
+      {/*
+        El velo translúcido va en su propia capa y no en el <header>.
+
+        No es un capricho: `backdrop-filter` convierte al elemento que lo lleva
+        en el bloque contenedor de sus descendientes posicionados con `fixed`.
+        Con el desenfoque en el <header>, el panel del menú móvil —que es
+        `fixed inset-x-0 top-18 bottom-0`— se resolvía contra los 72px de alto
+        de la cabecera en vez de contra la pantalla, y salía de 1px de alto: el
+        menú se abría y no se veía nada. Aquí el velo es hermano del panel, no
+        su ancestro, así que el `fixed` vuelve a medir contra la ventana.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-canvas/85 backdrop-blur-md"
+      />
       <div className="page flex h-18 items-center justify-between gap-4 py-3 md:h-22">
         <Link
           href="/"
@@ -63,6 +78,7 @@ export async function SiteHeader() {
             links={links}
             categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
             whatsapp={whatsappLink(settings.whatsapp_primary, "Hola, quisiera una cotización.")}
+            gmail={gmailLink(settings.email, "Solicitud de cotización", enquiryBody())}
           />
         </div>
       </div>

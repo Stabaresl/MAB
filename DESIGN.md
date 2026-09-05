@@ -361,3 +361,25 @@ Verificado en 320 / 375 / 414 / 768 / 1280 px.
 - La navegación colapsa a un panel a pantalla completa por debajo de 768px.
 - Ningún objetivo táctil por debajo de 44×44px en controles; los enlaces de
   lista, por encima de 24px con separación.
+
+### Lo que cambia de verdad en móvil
+
+No basta con que quepa. Tres piezas se comportan distinto por debajo de 768px,
+y una cuarta estaba rota:
+
+- **El velo de la cabecera va en su propia capa**, no en el `<header>`.
+  `backdrop-filter` convierte al elemento que lo lleva en bloque contenedor de
+  sus descendientes `fixed`: con el desenfoque en la cabecera, el panel del menú
+  móvil se resolvía contra sus 72px de alto y salía de 1px. El menú se abría y
+  no se veía nada.
+- **La cinta de categorías no se mueve sola.** Una cinta que avanza por su
+  cuenta pelea con el dedo y deja media tarjeta cortada a cada lado. En móvil se
+  empuja a mano, con imán de desplazamiento, la primera tarjeta alineada con el
+  margen del texto y la siguiente asomando; sin avance automático la copia
+  duplicada sobra, así que tampoco se pinta.
+- **La vitrina de clientes se convierte en rejilla de dos columnas.** El aumento
+  por cercanía necesita un centro y sitio a los lados; en 360px no hay ninguna
+  de las dos cosas.
+- **Las apariciones laterales entran desde abajo.** En una sola columna el
+  bloque ocupa todo el ancho útil: desplazarlo 26px lo saca de la pantalla y
+  aparece barra horizontal hasta que se revela.

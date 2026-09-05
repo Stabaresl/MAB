@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useEsMovil } from "@/lib/use-es-movil";
+
 export type CategoriaCarrusel = {
   id: string;
   slug: string;
@@ -42,6 +44,7 @@ const UMBRAL_ARRASTRE = 6;
 export function CategoryBelt({ categorias }: { categorias: CategoriaCarrusel[] }) {
   const pista = useRef<HTMLUListElement>(null);
   const [pausado, setPausado] = useState(false);
+  const esMovil = useEsMovil();
 
   // Estas tres no pintan nada, así que van en refs: guardarlas en el estado
   // repintaría la lista entera en cada movimiento del ratón.
@@ -51,9 +54,20 @@ export function CategoryBelt({ categorias }: { categorias: CategoriaCarrusel[] }
   /** Se alza cuando el puntero recorrió lo bastante como para ser un arrastre. */
   const huboArrastre = useRef(false);
 
+  /*
+   * En móvil la cinta no se mueve sola.
+   *
+   * Una cinta que avanza por su cuenta en una pantalla estrecha pelea con el
+   * dedo, no deja leer una tarjeta entera y deja el pulgar persiguiendo algo
+   * que se va. Allí se recorre a mano, con el imán de desplazamiento que pone
+   * el CSS; y sin avance automático la segunda copia sobra, porque nadie va a
+   * llegar dando vueltas hasta el final de la lista sin darse cuenta.
+   */
+  const anima = !esMovil;
+
   // Una cinta con dos o tres piezas se ve vacía al duplicarla; a partir de esa
   // cantidad ya hay material para que la vuelta parezca continua.
-  const repetir = categorias.length >= 4;
+  const repetir = anima && categorias.length >= 4;
   const piezas = repetir ? [...categorias, ...categorias] : categorias;
 
   /** Devuelve el desplazamiento al primer tramo cuando se pasa de la mitad. */
@@ -207,7 +221,9 @@ export function CategoryBelt({ categorias }: { categorias: CategoriaCarrusel[] }
             type="button"
             onClick={() => setPausado((p) => !p)}
             aria-pressed={pausado}
-            className="ml-1 inline-flex h-11 items-center gap-2.5 rounded-full border border-line-2 bg-canvas pl-3.5 pr-4 text-[13.5px] font-semibold text-ink-2 transition-colors hover:border-ink-3 hover:text-ink"
+            // En móvil no hay nada que pausar: allí la cinta solo se mueve
+            // cuando alguien la empuja.
+            className="ml-1 hidden h-11 items-center gap-2.5 rounded-full border border-line-2 bg-canvas pl-3.5 pr-4 text-[13.5px] font-semibold text-ink-2 transition-colors hover:border-ink-3 hover:text-ink md:inline-flex"
           >
             <span aria-hidden="true" className="text-accent">
               {pausado ? <IconoReanudar /> : <IconoPausa />}
