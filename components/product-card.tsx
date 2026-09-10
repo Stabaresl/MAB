@@ -32,9 +32,16 @@ import type { ProductCard as ProductCardData } from "@/lib/catalog";
 export function ProductCard({
   product,
   showCategory = false,
+  inerte = false,
 }: {
   product: ProductCardData;
   showCategory?: boolean;
+  /**
+   * La tarjeta es una copia puesta ahí para que la vuelta de un carrusel sea
+   * continua. Se ve, pero sale del recorrido de tabulación: si no, el teclado
+   * pasaría dos veces por los mismos artículos.
+   */
+  inerte?: boolean;
 }) {
   const image = thumbUrl(product.image_url) ?? product.image_url;
 
@@ -59,7 +66,11 @@ export function ProductCard({
       <div className="flex flex-1 flex-col gap-1.5 border-t border-sky-line bg-sky-soft p-4">
         {showCategory && <span className="label text-sky-ink">{product.category.name}</span>}
         <h3 className="font-text text-[16px] font-semibold leading-snug text-ink transition-colors group-hover:text-accent-ink">
-          <Link href={`/producto/${product.slug}`} className="after:absolute after:inset-0">
+          <Link
+            href={`/producto/${product.slug}`}
+            tabIndex={inerte ? -1 : undefined}
+            className="after:absolute after:inset-0"
+          >
             {product.name}
           </Link>
         </h3>

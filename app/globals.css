@@ -564,7 +564,6 @@
   .pista {
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
     /* La barra sobra: hay flechas, y el difuminado ya dice que sigue. */
     scrollbar-width: none;
     /* Sin esto, el gesto lateral del móvil dispara el «atrás» del navegador. */
@@ -577,8 +576,23 @@
     display: none;
   }
 
-  .pista > * {
-    scroll-snap-align: start;
+  /*
+   * El imán solo en móvil.
+   *
+   * Ahí no hay paseo automático —una cinta que se mueve sola debajo del pulgar
+   * es insufrible— y el imán es lo que evita que cada empujón deje media
+   * tarjeta cortada a cada lado. En escritorio, donde la pista pasea sola, el
+   * imán tiraría de vuelta en cada fotograma y el movimiento se vería a
+   * tirones.
+   */
+  @media (max-width: 767px) {
+    .pista {
+      scroll-snap-type: x mandatory;
+    }
+
+    .pista > * {
+      scroll-snap-align: start;
+    }
   }
 
   /*
