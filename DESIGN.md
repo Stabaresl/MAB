@@ -67,6 +67,25 @@ warm-line       #DDD0BD   borde del panel de arena
 
 sky             #8BB7D0   realce frío, del azul del logo
 sky-soft        #E9F0F5   lavado pastel frío
+sky-line        #CFE0EA   filete del tono azul del catálogo
+sky-ink         #1D4F6E   tinta del tono azul                 — 8.9:1 sobre sky-soft
+
+sun             #F09E4F   naranja del logo: franja de contacto y marcas de tono
+sun-soft        #FBE8D5   fondo del tono naranja del catálogo
+sun-line        #F2D5B4   filete del tono naranja
+sun-ink         #8A4A0C   tinta del tono naranja              — 5.7:1 sobre sun-soft
+
+petrol          #0E3446   azul petróleo: fondo con texto claro — 12.2:1
+petrol-2        #14465D   hover de petrol
+petrol-soft     #E2EBF0   fondo del tono petróleo del catálogo
+petrol-line     #C6D8E2   filete del tono petróleo
+
+slate-soft      #ECEEF0   fondo del tono gris del catálogo
+slate-line      #D6DADE   filete del tono gris
+slate-ink       #3F4B54   tinta del tono gris
+
+warm-ink        #6B533A   tinta del tono arena                — 6.1:1 sobre warm
+sand            #C9A87C   arena saturada, solo marcas de color; nunca texto
 
 success         #17794A   publicado, guardado correcto
 danger          #C0342C   error, acción destructiva
@@ -77,6 +96,19 @@ Reglas de color:
 
 - El acento no decora. Aparece en el botón principal, en las etiquetas de
   sección, en los filetes de realce y en el foco. Nada más.
+- **Los seis tonos del catálogo son la excepción acotada.** Cada categoría se
+  queda con uno —azul, naranja, petróleo, arena, gris y el propio acento— y ese
+  tono la acompaña por todo el sitio: la pastilla del cinturón, el hueco de la
+  foto en la rejilla, la cabecera de su página y el punto del rail. El color ahí
+  no es decoración: es cómo se reconoce una categoría antes de leer su nombre.
+  Sin ellos el catálogo eran cuarenta y cinco recuadros del mismo hueso y se
+  leía como una hoja de cálculo.
+- El tono tiñe el fondo de la foto y el filete, nunca la tarjeta entera: la
+  pieza necesita fondo plano para recortarse y el texto necesita el lienzo de
+  siempre para no recalcular el contraste seis veces.
+- El naranja del logo vuelve, pero acotado: un tono del catálogo y la franja de
+  contacto de la portada. El acento sigue siendo el azul pizarra. Las dos veces
+  que el naranja fue el acento de toda la página le ganó al navy.
 - El acento como texto: `accent-ink` en cuerpo, `accent-strong` en display
   grande. El `accent` puro solo escribe a partir de 19px o en negrita.
 - **Nunca `#FFFFFF` como fondo.** El lienzo es `canvas`; lo que quiera destacar
@@ -322,8 +354,9 @@ precio es que quien no use Gmail ve una pantalla de acceso.
   artículos, y la lista de 13 clientes del portafolio.
 - Gradientes decorativos morados o rosas, cristal esmerilado, sombras de color.
 - Emoji como iconografía. Los iconos son SVG dibujados a mano.
-- Más de un acento cromático. El azul pizarra está solo; el navy es tinta,
-  y los lavados pastel son fondo, no acento.
+- Más de un acento cromático **fuera del catálogo**. El azul pizarra está solo;
+  el navy es tinta, los lavados pastel son fondo y los seis tonos solo existen
+  dentro del catálogo, donde identifican una categoría.
 - Utilidades propias en la capa `components`. Van en `utilities`: en capas de CSS
   manda el orden de capa sobre la especificidad, así que desde `components`
   cualquier utilidad de Tailwind las pisa por muy pesado que sea el selector.

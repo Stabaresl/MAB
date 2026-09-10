@@ -24,17 +24,31 @@ export function CategoryList({ categories }: { categories: Row[] }) {
   const [confirming, setConfirming] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
+  /**
+   * Borrar una categoría con todo lo que tenga dentro.
+   *
+   * Antes esto era imposible: había que vaciar la categoría artículo por
+   * artículo y solo entonces se dejaba borrar. Para una categoría de doce
+   * referencias eran trece confirmaciones. Ahora se borra de una vez, pero el
+   * botón dice exactamente cuántos artículos se lleva por delante y no se
+   * parece a «Cancelar»: es un borrado que no se puede deshacer y tiene que
+   * costar una lectura.
+   */
   function onDelete(row: Row) {
     setError(null);
     setOk(null);
     startTransition(async () => {
-      const result = await deleteCategory(row.id);
+      const result = await deleteCategory(row.id, { conArticulos: row.productCount > 0 });
       setConfirming(null);
       if (!result.ok) {
         setError(result.error);
         return;
       }
-      setOk(`Categoría «${result.data.name}» eliminada.`);
+      const conArticulos =
+        result.data.articulos > 0
+          ? ` con ${result.data.articulos} ${result.data.articulos === 1 ? "artículo" : "artículos"}`
+          : "";
+      setOk(`Categoría «${result.data.name}» eliminada${conArticulos}.`);
       router.refresh();
     });
   }
@@ -103,35 +117,46 @@ export function CategoryList({ categories }: { categories: Row[] }) {
             </div>
 
             {confirming === row.id && (
-              <div className="flex flex-wrap items-center gap-3 border-t border-line bg-paper p-4">
-                {row.productCount > 0 ? (
-                  <p className="text-[14px] text-ink">
-                    «{row.name}» tiene {row.productCount}{" "}
-                    {row.productCount === 1 ? "artículo" : "artículos"}. Muévelos a otra categoría
-                    o elimínalos antes de poder borrarla.
+              <div className="border-t border-line bg-paper p-4">
+                {row.productCount > 0 && (
+                  <p className="mb-3 text-[14px] leading-relaxed text-ink">
+                    <strong className="font-semibold">Ojo:</strong> «{row.name}» tiene{" "}
+                    {row.productCount} {row.productCount === 1 ? "artículo" : "artículos"}. Al
+                    borrar la categoría se borran también{" "}
+                    {row.productCount === 1 ? "ese artículo" : "esos artículos"} y sus fotos. No se
+                    puede deshacer. Si prefieres conservarlos, ábrelos y cámbialos de categoría
+                    antes.
                   </p>
-                ) : (
-                  <>
+                )}
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {row.productCount === 0 && (
                     <span className="text-[14px] text-ink">
                       ¿Borrar «{row.name}» definitivamente?
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => onDelete(row)}
-                      disabled={pending}
-                      className="btn h-11 bg-danger px-4 text-[14px] font-semibold text-white hover:opacity-90"
-                    >
-                      {pending ? "Borrando…" : "Sí, borrar"}
-                    </button>
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setConfirming(null)}
-                  className="btn btn-secondary h-11 px-4 text-[14px]"
-                >
-                  Cancelar
-                </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => onDelete(row)}
+                    disabled={pending}
+                    className="btn h-11 bg-danger px-4 text-[14px] font-semibold text-white hover:opacity-90"
+                  >
+                    {pending
+                      ? "Borrando…"
+                      : row.productCount === 0
+                        ? "Sí, borrar"
+                        : row.productCount === 1
+                          ? "Sí, borrar la categoría y su artículo"
+                          : `Sí, borrar la categoría y sus ${row.productCount} artículos`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirming(null)}
+                    className="btn btn-secondary h-11 px-4 text-[14px]"
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             )}
           </li>

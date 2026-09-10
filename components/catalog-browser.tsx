@@ -1,0 +1,351 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+
+import { ProductCard } from "@/components/product-card";
+import type { ProductCard as ProductCardData } from "@/lib/catalog";
+import { contarMateriales, materialesDe } from "@/lib/materiales";
+import { fold } from "@/lib/slug";
+import { claseTono } from "@/lib/tono";
+
+/**
+ * El catálogo.
+ *
+ * Antes eran dos pantallas encadenadas: una rejilla de categorías y, dentro de
+ * cada una, otra rejilla de artículos. Para comparar dos sifones de categorías
+ * distintas había que volver atrás, y no existía forma de ver el catálogo
+ * entero. Ahora es una sola vista con los artículos delante y las categorías al
+ * lado, como una tienda: se entra viendo producto, no un índice.
+ *
+ * Todo el filtrado ocurre en el navegador sobre los artículos que ya vinieron
+ * con la página. Son cuarenta y cinco fichas sin descripción —unos 6 kB—, así
+ * que marcar un material responde al instante en vez de esperar un viaje al
+ * servidor. Si el catálogo llegara a varios cientos, esto habría que moverlo a
+ * la base de datos; hasta entonces sería complicar por adelantado.
+ *
+ * Las categorías del rail son enlaces de verdad a `/catalogo/<slug>` y no
+ * botones que filtran: esas páginas existen, tienen su propio título y su
+ * descripción, y son las que MAB comparte por WhatsApp. Convertirlas en estado
+ * de un componente las habría borrado del mapa.
+ */
+
+export type CategoriaRail = {
+  id: string;
+  slug: string;
+  name: string;
+  productCount: number;
+};
+
+type Orden = "recomendado" | "az" | "za";
+
+const ORDENES: { valor: Orden; etiqueta: string }[] = [
+  { valor: "recomendado", etiqueta: "Recomendados" },
+  { valor: "az", etiqueta: "Nombre (A–Z)" },
+  { valor: "za", etiqueta: "Nombre (Z–A)" },
+];
+
+export function CatalogBrowser({
+  categorias,
+  productos,
+  categoriaActiva,
+}: {
+  categorias: CategoriaRail[];
+  productos: ProductCardData[];
+  categoriaActiva?: string;
+}) {
+  const [consulta, setConsulta] = useState("");
+  const [materiales, setMateriales] = useState<string[]>([]);
+  const [orden, setOrden] = useState<Orden>("recomendado");
+  const [panelAbierto, setPanelAbierto] = useState(false);
+
+  // Lo que hay antes de tocar ningún filtro: el catálogo entero, o el de una
+  // categoría si se entró por su página.
+  const base = useMemo(
+    () =>
+      categoriaActiva
+        ? productos.filter((p) => p.category.slug === categoriaActiva)
+        : productos,
+    [productos, categoriaActiva],
+  );
+
+  // Los materiales se cuentan sobre `base` y no sobre el resultado: si se
+  // recalcularan con los filtros puestos, marcar «ABS» dejaría la lista con una
+  // sola opción y no habría manera de añadir «Cromado» sin desmarcar primero.
+  const familias = useMemo(() => contarMateriales(base), [base]);
+
+  const resultados = useMemo(() => {
+    const aguja = fold(consulta.trim());
+
+    const filtrados = base.filter((producto) => {
+      if (aguja) {
+        const texto = fold(
+          `${producto.name} ${producto.specs ?? ""} ${producto.category.name}`,
+        );
+        if (!texto.includes(aguja)) return false;
+      }
+
+      if (materiales.length > 0) {
+        const suyos = materialesDe(producto);
+        // Cualquiera de los marcados, no todos: un lavaplatos es «ABS» o es
+        // «Acero inoxidable», nunca las dos cosas, así que exigir la
+        // intersección dejaría la rejilla vacía en cuanto se marcan dos.
+        if (!materiales.some((m) => suyos.includes(m))) return false;
+      }
+
+      return true;
+    });
+
+    if (orden === "recomendado") return filtrados;
+    const factor = orden === "az" ? 1 : -1;
+    return [...filtrados].sort((a, b) => factor * a.name.localeCompare(b.name, "es"));
+  }, [base, consulta, materiales, orden]);
+
+  const alternarMaterial = (etiqueta: string) => {
+    setMateriales((actuales) =>
+      actuales.includes(etiqueta)
+        ? actuales.filter((m) => m !== etiqueta)
+        : [...actuales, etiqueta],
+    );
+  };
+
+  const hayFiltros = consulta.trim().length > 0 || materiales.length > 0;
+
+  const limpiar = () => {
+    setConsulta("");
+    setMateriales([]);
+  };
+
+  const panel = (
+    <div className="flex flex-col gap-8">
+      <nav aria-label="Categorías del catálogo">
+        <h2 className="label text-ink-3">Explorar por</h2>
+        <ul className="mt-4 flex flex-col gap-0.5">
+          <li>
+            <EnlaceRail href="/catalogo" activo={!categoriaActiva} tono={null}>
+              Todos los productos
+              <Cuantos n={productos.length} />
+            </EnlaceRail>
+          </li>
+          {categorias.map((categoria) => (
+            <li key={categoria.id}>
+              <EnlaceRail
+                href={`/catalogo/${categoria.slug}`}
+                activo={categoriaActiva === categoria.slug}
+                tono={categoria.slug}
+              >
+                {categoria.name}
+                <Cuantos n={categoria.productCount} />
+              </EnlaceRail>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {familias.length > 0 && (
+        <div>
+          <h2 className="label text-ink-3">Filtrar por material</h2>
+          <ul className="mt-4 flex flex-col gap-1">
+            {familias.map((familia) => (
+              <li key={familia.etiqueta}>
+                <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 text-[15px] text-ink-2 transition-colors hover:bg-paper">
+                  <input
+                    type="checkbox"
+                    checked={materiales.includes(familia.etiqueta)}
+                    onChange={() => alternarMaterial(familia.etiqueta)}
+                    className="h-4 w-4 shrink-0 accent-[var(--color-accent)]"
+                  />
+                  <span className="flex-1">{familia.etiqueta}</span>
+                  <span className="spec text-ink-3">{familia.cuantos}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {hayFiltros && (
+        <button
+          type="button"
+          onClick={limpiar}
+          className="self-start text-[14px] font-semibold text-accent-ink underline underline-offset-4 hover:text-accent"
+        >
+          Quitar los filtros
+        </button>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[228px_minmax(0,1fr)] lg:gap-12">
+      {/*
+        En escritorio el rail acompaña el desplazamiento; en móvil no cabe al
+        lado y se pliega tras un botón.
+
+        El panel se escribe una sola vez y lo que cambia es si se muestra. La
+        alternativa —uno para móvil dentro de un `<details>` y otro para
+        escritorio— dejaba dos juegos de casillas en el documento: el lector de
+        pantalla anunciaba «Filtrar por material» dos veces y el tabulador
+        pasaba por catorce casillas para siete filtros.
+      */}
+      <aside className="lg:sticky lg:top-24 lg:self-start">
+        <button
+          type="button"
+          onClick={() => setPanelAbierto((a) => !a)}
+          aria-expanded={panelAbierto}
+          aria-controls="panel-catalogo"
+          className="btn btn-secondary w-full justify-between lg:hidden"
+        >
+          Explorar y filtrar
+          <span className="flex items-center gap-2">
+            {materiales.length > 0 && (
+              <span className="spec rounded-full bg-accent-soft px-2.5 py-0.5 text-accent-ink">
+                {materiales.length}
+              </span>
+            )}
+            <span
+              aria-hidden="true"
+              className={`transition-transform duration-200 ${panelAbierto ? "rotate-180" : ""}`}
+            >
+              <svg
+                viewBox="0 0 12 12"
+                className="h-2.5 w-2.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M2 4.5l4 4 4-4" />
+              </svg>
+            </span>
+          </span>
+        </button>
+
+        <div
+          id="panel-catalogo"
+          className={`${panelAbierto ? "mt-5" : "hidden"} lg:mt-0 lg:block`}
+        >
+          {panel}
+        </div>
+      </aside>
+
+      <div className="min-w-0">
+        <div className="flex flex-col gap-4 border-b border-line pb-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:max-w-[300px]">
+            <label htmlFor="buscar-articulo" className="sr-only">
+              Buscar un artículo
+            </label>
+            <input
+              id="buscar-articulo"
+              type="search"
+              value={consulta}
+              onChange={(e) => setConsulta(e.target.value)}
+              placeholder="Buscar: sifón, ducha, panel…"
+              autoComplete="off"
+              className="field pl-11"
+            />
+            <svg
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            >
+              <circle cx="9" cy="9" r="6" />
+              <path d="M13.5 13.5L17 17" strokeLinecap="round" />
+            </svg>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <label htmlFor="ordenar" className="spec shrink-0 text-ink-3">
+              Ordenar por
+            </label>
+            <select
+              id="ordenar"
+              value={orden}
+              onChange={(e) => setOrden(e.target.value as Orden)}
+              className="field h-11 min-h-11 w-auto py-0 pr-8 text-[14px]"
+            >
+              {ORDENES.map((o) => (
+                <option key={o.valor} value={o.valor}>
+                  {o.etiqueta}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <p aria-live="polite" className="spec mt-5 text-ink-3">
+          {resultados.length === 0
+            ? "Ningún artículo coincide"
+            : `${resultados.length} ${resultados.length === 1 ? "artículo" : "artículos"}`}
+        </p>
+
+        {resultados.length > 0 ? (
+          <ul className="mt-5 grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 xl:grid-cols-3">
+            {resultados.map((producto) => (
+              // La clave lleva la consulta: al filtrar, el nodo se remonta y
+              // reproduce la entrada, que es lo que da la sensación de que la
+              // rejilla se recompone en vez de parpadear.
+              <li key={`${producto.id}-${consulta}`} className="entra min-w-0">
+                <ProductCard product={producto} showCategory={!categoriaActiva} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="card mt-5 p-10 text-center">
+            <p className="text-ink">No encontramos ningún artículo con esos filtros.</p>
+            <p className="mt-2 text-ink-2">
+              Trabajamos con más referencias de las que están publicadas. Si buscas algo concreto,
+              pregúntanos y te decimos si lo tenemos.
+            </p>
+            <button type="button" onClick={limpiar} className="btn btn-secondary mt-6">
+              Quitar los filtros
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Fila del rail. La activa se marca con el punto del tono de su categoría y con
+ * el fondo, nunca solo con el color: quien no distingue el pastel del lienzo
+ * sigue viendo cuál está señalada por el peso de la letra.
+ */
+function EnlaceRail({
+  href,
+  activo,
+  tono,
+  children,
+}: {
+  href: string;
+  activo: boolean;
+  tono: string | null;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={activo ? "page" : undefined}
+      className={`${tono ? claseTono(tono) : ""} flex items-center gap-2.5 rounded-md px-2 py-2 text-[15px] transition-colors ${
+        activo ? "bg-paper font-semibold text-ink" : "text-ink-2 hover:bg-paper hover:text-ink"
+      }`}
+    >
+      <span
+        aria-hidden="true"
+        className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+          tono ? "bg-[var(--tono-punto)]" : "bg-line-2"
+        }`}
+      />
+      <span className="flex min-w-0 flex-1 items-center justify-between gap-2">{children}</span>
+    </Link>
+  );
+}
+
+function Cuantos({ n }: { n: number }) {
+  return <span className="spec shrink-0 text-ink-3">{n}</span>;
+}

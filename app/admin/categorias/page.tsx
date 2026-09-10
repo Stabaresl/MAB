@@ -15,7 +15,7 @@ export default async function CategoriasPage() {
   return (
     <AdminShell
       title="Categorías"
-      description="Los artículos se agrupan en categorías. Una categoría con artículos dentro no se puede borrar hasta vaciarla."
+      description="Los artículos se agrupan en categorías. Al borrar una categoría se borran también los artículos que tenga dentro, así que el panel avisa de cuántos son antes de hacerlo."
     >
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:gap-14">
         <div className="lg:order-1">

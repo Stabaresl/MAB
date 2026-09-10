@@ -25,7 +25,7 @@ export async function requireAdmin(): Promise<ActionResult<{ id: string }>> {
  */
 export function explainDatabaseError(
   error: { code?: string; message?: string; details?: string } | null,
-  context: "categoria" | "producto" | "ajustes",
+  context: "categoria" | "producto" | "ajustes" | "cliente" | "resena" | "indicador",
 ): string {
   if (!error) return "Error desconocido.";
 

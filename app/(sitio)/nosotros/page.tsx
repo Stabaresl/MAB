@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { ClientWall } from "@/components/client-wall";
+import { getClients } from "@/lib/catalog";
 import { site } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
     "Distribuciones M.A.B lleva más de 15 años distribuyendo materiales de construcción y ferretería a clientes en todo el territorio nacional.",
 };
 
-export default function NosotrosPage() {
+export default async function NosotrosPage() {
+  const clientes = await getClients();
+
   return (
     <div className="page py-14 md:py-20">
       <header className="border-b border-line pb-10">
@@ -106,7 +109,13 @@ export default function NosotrosPage() {
         </h2>
 
         <div className="mt-8 border-t border-line pt-8">
-          <ClientWall />
+          <ClientWall
+            clientes={clientes.map((c) => ({
+              id: c.id,
+              name: c.name,
+              logoUrl: c.logo_url,
+            }))}
+          />
         </div>
       </section>
     </div>

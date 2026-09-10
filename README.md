@@ -59,6 +59,11 @@ node --env-file=.env.local scripts/seed.mjs \
 3. Sembrar el catálogo y crear el administrador con el mismo `scripts/seed.mjs`,
    apuntando `.env.local` al proyecto de producción.
 
+Cuando se añade una migración a un proyecto que ya está en marcha basta con
+`npx supabase db push`. Sin la CLI conectada, la alternativa es pegar el archivo
+en el editor SQL de Supabase; conviene envolverlo en `begin;` … `commit;` para
+que un fallo a mitad no deje el esquema aplicado por la mitad.
+
 ---
 
 ## Estructura
@@ -66,7 +71,8 @@ node --env-file=.env.local scripts/seed.mjs \
 ```
 app/
   (sitio)/            sitio público — inicio, catálogo, ficha, nosotros, contacto
-  admin/              panel — solo con sesión
+  admin/              panel — solo con sesión: artículos, categorías, reseñas,
+                      clientes, indicadores y ajustes
 components/
   admin/              formularios y listados del panel
 lib/
@@ -75,13 +81,37 @@ lib/
   admin.ts            consultas del panel (incluye lo no publicado)
   images.ts           validación y conversión de imágenes subidas
   storage.ts          subida y borrado en Supabase Storage
-supabase/migrations/  esquema, índices, triggers y políticas RLS
+supabase/migrations/  esquema, índices, triggers, políticas RLS y la función
+                      de borrado de una categoría con todo lo que tenga dentro
 scripts/              preparación de assets y semilla (uso puntual)
 data/manifest.json    catálogo inicial: categorías, artículos e imágenes de origen
 public/catalogo/      fotos del catálogo inicial, ya procesadas a WebP
 ```
 
 ---
+
+## Qué administra MAB sin tocar código
+
+| Sección del panel | Qué cambia en el sitio |
+|---|---|
+| Artículos | El catálogo entero y las fichas de producto |
+| Categorías | Los grupos del catálogo, su portada y su orden |
+| Reseñas | El bloque de opiniones de la portada. Se suben con la captura del mensaje y el texto transcrito, porque las opiniones llegan por WhatsApp y por correo. El formulario enseña la tarjeta real mientras se escribe |
+| Clientes | El carrusel de referencias, con su logotipo y su orden |
+| Indicadores | Las cifras que suben en la portada |
+| Ajustes | Teléfonos, correo, dirección y NIT |
+
+Un indicador puede llevar el número escrito a mano o dejar que lo cuente el
+servidor —artículos publicados, categorías, clientes—. Los automáticos se
+resuelven al servir la página y no se guardan: si el número viviera en la fila
+habría que acordarse de actualizarlo cada vez que se publica un artículo, y el
+día que se olvidara la portada estaría mintiendo.
+
+**Borrar una categoría se lleva sus artículos.** La clave foránea sigue siendo
+`on delete restrict` —esa es la red que impide que un borrado accidental desde
+cualquier otro sitio vacíe el catálogo—, y el panel pasa por una función de
+Postgres que hace las dos cosas en una sola transacción. El botón dice cuántos
+artículos se van a borrar antes de hacerlo.
 
 ## Cómo está protegido el panel
 

@@ -20,12 +20,19 @@ export function ImageField({
   error,
   label = "Imagen",
   hint,
+  onPreview,
 }: {
   name?: string;
   currentUrl?: string | null;
   error?: string;
   label?: string;
   hint?: string;
+  /**
+   * Avisa de la imagen elegida, para quien necesite enseñarla en otro sitio.
+   * Lo usa la vista previa de las reseñas: sin esto, la tarjeta del panel
+   * mostraba el texto nuevo con la foto vieja.
+   */
+  onPreview?: (url: string | null) => void;
 }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -45,6 +52,7 @@ export function ImageField({
 
     if (!file) {
       setPreview(null);
+      onPreview?.(null);
       return;
     }
 
@@ -54,16 +62,20 @@ export function ImageField({
       );
       event.target.value = "";
       setPreview(null);
+      onPreview?.(null);
       return;
     }
 
-    setPreview(URL.createObjectURL(file));
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    onPreview?.(url);
   }
 
   function clear() {
     setPreview(null);
     setLocalError(null);
     setReplaced(true);
+    onPreview?.(null);
     if (inputRef.current) inputRef.current.value = "";
   }
 

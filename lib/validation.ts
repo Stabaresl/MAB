@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { NOMBRES_ICONO } from "@/lib/stat-icons";
+
 /**
  * Esquemas de validación compartidos.
  *
@@ -50,6 +52,49 @@ export const settingsSchema = z.object({
   nit: texto(30).min(5, "Escribe el NIT."),
 });
 
+export const clientSchema = z.object({
+  name: texto(80).min(2, "El nombre necesita al menos 2 caracteres."),
+});
+
+/**
+ * Un contador de la portada.
+ *
+ * `value` llega del formulario como texto y puede venir con puntos de millar,
+ * porque es lo que se teclea de forma natural: "1.781". Se limpian antes de
+ * convertir para no rechazar un número que está bien escrito.
+ */
+export const statSchema = z.object({
+  label: texto(60).min(2, "La etiqueta necesita al menos 2 caracteres."),
+  value: z
+    .string()
+    .trim()
+    .transform((raw) => raw.replace(/[.\s]/g, ""))
+    .refine((limpio) => /^\d+$/.test(limpio), "Escribe un número entero, sin signos ni decimales.")
+    .transform(Number)
+    .refine((n) => n <= 100_000_000, "Ese número es demasiado grande."),
+  suffix: opcional(4),
+  icon: z.enum(NOMBRES_ICONO, { error: "Elige un icono de la lista." }),
+  source: z.enum(["manual", "productos", "categorias", "clientes"], {
+    error: "Elige de dónde sale el número.",
+  }),
+  isPublished: z.boolean(),
+});
+
+export const reviewSchema = z.object({
+  author: texto(80).min(2, "Escribe quién lo dijo."),
+  role: opcional(120),
+  quote: texto(600).min(10, "La reseña necesita al menos 10 caracteres."),
+  rating: z
+    .string()
+    .trim()
+    .optional()
+    .transform((raw) => (raw && raw.length > 0 ? Number(raw) : null))
+    .refine((n) => n === null || (Number.isInteger(n) && n >= 1 && n <= 5), {
+      error: "La valoración va de 1 a 5 estrellas.",
+    }),
+  isPublished: z.boolean(),
+});
+
 export const loginSchema = z.object({
   email: z.email("Escribe un correo válido."),
   password: z.string().min(8, "La contraseña tiene al menos 8 caracteres."),
@@ -58,6 +103,9 @@ export const loginSchema = z.object({
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type ProductInput = z.infer<typeof productSchema>;
 export type SettingsInput = z.infer<typeof settingsSchema>;
+export type ClientInput = z.infer<typeof clientSchema>;
+export type StatInput = z.infer<typeof statSchema>;
+export type ReviewInput = z.infer<typeof reviewSchema>;
 
 /**
  * Resultado uniforme de toda acción de servidor.

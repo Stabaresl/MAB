@@ -7,6 +7,9 @@ const SECCIONES = [
   { href: "/admin", label: "Resumen" },
   { href: "/admin/articulos", label: "Artículos" },
   { href: "/admin/categorias", label: "Categorías" },
+  { href: "/admin/resenas", label: "Reseñas" },
+  { href: "/admin/clientes", label: "Clientes" },
+  { href: "/admin/indicadores", label: "Indicadores" },
   { href: "/admin/ajustes", label: "Ajustes" },
 ];
 

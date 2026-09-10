@@ -159,7 +159,24 @@ export async function updateCategory(
   return success({ slug });
 }
 
-export async function deleteCategory(id: string): Promise<ActionResult<{ name: string }>> {
+/**
+ * Borra una categoría.
+ *
+ * Con `conArticulos` en falso —lo que ocurre si nadie lo pide— una categoría
+ * que todavía tiene artículos no se borra, y el mensaje dice cuántos hay. Con
+ * `conArticulos` en cierto se va todo: los artículos, sus fotos y la categoría.
+ *
+ * El borrado completo no lo hacen dos consultas seguidas sino la función
+ * `eliminar_categoria` de Postgres, que las mete en una sola transacción. La
+ * diferencia importa el día que la segunda falle: con dos llamadas sueltas los
+ * artículos ya no existirían y la categoría sí, y no habría manera de
+ * recuperarlos. La función devuelve las rutas de las imágenes huérfanas, que se
+ * retiran de Storage después, cuando la base de datos ya confirmó el borrado.
+ */
+export async function deleteCategory(
+  id: string,
+  opciones: { conArticulos?: boolean } = {},
+): Promise<ActionResult<{ name: string; articulos: number }>> {
   const auth = await requireAdmin();
   if (!auth.ok) return auth;
 
@@ -175,18 +192,39 @@ export async function deleteCategory(id: string): Promise<ActionResult<{ name: s
     return failure("Esa categoría ya no existe.");
   }
 
-  // Se cuenta antes de intentar borrar para poder decir cuántos artículos
-  // estorban, en vez de soltar el error de clave foránea tal cual.
+  // Se cuenta antes de borrar para poder decir cuántos artículos se llevará
+  // por delante —o cuántos estorban—, en vez de soltar el error de clave
+  // foránea tal cual.
   const { count } = await supabase
     .from("products")
     .select("id", { count: "exact", head: true })
     .eq("category_id", id);
 
-  if (count && count > 0) {
-    const plural = count === 1 ? "1 artículo" : `${count} artículos`;
+  const articulos = count ?? 0;
+
+  if (articulos > 0 && !opciones.conArticulos) {
+    const plural = articulos === 1 ? "1 artículo" : `${articulos} artículos`;
     return failure(
-      `No se puede borrar "${category.name}" porque tiene ${plural}. Muévelos a otra categoría o elimínalos primero.`,
+      `"${category.name}" tiene ${plural}. Confirma que quieres borrar la categoría con todo lo que hay dentro, o muévelos antes a otra categoría.`,
     );
+  }
+
+  if (articulos > 0) {
+    const { data: huerfanas, error } = await supabase.rpc("eliminar_categoria", { p_id: id });
+
+    if (error) {
+      return failure(explainDatabaseError(error, "categoria"));
+    }
+
+    // Las fotos se retiran una a una y sin cortar el flujo: si alguna falla, la
+    // fila ya no existe y lo único que queda es un archivo suelto, que
+    // `removeImage` deja anotado en el registro.
+    for (const ruta of huerfanas ?? []) {
+      await removeImage(ruta);
+    }
+
+    refreshPublicPages();
+    return success({ name: category.name, articulos });
   }
 
   const { error } = await supabase.from("categories").delete().eq("id", id);
@@ -196,7 +234,7 @@ export async function deleteCategory(id: string): Promise<ActionResult<{ name: s
 
   await removeImage(category.image_path);
   refreshPublicPages();
-  return success({ name: category.name });
+  return success({ name: category.name, articulos: 0 });
 }
 
 /** Guarda el orden que el administrador dejó arrastrando las categorías. */

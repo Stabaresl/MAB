@@ -3,11 +3,20 @@ import Link from "next/link";
 
 import { CategoryBelt } from "@/components/category-belt";
 import { ClientWall } from "@/components/client-wall";
+import { Counters } from "@/components/counters";
 import { HeroMedia } from "@/components/hero-media";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Onda } from "@/components/onda";
 import { ReferenceIndex } from "@/components/reference-index";
-import { getAllProducts, getCategories, getSettings } from "@/lib/catalog";
+import { ReviewCard } from "@/components/review-card";
+import {
+  getAllProducts,
+  getCategories,
+  getClients,
+  getReviews,
+  getSettings,
+  getStats,
+} from "@/lib/catalog";
 import type { ProductCard as ProductCardData } from "@/lib/catalog";
 import { formatPhone, site, whatsappLink } from "@/lib/site";
 
@@ -92,10 +101,13 @@ function repartirPorCategoria(productos: ProductCardData[], cuantos: number): Pr
 }
 
 export default async function HomePage() {
-  const [categories, settings, productos] = await Promise.all([
+  const [categories, settings, productos, indicadores, clientes, resenas] = await Promise.all([
     getCategories(),
     getSettings(),
     getAllProducts(),
+    getStats(),
+    getClients(),
+    getReviews(),
   ]);
 
   const destacados = repartirPorCategoria(productos, DESTACADOS);
@@ -166,6 +178,39 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* Indicadores ---------------------------------------------------------
+          Las cifras suben en vez de aparecer puestas: es lo que hace que se
+          lean como una cantidad y no como cuatro números de adorno. Dos de las
+          cuatro las cuenta el servidor —artículos y categorías—, así que no
+          pueden quedarse viejas; las otras las escribe MAB desde el panel.
+
+          Debajo, la franja de contacto. Va en el naranja del logotipo, que es
+          el único sitio de la portada donde el color aparece a tamaño grande:
+          corta la página en dos y deja el paso siguiente a la vista sin
+          repetir otro botón azul. */}
+      {indicadores.length > 0 && (
+        <section className="page -mt-8 md:-mt-12">
+          <Reveal>
+            <Counters indicadores={indicadores} />
+          </Reveal>
+
+          <Reveal retraso={0.08}>
+            <div className="mt-4 flex flex-col items-start gap-5 rounded-xl bg-sun p-7 sm:flex-row sm:items-center sm:justify-between md:px-9">
+              <p className="max-w-[40ch] font-display text-[clamp(1.15rem,2.6vw,1.5rem)] leading-snug text-petrol">
+                ¿Dudas o inquietudes? Estamos para asesorarte.
+              </p>
+              <Link
+                href="/contacto"
+                className="btn shrink-0 bg-petrol text-on-brand hover:bg-petrol-2"
+              >
+                Contáctanos
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </Reveal>
+        </section>
+      )}
 
       {/* Pilares ------------------------------------------------------------ */}
       <section className="page py-16 md:py-20">
@@ -438,10 +483,58 @@ export default async function HomePage() {
           </Reveal>
 
           <Reveal className="mt-10">
-            <ClientWall />
+            <ClientWall
+              clientes={clientes.map((c) => ({
+                id: c.id,
+                name: c.name,
+                logoUrl: c.logo_url,
+              }))}
+            />
           </Reveal>
         </div>
       </section>
+
+      {/* Reseñas -------------------------------------------------------------
+          La sección solo existe si hay reseñas publicadas. Un bloque «Lo que
+          dicen nuestros clientes» con tres tarjetas de ejemplo es peor que no
+          tener el bloque: quien lo ve entiende que no hay ninguna.
+
+          Las sube MAB desde el panel, con la captura del mensaje y el texto
+          transcrito, porque las opiniones llegan por WhatsApp y por correo. No
+          hay formulario público a propósito: sería una puerta abierta a que
+          cualquiera publique en la portada. */}
+      {resenas.length > 0 && (
+        <section className="lavado-calido">
+          <div className="page py-16 md:py-24">
+            <Reveal>
+              <p className="label text-accent-ink">Reseñas</p>
+              <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
+                Lo que dicen <span className="remate">quienes ya compraron</span>
+              </h2>
+            </Reveal>
+
+            <Stagger
+              as="ul"
+              className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+              paso={0.08}
+            >
+              {resenas.map((resena) => (
+                <StaggerItem as="li" key={resena.id} className="min-w-0">
+                  <ReviewCard
+                    resena={{
+                      author: resena.author,
+                      role: resena.role,
+                      quote: resena.quote,
+                      imageUrl: resena.image_url,
+                      rating: resena.rating,
+                    }}
+                  />
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      )}
     </>
   );
 }

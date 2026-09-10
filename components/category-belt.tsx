@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { claseTono } from "@/lib/tono";
 import { useEsMovil } from "@/lib/use-es-movil";
 
 export type CategoriaCarrusel = {
@@ -284,9 +285,16 @@ function Pieza({ categoria, inerte }: { categoria: CategoriaCarrusel; inerte: bo
       // pegado al cursor.
       draggable={false}
       onDragStart={(e) => e.preventDefault()}
-      className="card card-hover group flex h-full flex-col overflow-hidden"
+      // El tono de la categoría tiñe el hueco de la foto y el filete. Es la
+      // misma familia de seis colores que usa la rejilla del catálogo y la
+      // cabecera de cada categoría, así que la cinta ya no es una fila de diez
+      // recuadros idénticos y el color acompaña a la categoría por todo el
+      // sitio.
+      className={`card card-hover group flex h-full flex-col overflow-hidden ${claseTono(
+        categoria.slug,
+      )}`}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-paper">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--tono-fondo)]">
         {categoria.imageUrl && (
           <Image
             src={categoria.imageUrl}
@@ -302,11 +310,11 @@ function Pieza({ categoria, inerte }: { categoria: CategoriaCarrusel; inerte: bo
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col border-t border-line p-5">
+      <div className="flex flex-1 flex-col border-t border-[var(--tono-linea)] p-5">
         <h3 className="text-[19px] leading-snug text-ink transition-colors group-hover:text-accent-ink">
           {categoria.name}
         </h3>
-        <span className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-accent-ink">
+        <span className="mt-3 inline-flex items-center gap-1.5 text-[14px] font-semibold text-[var(--tono-tinta)]">
           Ver artículos
           <span
             aria-hidden="true"

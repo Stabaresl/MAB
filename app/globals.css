@@ -52,6 +52,44 @@
   /* Azul claro del logotipo, para gráficos y para el lavado pastel frío */
   --color-sky: #8bb7d0;
   --color-sky-soft: #e9f0f5;
+  --color-sky-line: #cfe0ea;
+  --color-sky-ink: #1d4f6e;
+
+  /*
+   * Naranja del logotipo, en pastel.
+   *
+   * Vuelve, y esta vez se queda. Las dos veces anteriores era el acento de toda
+   * la página y competía con el navy hasta ganarle; ahora tiene un papel
+   * acotado: es uno de los seis tonos con los que se colorea el catálogo y el
+   * fondo de la franja de contacto. El acento sigue siendo el azul pizarra.
+   *
+   * `sun` es el color tal cual sale del logotipo —solo para superficies
+   * grandes y filetes—; sobre él nunca va texto. Lo que se lee es `sun-ink`,
+   * que rinde 5.74:1 sobre `sun-soft` y 6.2:1 sobre el lienzo.
+   */
+  --color-sun: #f09e4f;
+  --color-sun-soft: #fbe8d5;
+  --color-sun-line: #f2d5b4;
+  --color-sun-ink: #8a4a0c;
+
+  /* Azul petróleo: el tono más hondo del logotipo. Va como fondo con texto
+     claro encima —12.2:1— y como tinta de uno de los tonos del catálogo. */
+  --color-petrol: #0e3446;
+  --color-petrol-2: #14465d;
+  --color-petrol-soft: #e2ebf0;
+  --color-petrol-line: #c6d8e2;
+
+  /* Gris frío, el cuarto color de la marca. Sirve de descanso entre dos tonos
+     saturados cuando la rejilla del catálogo pone varios seguidos. */
+  --color-slate-soft: #eceef0;
+  --color-slate-line: #d6dade;
+  --color-slate-ink: #3f4b54;
+
+  /* Tinta cálida para el tono de arena, que con la tinta fría se veía sucio. */
+  --color-warm-ink: #6b533a;
+  /* Arena saturada. Solo para marcas de color —el punto del rail—, nunca para
+     texto: sobre el lienzo no llega a 3:1. */
+  --color-sand: #c9a87c;
 
   /* Semánticos */
   --color-success: #17794a;
@@ -582,6 +620,133 @@
   .scroll-x::-webkit-scrollbar-thumb {
     background-color: var(--color-line-2);
     border-radius: 999px;
+  }
+
+  /*
+   * Tonos del catálogo.
+   *
+   * El catálogo estaba en un solo color y se leía como una hoja de cálculo:
+   * cuarenta y cinco recuadros del mismo hueso pálido, y ninguna forma de
+   * distinguir de un vistazo una rejilla de un panel LED. Cada categoría se
+   * queda con un tono, y ese tono la acompaña por todo el sitio —la pastilla
+   * del cinturón, la ficha de la rejilla, la cabecera de su página, el punto
+   * junto a su nombre en el rail—, así que el color acaba significando algo en
+   * vez de ser decoración.
+   *
+   * Los seis salen del logotipo: azul claro, naranja, petróleo, arena, gris y
+   * el azul pizarra del acento. Cada uno declara tres variables y quien las usa
+   * no sabe de qué color son; así se puede cambiar la familia entera aquí sin
+   * tocar ni un componente.
+   *
+   * Cada tono declara cuatro variables: el fondo, el filete, la tinta y el
+   * punto. El punto es la única saturada —el azul y el naranja del logotipo tal
+   * cual— y existe porque las cuatro tintas son azules y grises oscuros: en una
+   * marca de 10px de diámetro no se distinguían entre sí. Nunca lleva texto
+   * encima.
+   *
+   * La tinta de cada tono está calculada contra su propio fondo, no contra el
+   * lienzo: la más ajustada de las seis es la del naranja, con 5.74:1, y aun
+   * así pasa AA para texto normal.
+   */
+  .tono {
+    --tono-fondo: var(--color-paper);
+    --tono-linea: var(--color-line);
+    --tono-tinta: var(--color-ink-2);
+    --tono-punto: var(--color-line-2);
+  }
+
+  .tono-1 {
+    --tono-fondo: var(--color-sky-soft);
+    --tono-linea: var(--color-sky-line);
+    --tono-tinta: var(--color-sky-ink);
+    --tono-punto: var(--color-sky);
+  }
+
+  .tono-2 {
+    --tono-fondo: var(--color-sun-soft);
+    --tono-linea: var(--color-sun-line);
+    --tono-tinta: var(--color-sun-ink);
+    --tono-punto: var(--color-sun);
+  }
+
+  .tono-3 {
+    --tono-fondo: var(--color-petrol-soft);
+    --tono-linea: var(--color-petrol-line);
+    --tono-tinta: var(--color-petrol);
+    --tono-punto: var(--color-petrol);
+  }
+
+  .tono-4 {
+    --tono-fondo: var(--color-warm);
+    --tono-linea: var(--color-warm-line);
+    --tono-tinta: var(--color-warm-ink);
+    --tono-punto: var(--color-sand);
+  }
+
+  .tono-5 {
+    --tono-fondo: var(--color-slate-soft);
+    --tono-linea: var(--color-slate-line);
+    --tono-tinta: var(--color-slate-ink);
+    --tono-punto: var(--color-ink-3);
+  }
+
+  .tono-6 {
+    --tono-fondo: var(--color-accent-soft);
+    --tono-linea: var(--color-line-2);
+    --tono-tinta: var(--color-accent-ink);
+    --tono-punto: var(--color-accent);
+  }
+
+  /* Tarjeta teñida: el filete y el fondo salen del tono, la tinta del texto
+     sigue siendo la de siempre para que la foto no compita con el nombre. */
+  .card-tono {
+    background-color: var(--tono-fondo);
+    border-color: var(--tono-linea);
+  }
+
+  .card-tono:hover {
+    border-color: var(--tono-tinta);
+  }
+
+  /*
+   * Cifra de un contador.
+   *
+   * `tabular-nums` es lo que impide que el número tiemble mientras sube: con
+   * cifras proporcionales, un 1 mide menos que un 8 y el bloque entero se
+   * encoge y se estira en cada fotograma. Con la anchura fija, lo único que
+   * cambia es el dígito.
+   */
+  .cifra {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 60, "WONK" 0, "opsz" 72;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  /*
+   * Botón flotante de cotización.
+   *
+   * Entra cuando el visitante ya ha bajado de la portada —donde el botón de
+   * cotizar está a la vista y este solo taparía— y desde entonces acompaña. La
+   * entrada es una animación de una vez, no una transición de estado: aparece
+   * y se queda.
+   */
+  .flotante {
+    animation: flotante-entra 320ms var(--ease-brand) both;
+  }
+
+  @keyframes flotante-entra {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.94);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flotante {
+      animation: none;
+    }
   }
 }
 

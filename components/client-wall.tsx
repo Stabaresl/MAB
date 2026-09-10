@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { site } from "@/lib/site";
 import { useEsMovil } from "@/lib/use-es-movil";
 
 /**
@@ -20,19 +19,20 @@ import { useEsMovil } from "@/lib/use-es-movil";
  * nunca. Trece medidas por fotograma no cuestan nada, y solo se escribe en el
  * elemento cuando el valor cambia lo suficiente como para verse.
  *
- * De los trece clientes del portafolio hay logotipo de seis: los demás no tienen
- * sitio alcanzable o no publican el archivo. Todas las fichas llevan el nombre
- * debajo, así que la que no tiene logotipo no se lee como un hueco.
+ * El logotipo es opcional: de los trece clientes del portafolio solo seis
+ * publican un archivo utilizable. Todas las fichas llevan el nombre debajo, así
+ * que la que no tiene logotipo no se lee como un hueco.
+ *
+ * La lista ya no está escrita en el código: la administra MAB desde el panel,
+ * incluidos los logotipos. Los seis que vinieron con el repositorio siguen
+ * siendo archivos estáticos y llegan aquí como rutas relativas; los que suba la
+ * empresa llegarán como URL de Storage. `next/image` sirve las dos igual.
  */
 
-/** Clientes de los que hay archivo, por el nombre exacto de `lib/site.ts`. */
-const LOGOTIPOS: Record<string, string> = {
-  "Grupo Área": "grupoarea",
-  Colpatria: "colpatria",
-  "Infante Vives": "infantevives",
-  Prodesa: "prodesa",
-  "CFC Constructora": "cfc",
-  "Gran Morada": "granmorada",
+export type ClienteVitrina = {
+  id: string;
+  name: string;
+  logoUrl: string | null;
 };
 
 const VELOCIDAD = 26;          // píxeles por segundo del avance automático
@@ -55,7 +55,7 @@ function distanciaDeVuelta(pista: HTMLElement, porCopia: number): number {
   return equivalente.offsetLeft - primera.offsetLeft;
 }
 
-export function ClientWall() {
+export function ClientWall({ clientes }: { clientes: ClienteVitrina[] }) {
   const pista = useRef<HTMLUListElement>(null);
   const quieto = useRef(false);
   const ultimoToque = useRef(0);
@@ -70,7 +70,7 @@ export function ClientWall() {
   // izquierda y derecha, y la vuelta salta de una copia a la siguiente sin que
   // el ojo lo note.
   const COPIAS = 3;
-  const piezas = Array.from({ length: COPIAS }, () => site.clients).flat();
+  const piezas = Array.from({ length: COPIAS }, () => clientes).flat();
 
   const anotarToque = () => {
     ultimoToque.current = performance.now();
@@ -100,7 +100,7 @@ export function ClientWall() {
     if (!nodo) return;
 
     // Se arranca en la copia del medio para tener fichas a los dos lados.
-    const vueltaInicial = distanciaDeVuelta(nodo, site.clients.length);
+    const vueltaInicial = distanciaDeVuelta(nodo, clientes.length);
     if (vueltaInicial > 0 && nodo.scrollLeft < 1) nodo.scrollLeft = vueltaInicial;
 
     let anterior = performance.now();
@@ -122,7 +122,7 @@ export function ClientWall() {
         posicion += VELOCIDAD * delta;
         // El recorrido vive entre una copia y la siguiente: al pasar de la
         // segunda se retrocede una, y así nunca se llega a los extremos.
-        const vuelta = distanciaDeVuelta(nodo, site.clients.length);
+        const vuelta = distanciaDeVuelta(nodo, clientes.length);
         if (vuelta > 0 && posicion >= vuelta * 2) posicion -= vuelta;
         nodo.scrollLeft = posicion;
       }
@@ -133,7 +133,7 @@ export function ClientWall() {
 
     cuadro = requestAnimationFrame(paso);
     return () => cancelAnimationFrame(cuadro);
-  }, [pausado, enfocar]);
+  }, [pausado, enfocar, clientes.length]);
 
   const mover = (sentido: 1 | -1) => {
     const nodo = pista.current;
@@ -141,7 +141,7 @@ export function ClientWall() {
     anotarToque();
     const paso = nodo.clientWidth * 0.6;
     if (sentido === -1 && nodo.scrollLeft < paso) {
-      nodo.scrollLeft += distanciaDeVuelta(nodo, site.clients.length);
+      nodo.scrollLeft += distanciaDeVuelta(nodo, clientes.length);
     }
     nodo.scrollBy({ left: paso * sentido, behavior: "smooth" });
   };
@@ -190,11 +190,15 @@ export function ClientWall() {
    * dos columnas caben los trece clientes de un vistazo, que es justo lo que
    * esta sección quiere demostrar.
    */
+  // Sin clientes no hay sección. Va después de los ganchos, no antes: salir
+  // arriba cambiaría cuántos se ejecutan entre un render y el siguiente.
+  if (clientes.length === 0) return null;
+
   if (esMovil) {
     return (
       <ul className="grid grid-cols-2 gap-3">
-        {site.clients.map((cliente) => (
-          <li key={cliente}>
+        {clientes.map((cliente) => (
+          <li key={cliente.id}>
             <Ficha cliente={cliente} />
           </li>
         ))}
@@ -232,10 +236,10 @@ export function ClientWall() {
         {piezas.map((cliente, indice) => {
           // Solo la primera copia existe para el lector de pantalla: las otras
           // dos están ahí para que la vuelta sea continua.
-          const copia = indice >= site.clients.length;
+          const copia = indice >= clientes.length;
           return (
             <li
-              key={`${cliente}-${indice}`}
+              key={`${cliente.id}-${indice}`}
               className="vitrina-ficha"
               {...(copia ? { "aria-hidden": true } : {})}
             >
@@ -255,14 +259,12 @@ export function ClientWall() {
  * seis publican un archivo utilizable, y con el nombre debajo de todas las
  * fichas la que no tiene logotipo se lee como una más y no como un hueco.
  */
-function Ficha({ cliente }: { cliente: string }) {
-  const archivo = LOGOTIPOS[cliente];
-
+function Ficha({ cliente }: { cliente: ClienteVitrina }) {
   return (
     <div className="card flex h-[132px] flex-col items-center justify-center gap-3 px-4 py-4">
-      {archivo ? (
+      {cliente.logoUrl ? (
         <Image
-          src={`/clientes/${archivo}.webp`}
+          src={cliente.logoUrl}
           alt=""
           width={400}
           height={200}
@@ -276,7 +278,7 @@ function Ficha({ cliente }: { cliente: string }) {
         </span>
       )}
       <span className="text-balance text-center font-display text-[15px] leading-tight text-ink-2">
-        {cliente}
+        {cliente.name}
       </span>
     </div>
   );

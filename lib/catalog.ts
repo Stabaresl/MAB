@@ -3,7 +3,7 @@ import "server-only";
 import { isSupabaseConfigured } from "@/lib/env";
 import { publicClient } from "@/lib/supabase/public";
 import { site } from "@/lib/site";
-import type { Category, Product, SiteSettings } from "@/lib/database.types";
+import type { Category, Client, Product, Review, SiteSettings } from "@/lib/database.types";
 
 /**
  * Consultas del catálogo público.
@@ -37,7 +37,7 @@ export type CategoryWithCount = Category & { productCount: number };
 
 export type ProductCard = Pick<
   Product,
-  "id" | "name" | "slug" | "specs" | "image_url" | "description"
+  "id" | "name" | "slug" | "specs" | "image_url"
 > & {
   category: Pick<Category, "name" | "slug">;
 };
@@ -90,7 +90,7 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
   const supabase = publicClient();
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, slug, specs, image_url, description, category:categories(name, slug)")
+    .select("id, name, slug, specs, image_url, category:categories(name, slug)")
     .eq("category_id", categoryId)
     .eq("is_published", true)
     .order("position", { ascending: true })
@@ -132,7 +132,7 @@ export async function getRelatedProducts(
   const supabase = publicClient();
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, slug, specs, image_url, description, category:categories(name, slug)")
+    .select("id, name, slug, specs, image_url, category:categories(name, slug)")
     .eq("category_id", categoryId)
     .eq("is_published", true)
     .neq("id", excludeId)
@@ -152,7 +152,7 @@ export async function getAllProducts(): Promise<ProductCard[]> {
   const supabase = publicClient();
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, slug, specs, image_url, description, category:categories(name, slug)")
+    .select("id, name, slug, specs, image_url, category:categories(name, slug)")
     .eq("is_published", true)
     .order("name", { ascending: true });
 
@@ -161,6 +161,112 @@ export async function getAllProducts(): Promise<ProductCard[]> {
     return [];
   }
   return (data ?? []) as unknown as ProductCard[];
+}
+
+/**
+ * Clientes del carrusel de referencias.
+ *
+ * Antes eran una lista fija en `lib/site.ts` con seis logotipos codificados en
+ * el componente. Ahora los administra la empresa, así que añadir una
+ * constructora nueva ya no es un despliegue.
+ */
+export async function getClients(): Promise<Client[]> {
+  if (notConfigured("getClients")) return [];
+
+  const supabase = publicClient();
+  const { data, error } = await supabase
+    .from("clients")
+    .select("*")
+    .order("position", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("getClients:", error.message);
+    return [];
+  }
+  return data ?? [];
+}
+
+export async function getReviews(): Promise<Review[]> {
+  if (notConfigured("getReviews")) return [];
+
+  const supabase = publicClient();
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .order("position", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("getReviews:", error.message);
+    return [];
+  }
+  // Lo no publicado ya lo filtra la política RLS; esto solo lo hace explícito
+  // para quien lea el código sin abrir el SQL.
+  return (data ?? []).filter((review) => review.is_published);
+}
+
+export type StatCard = {
+  id: string;
+  label: string;
+  value: number;
+  suffix: string | null;
+  icon: string;
+};
+
+/**
+ * Contadores de la portada, con el número ya resuelto.
+ *
+ * Los que no son manuales se cuentan aquí y no se guardan: si el número
+ * viviera en la fila habría que acordarse de actualizarlo cada vez que se
+ * publica un artículo, y el día que se olvidara la portada estaría mintiendo.
+ */
+export async function getStats(): Promise<StatCard[]> {
+  if (notConfigured("getStats")) return [];
+
+  const supabase = publicClient();
+  const { data, error } = await supabase
+    .from("stats")
+    .select("*")
+    .order("position", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("getStats:", error.message);
+    return [];
+  }
+
+  const rows = (data ?? []).filter((stat) => stat.is_published);
+  if (rows.length === 0) return [];
+
+  const calculados = rows.some((stat) => stat.source !== "manual")
+    ? await contarFuentes()
+    : null;
+
+  return rows.map((stat) => ({
+    id: stat.id,
+    label: stat.label,
+    value: stat.source === "manual" ? stat.value : (calculados?.[stat.source] ?? 0),
+    suffix: stat.suffix,
+    icon: stat.icon,
+  }));
+}
+
+/** Los tres números que el sitio puede contar por sí mismo. */
+async function contarFuentes(): Promise<Record<"productos" | "categorias" | "clientes", number>> {
+  const supabase = publicClient();
+
+  const [productos, categorias, clientes] = await Promise.all([
+    supabase.from("products").select("id", { count: "exact", head: true }).eq("is_published", true),
+    supabase.from("categories").select("id", { count: "exact", head: true }),
+    supabase.from("clients").select("id", { count: "exact", head: true }),
+  ]);
+
+  return {
+    productos: productos.count ?? 0,
+    categorias: categorias.count ?? 0,
+    clientes: clientes.count ?? 0,
+  };
 }
 
 /**
