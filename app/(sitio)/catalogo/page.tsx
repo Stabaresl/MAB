@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { CatalogBrowser } from "@/components/catalog-browser";
-import { Reveal } from "@/components/motion/reveal";
-import { getAllProducts, getCategories, getSettings } from "@/lib/catalog";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
+import { ProductCard } from "@/components/product-card";
+import {
+  getAllProducts,
+  getCategories,
+  getFeaturedProducts,
+  getSettings,
+} from "@/lib/catalog";
 import { site, whatsappLink } from "@/lib/site";
 
 export const revalidate = 300;
@@ -15,15 +22,41 @@ export const metadata: Metadata = {
 };
 
 export default async function CatalogoPage() {
-  const [categories, productos, settings] = await Promise.all([
+  const [categories, productos, destacados, settings] = await Promise.all([
     getCategories(),
     getAllProducts(),
+    getFeaturedProducts(),
     getSettings(),
   ]);
 
   return (
     <>
-      <section className="border-b border-line bg-paper">
+      {/*
+        Banner de la empresa, a sangre.
+
+        Va fuera del contenedor de página a propósito: es una pieza gráfica
+        entera, con su propio encuadre y su propio texto, y encerrarla en los
+        1240px del contenido la habría dejado con dos franjas de lienzo a los
+        lados como si fuera una foto pegada. La imagen es el ancho de la
+        pantalla y ahí se acaba la discusión.
+
+        Es decorativa en el sentido estricto —el titular de la página va debajo,
+        en texto de verdad— pero lleva `alt` porque el rótulo que trae dentro
+        dice algo que no está escrito en ninguna otra parte de la página.
+      */}
+      <section className="relative w-full overflow-hidden bg-paper">
+        <Image
+          src="/banners/banner-obra.webp"
+          alt="Sala de exhibición de Distribuciones M.A.B: 15 años de experiencia, todo para tu obra"
+          width={1376}
+          height={728}
+          priority
+          sizes="100vw"
+          className="h-auto w-full"
+        />
+      </section>
+
+      <section className="lavado lavado-sale">
         <div className="page py-12 md:py-16">
           <Reveal>
             <p className="label text-accent-ink">Catálogo</p>
@@ -40,13 +73,54 @@ export default async function CatalogoPage() {
       </section>
 
       {/*
+        Los más vendidos, antes de entrar en ninguna categoría.
+
+        Es lo primero que se ve del catálogo porque es lo que responde a la
+        pregunta con la que entra casi todo el mundo: «¿qué venden?». Un rail de
+        diez categorías es una respuesta correcta y completamente inútil para
+        quien todavía no sabe cómo se llama lo que busca.
+
+        Los elige MAB en el panel. No se calculan: el sitio no registra ventas
+        —el negocio se cierra por WhatsApp— así que cualquier ranking que sacara
+        de sus propios datos sería inventado.
+      */}
+      {destacados.length > 0 && (
+        <section className="lavado lavado-calido">
+          <div className="page py-14 md:py-20">
+            <Reveal>
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="label text-sun-ink">Lo más pedido</p>
+                  <h2 className="mt-3 max-w-[16ch] text-[clamp(1.7rem,4.2vw,2.6rem)] leading-[1.1] text-ink">
+                    Los más <span className="remate">vendidos</span>
+                  </h2>
+                </div>
+                <p className="max-w-[38ch] text-[15px] text-ink-2">
+                  Las referencias que más salen hacia obra. Si buscas otra cosa, el catálogo
+                  completo está justo debajo.
+                </p>
+              </div>
+            </Reveal>
+
+            <Stagger as="ul" className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {destacados.map((producto) => (
+                <StaggerItem as="li" key={producto.id} className="min-w-0">
+                  <ProductCard product={producto} showCategory />
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      )}
+
+      {/*
         Aquí había dos pasos antes de ver un artículo: un cinturón de categorías
         y, debajo, una rejilla de categorías con buscador. Las dos llevaban al
         mismo sitio y ninguna enseñaba producto, así que el catálogo se abría
         sin catálogo. Ahora los artículos están delante y las categorías al
         lado, donde sirven para acotar.
       */}
-      <section className="page py-10 md:py-14">
+      <section className="page py-12 md:py-16">
         <CatalogBrowser
           categorias={categories.map((c) => ({
             id: c.id,
@@ -58,36 +132,38 @@ export default async function CatalogoPage() {
         />
       </section>
 
-      <section className="page pb-16 md:pb-20">
-        <div className="flex flex-col items-start gap-6 rounded-xl border border-sun-line bg-sun-soft p-8 md:flex-row md:items-center md:justify-between md:p-10">
-          <div>
-            <h2 className="max-w-[24ch] text-[clamp(1.4rem,3vw,1.9rem)] leading-tight text-ink">
-              ¿No encuentras una referencia?
-            </h2>
-            <p className="mt-3 max-w-[56ch] text-ink-2">
-              Envíanos las especificaciones del proyecto y te cotizamos al mejor precio del
-              mercado. Si ya tienes otra cotización, la mejoramos.
-            </p>
+      <section className="lavado lavado-gris">
+        <div className="page py-14 md:py-20">
+          <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="max-w-[24ch] text-[clamp(1.4rem,3vw,1.9rem)] leading-tight text-ink">
+                ¿No encuentras una referencia?
+              </h2>
+              <p className="mt-3 max-w-[56ch] text-ink-2">
+                Envíanos las especificaciones del proyecto y te cotizamos al mejor precio del
+                mercado. Si ya tienes otra cotización, la mejoramos.
+              </p>
+            </div>
+            <a
+              href={whatsappLink(
+                settings.whatsapp_primary,
+                "Hola, busco una referencia que no vi en el catálogo.",
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary shrink-0"
+            >
+              Preguntar por WhatsApp
+            </a>
           </div>
-          <a
-            href={whatsappLink(
-              settings.whatsapp_primary,
-              "Hola, busco una referencia que no vi en el catálogo.",
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary shrink-0"
-          >
-            Preguntar por WhatsApp
-          </a>
-        </div>
 
-        <p className="mt-8 text-center text-[14px] text-ink-3">
-          {site.claim}.{" "}
-          <Link href="/contacto" className="font-semibold text-accent-ink hover:underline">
-            Ver datos de contacto
-          </Link>
-        </p>
+          <p className="mt-10 text-center text-[14px] text-ink-3">
+            {site.claim}.{" "}
+            <Link href="/contacto" className="font-semibold text-accent-ink hover:underline">
+              Ver datos de contacto
+            </Link>
+          </p>
+        </div>
       </section>
     </>
   );

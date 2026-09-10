@@ -285,16 +285,16 @@ function Pieza({ categoria, inerte }: { categoria: CategoriaCarrusel; inerte: bo
       // pegado al cursor.
       draggable={false}
       onDragStart={(e) => e.preventDefault()}
-      // El tono de la categoría tiñe el hueco de la foto y el filete. Es la
-      // misma familia de seis colores que usa la rejilla del catálogo y la
-      // cabecera de cada categoría, así que la cinta ya no es una fila de diez
-      // recuadros idénticos y el color acompaña a la categoría por todo el
-      // sitio.
+      // El tono de la categoría tiñe la banda del texto y el filete, nunca el
+      // hueco de la foto: ahí manda el gris de estudio, que es el fondo con el
+      // que llegan las fotos. Es la misma familia de seis colores que usa la
+      // rejilla del catálogo y la cabecera de cada categoría, así que la cinta
+      // ya no es una fila de diez recuadros idénticos.
       className={`card card-hover group flex h-full flex-col overflow-hidden ${claseTono(
         categoria.slug,
       )}`}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--tono-fondo)]">
+      <div className="pozo-foto relative aspect-[4/3] w-full overflow-hidden">
         {categoria.imageUrl && (
           <Image
             src={categoria.imageUrl}
@@ -302,7 +302,7 @@ function Pieza({ categoria, inerte }: { categoria: CategoriaCarrusel; inerte: bo
             fill
             draggable={false}
             sizes="292px"
-            className="object-contain p-7 transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.06]"
+            className="object-contain p-4 transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.06]"
           />
         )}
         <span className="spec absolute left-3 top-3 rounded-full bg-canvas/90 px-2.5 py-1 text-ink-2 backdrop-blur">
@@ -310,7 +310,7 @@ function Pieza({ categoria, inerte }: { categoria: CategoriaCarrusel; inerte: bo
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col border-t border-[var(--tono-linea)] p-5">
+      <div className="flex flex-1 flex-col border-t border-[var(--tono-linea)] bg-[var(--tono-fondo)] p-5">
         <h3 className="text-[19px] leading-snug text-ink transition-colors group-hover:text-accent-ink">
           {categoria.name}
         </h3>

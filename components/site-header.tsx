@@ -9,7 +9,12 @@ import { enquiryBody, formatPhone, gmailLink, site, whatsappLink } from "@/lib/s
 export async function SiteHeader() {
   const [categories, settings] = await Promise.all([getCategories(), getSettings()]);
 
+  // «Inicio» va escrito además de estar en el logotipo. El logotipo como única
+  // vuelta a la portada es una convención que conoce quien navega mucho; a
+  // quien llega desde un enlace de WhatsApp a una ficha de producto —que es
+  // como llega media visita de MAB— no se le ocurre pulsar el logo.
   const links = [
+    { href: "/", label: "Inicio" },
     { href: "/catalogo", label: "Catálogo" },
     { href: "/nosotros", label: "Nosotros" },
     { href: "/contacto", label: "Contacto" },

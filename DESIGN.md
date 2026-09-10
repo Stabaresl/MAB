@@ -103,9 +103,13 @@ Reglas de color:
   no es decoración: es cómo se reconoce una categoría antes de leer su nombre.
   Sin ellos el catálogo eran cuarenta y cinco recuadros del mismo hueso y se
   leía como una hoja de cálculo.
-- El tono tiñe el fondo de la foto y el filete, nunca la tarjeta entera: la
-  pieza necesita fondo plano para recortarse y el texto necesita el lienzo de
-  siempre para no recalcular el contraste seis veces.
+- **El tono nunca toca el hueco de la foto.** Tiñe la banda del texto y el
+  filete, y ahí se acaba. Las fotos que sube MAB no vienen recortadas sobre
+  transparencia: llegan de estudio, cada una con su propio fondo gris muy claro,
+  y sobre un pastel ese fondo se veía como un recuadro pegado encima de la
+  tarjeta. El hueco de la foto reproduce ese gris de estudio —`--color-foto`, con
+  su mismo degradado en diagonal— y la foto va a sangre, sin relleno alrededor:
+  una foto cuadrada llena el hueco exacto y no hay costura que ver.
 - El naranja del logo vuelve, pero acotado: un tono del catálogo y la franja de
   contacto de la portada. El acento sigue siendo el azul pizarra. Las dos veces
   que el naranja fue el acento de toda la página le ganó al navy.
@@ -119,6 +123,11 @@ Reglas de color:
 - Los colores de filete (`line`, `line-2`) no escriben nunca. Como texto se
   quedan por debajo de 2:1 — la barra de las migas de pan estuvo así y era una
   mancha, no un signo.
+- **Las secciones no se cortan, se disuelven.** Cada bloque de color es un
+  lavado: arranca en el lienzo, se tiñe por el centro y vuelve al lienzo, así
+  que dos secciones seguidas siempre se tocan en el mismo color. Antes el cambio
+  era un corte duro con una onda de SVG encima para taparlo: dos lenguajes a la
+  vez, y en pantalla estrecha la onda robaba altura para no decir nada.
 - Para separar una sección se usa `paper` o `warm`, nunca `brand`. El navy es
   tinta, botón sólido y numeración; en superficie grande obliga a reescribir
   todo el texto en otro color y a apoyar el rótulo en el acento, que es

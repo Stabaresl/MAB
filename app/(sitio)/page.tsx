@@ -6,7 +6,6 @@ import { ClientWall } from "@/components/client-wall";
 import { Counters } from "@/components/counters";
 import { HeroMedia } from "@/components/hero-media";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
-import { Onda } from "@/components/onda";
 import { ReferenceIndex } from "@/components/reference-index";
 import { ReviewCard } from "@/components/review-card";
 import {
@@ -116,7 +115,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Portada ------------------------------------------------------------ */}
-      <section className="relative overflow-hidden bg-paper">
+      <section className="lavado lavado-frio lavado-sale relative overflow-hidden">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] rounded-full bg-sky-soft blur-3xl"
@@ -185,29 +184,19 @@ export default async function HomePage() {
           cuatro las cuenta el servidor —artículos y categorías—, así que no
           pueden quedarse viejas; las otras las escribe MAB desde el panel.
 
-          Debajo, la franja de contacto. Va en el naranja del logotipo, que es
-          el único sitio de la portada donde el color aparece a tamaño grande:
-          corta la página en dos y deja el paso siguiente a la vista sin
-          repetir otro botón azul. */}
+          Aquí abajo había una franja naranja con «¿Dudas o inquietudes?». Se
+          quita: repetía el botón de cotizar que ya acompaña al visitante flotando
+          en la esquina, y ese naranja a sangre entre dos secciones claras
+          partía la portada en dos justo donde no hacía falta.
+
+          Y ya no sube a solaparse con la portada: el margen negativo metía la
+          fila de cifras por debajo del vídeo y en pantallas cortas la primera
+          línea quedaba tapada. Ahora las dos secciones se tocan por el
+          degradado, que es lo que hace la transición. */}
       {indicadores.length > 0 && (
-        <section className="page -mt-8 md:-mt-12">
+        <section className="page pt-12 md:pt-16">
           <Reveal>
             <Counters indicadores={indicadores} />
-          </Reveal>
-
-          <Reveal retraso={0.08}>
-            <div className="mt-4 flex flex-col items-start gap-5 rounded-xl bg-sun p-7 sm:flex-row sm:items-center sm:justify-between md:px-9">
-              <p className="max-w-[40ch] font-display text-[clamp(1.15rem,2.6vw,1.5rem)] leading-snug text-petrol">
-                ¿Dudas o inquietudes? Estamos para asesorarte.
-              </p>
-              <Link
-                href="/contacto"
-                className="btn shrink-0 bg-petrol text-on-brand hover:bg-petrol-2"
-              >
-                Contáctanos
-                <span aria-hidden="true">→</span>
-              </Link>
-            </div>
           </Reveal>
         </section>
       )}
@@ -232,9 +221,11 @@ export default async function HomePage() {
       </section>
 
       {/* Categorías en cinturón ---------------------------------------------- */}
-      <section className="bg-paper">
-        <Onda posicion="arriba" className="text-canvas" />
-        <div className="page pt-6 md:pt-10">
+      <section className="lavado lavado-arena">
+        {/* El relleno lo ponía antes la onda del separador. Sin ella, el
+            degradado necesita sitio para entrar y salir: pegado al contenido no
+            se ve la transición, se ve una franja. */}
+        <div className="page pt-16 md:pt-24">
           <Reveal>
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
@@ -261,7 +252,7 @@ export default async function HomePage() {
 
         {/* La cinta va de borde a borde: encerrada en el contenedor parecería
             una fila cortada, y así se entiende que sigue más allá. */}
-        <div className="mt-10">
+        <div className="mt-10 pb-16 md:pb-24">
           <CategoryBelt
             categorias={categories.map((c) => ({
               id: c.id,
@@ -273,7 +264,6 @@ export default async function HomePage() {
             }))}
           />
         </div>
-        <Onda posicion="abajo" className="text-canvas" />
       </section>
 
       {/* Artículos del catálogo ----------------------------------------------
@@ -282,7 +272,7 @@ export default async function HomePage() {
           no llevaba a ninguna parte. Estas son referencias reales, con su foto
           y su enlace, y salen de la misma base que administra la empresa: al
           publicar un artículo nuevo, entra aquí solo. */}
-      <section className="lavado-frio">
+      <section className="lavado lavado-frio">
         <div className="page py-16 md:py-24">
           <Reveal>
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -357,9 +347,8 @@ export default async function HomePage() {
           Sobre arena y no sobre navy: el fondo oscuro obligaba a escribir el
           rótulo en color y dejaba el párrafo en un gris translúcido. Aquí la
           sección se separa igual, con la tinta de siempre. */}
-      <section className="overflow-hidden bg-warm">
-        <Onda posicion="arriba" className="text-canvas" />
-        <div className="page grid gap-12 py-10 md:py-16 lg:grid-cols-2 lg:items-stretch lg:gap-16">
+      <section className="lavado lavado-calido overflow-hidden">
+        <div className="page grid gap-12 py-16 md:py-24 lg:grid-cols-2 lg:items-stretch lg:gap-16">
           {/* El texto va segundo en escritorio y primero en el código: en
               móvil se lee antes el titular que la foto, que es el orden que
               tiene sentido cuando la columna es una sola. */}
@@ -393,7 +382,18 @@ export default async function HomePage() {
               leía como un defecto; y ninguna de las tres se veía bien a ese
               tamaño. */}
           <Reveal direccion="izquierda" retraso={0.1} className="lg:order-1 lg:h-full">
-            <div className="funde-der sangra-izq relative aspect-[3/2] w-full overflow-hidden rounded-xl lg:-my-16 lg:aspect-auto lg:h-[calc(100%+8rem)] lg:rounded-none">
+            {/*
+              La foto ya no se sale de la sección por arriba y por abajo.
+
+              Con el fondo plano de antes, ese desbordamiento no se notaba: la
+              foto salía del bloque de arena y entraba en otro bloque de arena.
+              Ahora el fondo es un degradado que empieza y acaba en el lienzo,
+              así que la foto cruzaba el degradado entero y dejaba dos cortes
+              rectos —uno arriba y otro abajo— justo donde el color tenía que
+              estar disolviéndose. Dentro de la sección, el degradado respira
+              por los dos lados y la foto conserva su sangrado por la izquierda.
+            */}
+            <div className="funde-der sangra-izq relative aspect-[3/2] w-full overflow-hidden rounded-xl lg:aspect-auto lg:h-full lg:rounded-none">
               {/*
                 El fotograma sale del mismo vídeo que la portada, y no del
                 collage de ambientes que entregó la empresa: aquellos paneles
@@ -411,7 +411,6 @@ export default async function HomePage() {
             </div>
           </Reveal>
         </div>
-        <Onda posicion="abajo" className="text-canvas" />
       </section>
 
       {/* Quiénes somos + valores -------------------------------------------- */}
@@ -469,9 +468,8 @@ export default async function HomePage() {
       </section>
 
       {/* Clientes ----------------------------------------------------------- */}
-      <section className="bg-paper">
-        <Onda posicion="arriba" className="text-canvas" />
-        <div className="page pb-16 pt-8 md:pb-24 md:pt-12">
+      <section className="lavado lavado-gris">
+        <div className="page py-16 md:py-24">
           <Reveal>
             <p className="label text-accent-ink">Clientes</p>
             <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
@@ -504,7 +502,7 @@ export default async function HomePage() {
           hay formulario público a propósito: sería una puerta abierta a que
           cualquiera publique en la portada. */}
       {resenas.length > 0 && (
-        <section className="lavado-calido">
+        <section className="lavado lavado-frio">
           <div className="page py-16 md:py-24">
             <Reveal>
               <p className="label text-accent-ink">Reseñas</p>

@@ -33,6 +33,7 @@ export const productSchema = z.object({
   description: opcional(2000),
   specs: opcional(200),
   isPublished: z.boolean(),
+  isFeatured: z.boolean(),
 });
 
 export const settingsSchema = z.object({

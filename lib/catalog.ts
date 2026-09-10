@@ -146,6 +146,37 @@ export async function getRelatedProducts(
   return (data ?? []) as unknown as ProductCard[];
 }
 
+/**
+ * Los más vendidos: lo que MAB quiere enseñar primero al entrar al catálogo.
+ *
+ * No se calculan, se eligen. El sitio no registra ventas —el negocio se cierra
+ * por WhatsApp— así que cualquier «más vendido» que sacara de los datos sería
+ * inventado. Los marca la empresa en el panel, que es quien sabe qué se vende.
+ *
+ * El filtro de publicado va además del de destacado: desmarcar «publicado» tiene
+ * que sacar el artículo de todas partes, también de aquí, sin obligar a
+ * acordarse de desmarcar también «destacado».
+ */
+export async function getFeaturedProducts(limite = 8): Promise<ProductCard[]> {
+  if (notConfigured("getFeaturedProducts")) return [];
+
+  const supabase = publicClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, name, slug, specs, image_url, category:categories(name, slug)")
+    .eq("is_featured", true)
+    .eq("is_published", true)
+    .order("featured_position", { ascending: true })
+    .order("name", { ascending: true })
+    .limit(limite);
+
+  if (error) {
+    console.error("getFeaturedProducts:", error.message);
+    return [];
+  }
+  return (data ?? []) as unknown as ProductCard[];
+}
+
 export async function getAllProducts(): Promise<ProductCard[]> {
   if (notConfigured("getAllProducts")) return [];
 

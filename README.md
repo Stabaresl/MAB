@@ -86,6 +86,7 @@ supabase/migrations/  esquema, índices, triggers, políticas RLS y la función
 scripts/              preparación de assets y semilla (uso puntual)
 data/manifest.json    catálogo inicial: categorías, artículos e imágenes de origen
 public/catalogo/      fotos del catálogo inicial, ya procesadas a WebP
+public/banners/       piezas gráficas de la empresa para la cabecera del catálogo
 ```
 
 ---
@@ -94,7 +95,7 @@ public/catalogo/      fotos del catálogo inicial, ya procesadas a WebP
 
 | Sección del panel | Qué cambia en el sitio |
 |---|---|
-| Artículos | El catálogo entero y las fichas de producto |
+| Artículos | El catálogo entero y las fichas de producto. La estrella de cada fila los pone entre «los más vendidos», la vitrina que abre el catálogo |
 | Categorías | Los grupos del catálogo, su portada y su orden |
 | Reseñas | El bloque de opiniones de la portada. Se suben con la captura del mensaje y el texto transcrito, porque las opiniones llegan por WhatsApp y por correo. El formulario enseña la tarjeta real mientras se escribe |
 | Clientes | El carrusel de referencias, con su logotipo y su orden |

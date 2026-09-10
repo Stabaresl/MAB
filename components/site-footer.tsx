@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Onda } from "@/components/onda";
 import { SealbyteMark } from "@/components/sealbyte-mark";
 import { getCategories, getSettings } from "@/lib/catalog";
 import { enquiryBody, formatPhone, gmailLink, site, whatsappLink } from "@/lib/site";
@@ -11,10 +10,11 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-24 bg-paper">
-      {/* El pie entra con la misma onda que el resto de cambios de fondo. Con un
-          filete recto era la única costura recta de la página y se notaba. */}
-      <Onda posicion="arriba" className="text-canvas" />
+    // El pie entra con un degradado, igual que el resto de cambios de fondo de
+    // la página: arranca en el lienzo y se va tiñendo hasta el gris del cierre.
+    // Antes lo anunciaba una onda de SVG, que era un adorno tapando un corte
+    // duro; ahora no hay corte que tapar.
+    <footer className="lavado lavado-gris lavado-entra mt-24">
 
       {/* Cierre comercial antes de los datos: es lo último que se lee. */}
       <div className="page pb-16 pt-10 md:pb-20 md:pt-24">

@@ -66,6 +66,8 @@ export interface Database {
           image_url: string | null;
           image_path: string | null;
           is_published: boolean;
+          is_featured: boolean;
+          featured_position: number;
           position: number;
           created_at: string;
           updated_at: string;
@@ -80,6 +82,8 @@ export interface Database {
           image_url?: string | null;
           image_path?: string | null;
           is_published?: boolean;
+          is_featured?: boolean;
+          featured_position?: number;
           position?: number;
           created_at?: string;
           updated_at?: string;
@@ -94,6 +98,8 @@ export interface Database {
           image_url?: string | null;
           image_path?: string | null;
           is_published?: boolean;
+          is_featured?: boolean;
+          featured_position?: number;
           position?: number;
           created_at?: string;
           updated_at?: string;

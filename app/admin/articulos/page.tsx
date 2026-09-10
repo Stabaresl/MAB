@@ -30,6 +30,7 @@ export default async function ArticulosPage() {
           specs: product.specs,
           imageUrl: product.image_url,
           isPublished: product.is_published,
+          isFeatured: product.is_featured,
           categoryName: product.category?.name ?? "Sin categoría",
           categorySlug: product.category?.slug ?? "",
         }))}

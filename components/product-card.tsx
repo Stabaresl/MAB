@@ -9,20 +9,19 @@ import type { ProductCard as ProductCardData } from "@/lib/catalog";
  * Tarjeta de artículo.
  *
  * Toda la tarjeta es el enlace, no solo el título: en móvil nadie apunta a un
- * texto de 15px. La foto va con `object-contain` sobre superficie clara porque
- * las piezas llegan recortadas sobre transparencia; recortarlas al cuadrado
- * les cortaría el grifo o el sifón.
+ * texto de 15px.
  *
- * El color lo pone la categoría. El hueco de la foto se tiñe con el tono que le
- * toca —seis pastel sacados del logotipo— y la etiqueta de categoría se escribe
- * con la tinta de ese mismo tono. Eso resuelve el problema que tenía la rejilla:
- * cuarenta y cinco recuadros del mismo hueso pálido no se distinguían entre sí
- * y el catálogo entero se leía como una hoja de cálculo. Con el tono, una fila
- * de rejillas y una de eléctricos se ven distintas antes de leer una palabra.
+ * El hueco de la foto NO lleva el color de la categoría, y esa es la corrección
+ * importante. Las fotos que sube MAB no vienen recortadas sobre transparencia:
+ * llegan de un estudio, cada una con su propio fondo gris muy claro. Puestas
+ * sobre un pastel, ese fondo se veía como un recorte pegado encima de la
+ * tarjeta —un rectángulo gris dentro de un marco azul—. Ahora el hueco imita
+ * ese mismo gris de estudio y la foto va a sangre, sin relleno alrededor: una
+ * foto cuadrada llena el hueco exacto y no hay costura que ver.
  *
- * El tinte va solo en el hueco de la foto y no en la tarjeta entera: la pieza
- * necesita fondo plano para recortarse, y el texto necesita el lienzo de
- * siempre para no obligar a recalcular el contraste seis veces.
+ * El color de la categoría se va abajo, a la banda del texto. Sigue habiendo
+ * rejilla de colores —que es lo que hacía falta para que el catálogo no se lea
+ * como una hoja de cálculo— pero ninguna foto se apoya sobre un tinte.
  */
 export function ProductCard({
   product,
@@ -39,14 +38,14 @@ export function ProductCard({
         product.category.slug,
       )}`}
     >
-      <div className="relative aspect-square w-full border-b border-[var(--tono-linea)] bg-[var(--tono-fondo)]">
+      <div className="pozo-foto relative aspect-square w-full">
         {image ? (
           <Image
             src={image}
             alt={product.name}
             fill
             sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1100px) 33vw, 300px"
-            className="object-contain p-6 transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.06]"
+            className="object-contain transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.04]"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -55,7 +54,7 @@ export function ProductCard({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
+      <div className="flex flex-1 flex-col gap-1.5 border-t border-[var(--tono-linea)] bg-[var(--tono-fondo)] p-4">
         {showCategory && (
           <span className="label text-[var(--tono-tinta)]">{product.category.name}</span>
         )}
@@ -64,7 +63,7 @@ export function ProductCard({
             {product.name}
           </Link>
         </h3>
-        {product.specs && <p className="spec mt-auto pt-1 text-ink-3">{product.specs}</p>}
+        {product.specs && <p className="spec mt-auto pt-1 text-ink-2">{product.specs}</p>}
       </div>
     </article>
   );

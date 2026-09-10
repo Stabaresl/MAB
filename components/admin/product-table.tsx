@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useOptimistic, useState, useTransition } from "react";
 
 import { FormFeedback } from "@/components/admin/form-feedback";
-import { toggleProductPublished } from "@/lib/actions/products";
+import { toggleProductFeatured, toggleProductPublished } from "@/lib/actions/products";
 import { fold } from "@/lib/slug";
 import { thumbUrl } from "@/lib/storage-url";
 
@@ -17,6 +17,7 @@ type Row = {
   specs: string | null;
   imageUrl: string | null;
   isPublished: boolean;
+  isFeatured: boolean;
   categoryName: string;
   categorySlug: string;
 };
@@ -37,15 +38,17 @@ export function ProductTable({
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"todos" | "publicados" | "borradores">("todos");
+  const [filter, setFilter] = useState<
+    "todos" | "publicados" | "borradores" | "destacados"
+  >("todos");
   const [category, setCategory] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   const [rows, applyOptimistic] = useOptimistic(
     products,
-    (state: Row[], update: { id: string; isPublished: boolean }) =>
-      state.map((row) => (row.id === update.id ? { ...row, isPublished: update.isPublished } : row)),
+    (state: Row[], update: { id: string } & Partial<Row>) =>
+      state.map((row) => (row.id === update.id ? { ...row, ...update } : row)),
   );
 
   const visible = useMemo(() => {
@@ -53,6 +56,7 @@ export function ProductTable({
     return rows.filter((row) => {
       if (filter === "publicados" && !row.isPublished) return false;
       if (filter === "borradores" && row.isPublished) return false;
+      if (filter === "destacados" && !row.isFeatured) return false;
       if (category && row.categorySlug !== category) return false;
       if (!needle) return true;
       return fold(`${row.name} ${row.specs ?? ""} ${row.categoryName}`).includes(needle);
@@ -69,6 +73,24 @@ export function ProductTable({
       }
       // Refrescar reconcilia el estado optimista con lo que hay en la base de
       // datos, tanto si salió bien como si no.
+      router.refresh();
+    });
+  }
+
+  /**
+   * Marca o desmarca «más vendido».
+   *
+   * Va aquí y no solo en el formulario porque armar la vitrina es una tarea de
+   * lista: se mira el catálogo entero y se van eligiendo cinco o seis. Abrir y
+   * guardar seis formularios para eso sería el mismo trabajo que antes costaba
+   * vaciar una categoría a mano.
+   */
+  function onToggleFeatured(row: Row) {
+    setError(null);
+    startTransition(async () => {
+      applyOptimistic({ id: row.id, isFeatured: !row.isFeatured });
+      const result = await toggleProductFeatured(row.id, !row.isFeatured);
+      if (!result.ok) setError(result.error);
       router.refresh();
     });
   }
@@ -113,7 +135,7 @@ export function ProductTable({
         </div>
 
         <div className="flex gap-1 rounded-md border border-line bg-canvas p-1">
-          {(["todos", "publicados", "borradores"] as const).map((value) => (
+          {(["todos", "publicados", "borradores", "destacados"] as const).map((value) => (
             <button
               key={value}
               type="button"
@@ -130,7 +152,8 @@ export function ProductTable({
       </div>
 
       <p aria-live="polite" className="spec mt-5 text-ink-3">
-        {visible.length} de {rows.length}
+        {visible.length} de {rows.length} · {rows.filter((r) => r.isFeatured).length} entre los más
+        vendidos
       </p>
 
       {visible.length === 0 ? (
@@ -170,6 +193,38 @@ export function ProductTable({
               </div>
 
               <div className="flex shrink-0 items-center gap-2">
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={row.isFeatured}
+                  onClick={() => onToggleFeatured(row)}
+                  title={
+                    row.isFeatured
+                      ? "Quitar de los más vendidos"
+                      : "Añadir a los más vendidos"
+                  }
+                  className={`flex h-11 w-11 items-center justify-center rounded-md border transition-colors ${
+                    row.isFeatured
+                      ? "border-sun-line bg-sun-soft text-sun-ink"
+                      : "border-line-2 bg-canvas text-ink-3 hover:border-ink-3 hover:text-ink-2"
+                  }`}
+                >
+                  <span className="sr-only">
+                    {row.isFeatured ? "Quitar de los más vendidos" : "Añadir a los más vendidos"}
+                  </span>
+                  <svg
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    fill={row.isFeatured ? "currentColor" : "none"}
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M10 1.8l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4L2.2 7.5l5.4-.8z" />
+                  </svg>
+                </button>
+
                 <button
                   type="button"
                   role="switch"

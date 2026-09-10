@@ -170,6 +170,23 @@ export function ProductForm({
             </span>
           </label>
         </div>
+
+        <div className="flex items-start gap-3 rounded-md border border-sun-line bg-sun-soft p-4">
+          <input
+            id="isFeatured"
+            name="isFeatured"
+            type="checkbox"
+            defaultChecked={product?.is_featured ?? false}
+            className="mt-1 h-5 w-5 shrink-0 accent-[var(--color-accent)]"
+          />
+          <label htmlFor="isFeatured" className="cursor-pointer">
+            <span className="block text-ink">Entre los más vendidos</span>
+            <span className="mt-0.5 block text-[13px] text-ink-2">
+              Sale en la vitrina que abre el catálogo, antes de entrar en ninguna categoría. Si el
+              artículo no está publicado, no aparece ahí aunque esté marcado.
+            </span>
+          </label>
+        </div>
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3 border-t border-line pt-6">

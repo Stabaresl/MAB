@@ -44,6 +44,7 @@ function readForm(formData: FormData) {
     description: formData.get("description"),
     specs: formData.get("specs"),
     isPublished: formData.get("isPublished") === "on" || formData.get("isPublished") === "true",
+    isFeatured: formData.get("isFeatured") === "on" || formData.get("isFeatured") === "true",
   });
 }
 
@@ -79,6 +80,7 @@ export async function createProduct(formData: FormData): Promise<ActionResult<{ 
         description: parsed.data.description,
         specs: parsed.data.specs,
         is_published: parsed.data.isPublished,
+        is_featured: parsed.data.isFeatured,
         image_url: image?.url ?? null,
         image_path: image?.path ?? null,
       })
@@ -151,6 +153,7 @@ export async function updateProduct(
       description: parsed.data.description,
       specs: parsed.data.specs,
       is_published: parsed.data.isPublished,
+      is_featured: parsed.data.isFeatured,
       ...(image ? { image_url: image.url, image_path: image.path } : {}),
     })
     .eq("id", id);
@@ -197,6 +200,37 @@ export async function deleteProduct(id: string): Promise<ActionResult<{ name: st
   await removeImage(product.image_path);
   await refreshFor(product.category_id, product.slug);
   return success({ name: product.name });
+}
+
+/**
+ * Marca o desmarca un artículo como «más vendido» sin abrir el formulario.
+ *
+ * Un artículo destacado que no está publicado no sale en la vitrina: lo filtra
+ * la misma política RLS que al resto del catálogo, así que no hace falta —ni
+ * conviene— comprobarlo aquí también. Dos sitios comprobando lo mismo es un
+ * sitio que algún día se olvidará.
+ */
+export async function toggleProductFeatured(
+  id: string,
+  isFeatured: boolean,
+): Promise<ActionResult<{ isFeatured: boolean }>> {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .update({ is_featured: isFeatured })
+    .eq("id", id)
+    .select("slug, category_id, is_featured")
+    .single();
+
+  if (error || !data) {
+    return failure(explainDatabaseError(error, "producto"));
+  }
+
+  await refreshFor(data.category_id, data.slug);
+  return success({ isFeatured: data.is_featured });
 }
 
 /** Publica o retira un artículo sin abrir el formulario completo. */

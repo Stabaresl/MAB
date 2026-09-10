@@ -31,10 +31,17 @@
      ventanas. Es la tercera vuelta: primero fue ámbar y luego terracota, y las
      dos leían como naranja. Al venir de la marca, la página entera queda en una
      sola familia y el acento no compite con el navy, lo continúa.
-     6.65:1 sobre el lienzo y 7.12:1 con blanco encima. */
+     6.65:1 sobre el lienzo y 7.12:1 con blanco encima.
+
+     Los pasteles de esta familia subieron un punto de saturación: con el
+     tinte anterior, una rejilla de cuarenta y cinco tarjetas se leía casi
+     monocroma —el color estaba, pero había que buscarlo—. Siguen siendo
+     fondos, no acentos: la tinta principal rinde por encima de 12:1 sobre
+     cualquiera de ellos, y la más ajustada de las tintas de tono, la del
+     naranja, se queda en 5.45:1. */
   --color-accent: #2e5c7e;
   --color-accent-hover: #26506e;
-  --color-accent-soft: #e6eef4;
+  --color-accent-soft: #dbe8f2;
   --color-accent-ink: #24496a;
   /* Para display grande: contraste suficiente sin caer en el negro azulado */
   --color-accent-strong: #1d3f5c;
@@ -45,13 +52,13 @@
      el texto ni pedir un color de letra especial: la tinta rinde 13.7:1 encima.
      Van un punto más hondas que antes para seguir despegándose del lienzo, que
      ya no es blanco. */
-  --color-warm: #f2ebe1;
+  --color-warm: #efe5d4;
   --color-warm-2: #e9e0d2;
   --color-warm-line: #ddd0bd;
 
   /* Azul claro del logotipo, para gráficos y para el lavado pastel frío */
   --color-sky: #8bb7d0;
-  --color-sky-soft: #e9f0f5;
+  --color-sky-soft: #dceaf3;
   --color-sky-line: #cfe0ea;
   --color-sky-ink: #1d4f6e;
 
@@ -65,10 +72,10 @@
    *
    * `sun` es el color tal cual sale del logotipo —solo para superficies
    * grandes y filetes—; sobre él nunca va texto. Lo que se lee es `sun-ink`,
-   * que rinde 5.74:1 sobre `sun-soft` y 6.2:1 sobre el lienzo.
+   * que rinde 5.45:1 sobre `sun-soft` y 6.2:1 sobre el lienzo.
    */
   --color-sun: #f09e4f;
-  --color-sun-soft: #fbe8d5;
+  --color-sun-soft: #fbe1c8;
   --color-sun-line: #f2d5b4;
   --color-sun-ink: #8a4a0c;
 
@@ -76,12 +83,12 @@
      claro encima —12.2:1— y como tinta de uno de los tonos del catálogo. */
   --color-petrol: #0e3446;
   --color-petrol-2: #14465d;
-  --color-petrol-soft: #e2ebf0;
+  --color-petrol-soft: #d8e6ee;
   --color-petrol-line: #c6d8e2;
 
   /* Gris frío, el cuarto color de la marca. Sirve de descanso entre dos tonos
      saturados cuando la rejilla del catálogo pone varios seguidos. */
-  --color-slate-soft: #eceef0;
+  --color-slate-soft: #e6eaee;
   --color-slate-line: #d6dade;
   --color-slate-ink: #3f4b54;
 
@@ -90,6 +97,34 @@
   /* Arena saturada. Solo para marcas de color —el punto del rail—, nunca para
      texto: sobre el lienzo no llega a 3:1. */
   --color-sand: #c9a87c;
+
+  /*
+   * Fondo del hueco de la foto de producto.
+   *
+   * Las fotos que sube MAB no vienen recortadas sobre transparencia: llegan de
+   * un estudio, con su propio fondo gris muy claro y un degradado suave de la
+   * esquina superior izquierda a la inferior derecha. Puestas sobre un pastel,
+   * ese fondo se veía como un rectángulo pegado encima de la tarjeta.
+   *
+   * Así que el hueco reproduce ese mismo gris y ese mismo degradado, y la foto
+   * se sirve a sangre —sin relleno alrededor—. Una foto cuadrada llena el hueco
+   * exacto y no hay costura; una que no lo sea deja los bordes en un gris
+   * indistinguible del suyo. Las fotos antiguas, que sí están recortadas sobre
+   * transparencia, siguen viéndose bien porque traen su propio margen.
+   */
+  --color-foto: #ededed;
+  --color-foto-claro: #f5f5f5;
+  --color-foto-hondo: #e3e3e3;
+
+  /*
+   * Colores de lavado. Van un punto más vivos que los tintes de las tarjetas:
+   * un lavado ocupa media pantalla y se diluye por los dos extremos, así que
+   * con el pastel de tarjeta se quedaba en nada.
+   */
+  --color-lavado-azul: #dcebf4;
+  --color-lavado-sol: #fbe2c6;
+  --color-lavado-arena: #efe5d5;
+  --color-lavado-gris: #e7ebee;
 
   /* Semánticos */
   --color-success: #17794a;
@@ -426,34 +461,86 @@
   }
 
   /*
-   * Lavado pastel.
+   * Lavados: cómo se pasa de una sección a la siguiente.
    *
-   * Una sección que entra desde el blanco, se tiñe por el centro y vuelve al
-   * blanco. Da color sin meter un bloque plano —que obligaría a recalcular el
-   * contraste de todo el texto— y sin sumar un acento nuevo: el tinte sale del
-   * azul y del terracota que ya tiene el sistema, rebajados a pastel.
+   * Antes cada sección tenía su color plano y el cambio se disimulaba con una
+   * onda de SVG entre medias. Funcionaba, pero eran dos lenguajes a la vez —un
+   * corte duro y un adorno que lo tapaba— y en pantalla estrecha la onda se
+   * comía altura para no decir nada.
    *
-   * El texto sigue yendo sobre un fondo casi blanco en los extremos y sobre el
-   * pastel en el centro; el más oscuro de los dos, `sky-soft`, deja la tinta
-   * principal en 13.8:1, así que ninguna combinación baja de AA.
+   * Ahora el color entra y sale de la propia sección. Cada lavado arranca en el
+   * lienzo, se tiñe por el centro y vuelve al lienzo, así que dos secciones
+   * seguidas siempre se tocan en el mismo color y no hay borde que ver: la
+   * página pasa de un tono a otro como un degradado largo.
+   *
+   * El texto va sobre el lienzo en los extremos y sobre el tinte en el centro;
+   * el más oscuro de los cuatro deja la tinta principal por encima de 13:1, así
+   * que ninguna combinación baja de AA en ningún punto del degradado.
    */
-  .lavado-frio {
+  .lavado {
+    --lavado-color: var(--color-paper);
     background-image: linear-gradient(
       180deg,
       var(--color-canvas) 0%,
-      var(--color-sky-soft) 42%,
-      var(--color-sky-soft) 58%,
+      var(--lavado-color) 20%,
+      var(--lavado-color) 80%,
       var(--color-canvas) 100%
     );
   }
 
+  .lavado-frio {
+    --lavado-color: var(--color-lavado-azul);
+  }
+
   .lavado-calido {
+    --lavado-color: var(--color-lavado-sol);
+  }
+
+  .lavado-arena {
+    --lavado-color: var(--color-lavado-arena);
+  }
+
+  .lavado-gris {
+    --lavado-color: var(--color-lavado-gris);
+  }
+
+  /*
+   * Media transición: la sección empieza en el lienzo y acaba teñida, o al
+   * revés. Sirve donde la siguiente sección ya trae su propio color y un
+   * lavado completo dejaría una franja de lienzo entre dos tintes.
+   */
+  .lavado-entra {
     background-image: linear-gradient(
       180deg,
       var(--color-canvas) 0%,
-      var(--color-accent-soft) 42%,
-      var(--color-accent-soft) 58%,
+      var(--lavado-color) 55%,
+      var(--lavado-color) 100%
+    );
+  }
+
+  .lavado-sale {
+    background-image: linear-gradient(
+      180deg,
+      var(--lavado-color) 0%,
+      var(--lavado-color) 45%,
       var(--color-canvas) 100%
+    );
+  }
+
+  /*
+   * Hueco de la foto de producto.
+   *
+   * Reproduce el fondo de estudio de las fotos que sube MAB: gris muy claro con
+   * un degradado de la esquina superior izquierda a la inferior derecha. Con la
+   * foto servida a sangre, el fondo del archivo y el de la tarjeta son el mismo
+   * y no se ve dónde acaba uno y empieza el otro.
+   */
+  .pozo-foto {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-foto-claro) 0%,
+      var(--color-foto) 55%,
+      var(--color-foto-hondo) 100%
     );
   }
 

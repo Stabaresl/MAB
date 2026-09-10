@@ -53,8 +53,11 @@ export default async function CategoriaPage({ params }: Params) {
     <>
       {/* La cabecera va del color de la categoría: al llegar desde el rail o
           desde el cinturón de la portada, el mismo tono confirma dónde se ha
-          entrado antes de leer el titular. */}
-      <section className={`${claseTono(category.slug)} border-b border-[var(--tono-linea)] bg-[var(--tono-fondo)]`}>
+          entrado antes de leer el titular. Y se disuelve en el lienzo en vez de
+          cortarse con un filete, como el resto de cambios de fondo del sitio. */}
+      <section
+        className={`${claseTono(category.slug)} bg-[linear-gradient(180deg,var(--tono-fondo)_0%,var(--tono-fondo)_55%,var(--color-canvas)_100%)]`}
+      >
         <div className="page py-10 md:py-14">
           <nav aria-label="Ruta" className="spec text-ink-3">
             <Link href="/catalogo" className="hover:text-ink">
