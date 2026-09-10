@@ -17,22 +17,28 @@ export default async function ContactoPage() {
   const mensaje = "Hola, quisiera cotizar materiales para mi proyecto.";
 
   return (
-    <div className="page py-14 md:py-20">
-      <header className="border-b border-line pb-10">
-        <p className="label text-accent-ink">Contacto</p>
-        <h1 className="mt-3 max-w-[18ch] text-[clamp(2rem,6vw,3.75rem)] leading-[1.05] text-ink">
-          Cuéntanos qué necesita tu obra
-        </h1>
-        <p className="mt-6 max-w-[58ch] text-[17px] leading-relaxed text-ink-2">
-          Envíanos las especificaciones del proyecto — referencias, medidas y cantidades — y te
-          cotizamos al mejor precio del mercado. El pedido llega directo a tu obra, en cualquier
-          ciudad del país.
-        </p>
-      </header>
+    <>
+      {/* La cabecera entra teñida y se disuelve en el lienzo, igual que en el
+          resto del sitio: el filete recto que había aquí era la única costura
+          dura que quedaba en las páginas de contenido. */}
+      <section className="lavado lavado-frio lavado-sale">
+        <div className="page py-14 md:py-20">
+          <p className="label text-accent-ink">Contacto</p>
+          <h1 className="mt-3 max-w-[18ch] text-[clamp(2rem,6vw,3.75rem)] leading-[1.05] text-ink">
+            Cuéntanos qué necesita tu obra
+          </h1>
+          <p className="mt-6 max-w-[58ch] text-[17px] leading-relaxed text-ink-2">
+            Envíanos las especificaciones del proyecto — referencias, medidas y cantidades — y te
+            cotizamos al mejor precio del mercado. El pedido llega directo a tu obra, en cualquier
+            ciudad del país.
+          </p>
+        </div>
+      </section>
 
-      <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-line bg-line lg:grid-cols-2">
-        <section className="bg-canvas p-8 md:p-10">
-          <h2 className="label text-ink-3">WhatsApp</h2>
+      <div className="page pb-16 md:pb-24">
+        <div className="grid gap-px overflow-hidden rounded-lg border border-line bg-line lg:grid-cols-2">
+        <section className="bg-sun-soft p-8 md:p-10">
+          <h2 className="label text-sun-ink">WhatsApp</h2>
           <p className="mt-4 text-ink-2">
             La vía más rápida. Escríbenos y respondemos con precio y disponibilidad.
           </p>
@@ -59,8 +65,8 @@ export default async function ContactoPage() {
           </div>
         </section>
 
-        <section className="bg-canvas p-8 md:p-10">
-          <h2 className="label text-ink-3">Correo y sede</h2>
+        <section className="bg-sky-soft p-8 md:p-10">
+          <h2 className="label text-sky-ink">Correo y sede</h2>
 
           <dl className="mt-6 flex flex-col gap-6">
             <div>
@@ -106,7 +112,8 @@ export default async function ContactoPage() {
             </div>
           </dl>
         </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

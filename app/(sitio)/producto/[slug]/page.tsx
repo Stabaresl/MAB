@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProductCard } from "@/components/product-card";
+import { claseTono } from "@/lib/tono";
 import { getProductBySlug, getRelatedProducts, getSettings } from "@/lib/catalog";
 import { siteUrl } from "@/lib/env";
 import { getProductSlugs } from "@/lib/supabase/public";
@@ -67,7 +68,7 @@ export default async function ProductoPage({ params }: Params) {
     <>
       {/* Franja de ruta a todo el ancho: sitúa la pieza dentro del catálogo
           antes de que empiece la ficha. */}
-      <nav aria-label="Ruta" className="border-b border-line bg-paper">
+      <nav aria-label="Ruta" className={`${claseTono(product.category.slug)} bg-[var(--tono-fondo)]`}>
         <div className="page flex items-center gap-2 py-3.5">
           <Link href="/catalogo" className="label text-ink-3 transition-colors hover:text-ink">
             Catálogo
@@ -90,7 +91,7 @@ export default async function ProductoPage({ params }: Params) {
 
       <div className="page py-10 md:py-14">
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
-        <figure className="card relative aspect-square overflow-hidden bg-paper">
+        <figure className="pozo-foto card relative aspect-square overflow-hidden">
           {product.image_url ? (
             <Image
               src={product.image_url}
@@ -151,8 +152,8 @@ export default async function ProductoPage({ params }: Params) {
             </div>
           </dl>
 
-          <div className="card mt-9 bg-paper p-6">
-            <h2 className="label text-ink-3">Pedir precio</h2>
+          <div className="card mt-9 border-sun-line bg-sun-soft p-6">
+            <h2 className="label text-sun-ink">Pedir precio</h2>
             <p className="mt-3 text-ink-2">
               Escríbenos con las cantidades que necesitas y te cotizamos. Si ya tienes otra
               cotización, la mejoramos.
@@ -181,7 +182,7 @@ export default async function ProductoPage({ params }: Params) {
               </a>
             </div>
 
-            <ul className="mt-6 flex flex-col gap-2 border-t border-line pt-5">
+            <ul className="mt-6 flex flex-col gap-2 border-t border-sun-line pt-5">
               <li className="spec text-ink-3">
                 WhatsApp {formatPhone(settings.whatsapp_primary)}
                 {settings.whatsapp_secondary && ` · ${formatPhone(settings.whatsapp_secondary)}`}
@@ -192,21 +193,24 @@ export default async function ProductoPage({ params }: Params) {
         </div>
       </div>
 
+      </div>
+
       {related.length > 0 && (
-        <section className="mt-20 border-t border-line pt-12">
-          <h2 className="text-[clamp(1.5rem,3.5vw,2rem)] leading-tight text-ink">
-            Más de {product.category.name}
-          </h2>
-          <ul className="mt-8 grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-4">
-            {related.map((item) => (
-              <li key={item.id} className="min-w-0">
-                <ProductCard product={item} />
-              </li>
-            ))}
-          </ul>
+        <section className="lavado lavado-frio">
+          <div className="page py-14 md:py-20">
+            <h2 className="text-[clamp(1.5rem,3.5vw,2rem)] leading-tight text-ink">
+              Más de {product.category.name}
+            </h2>
+            <ul className="mt-8 grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-4">
+              {related.map((item) => (
+                <li key={item.id} className="min-w-0">
+                  <ProductCard product={item} />
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
       )}
-      </div>
     </>
   );
 }

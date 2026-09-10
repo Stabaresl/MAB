@@ -49,10 +49,13 @@ export function CatalogBrowser({
   categorias,
   productos,
   categoriaActiva,
+  hayDestacados = false,
 }: {
   categorias: CategoriaRail[];
   productos: ProductCardData[];
   categoriaActiva?: string;
+  /** Si hay vitrina de más vendidos arriba, el rail la encabeza con un enlace. */
+  hayDestacados?: boolean;
 }) {
   const [consulta, setConsulta] = useState("");
   const [materiales, setMateriales] = useState<string[]>([]);
@@ -121,9 +124,21 @@ export function CatalogBrowser({
       <nav aria-label="Categorías del catálogo">
         <h2 className="label text-ink-3">Explorar por</h2>
         <ul className="mt-4 flex flex-col gap-0.5">
+          {/* Lo más vendido encabeza el rail porque es lo que responde a la
+              pregunta con la que entra casi todo el mundo. Es un ancla y no una
+              página aparte: la vitrina está ahí arriba, en esta misma pantalla,
+              y mandar a otra ruta para enseñar lo que ya está a la vista sería
+              un viaje de ida y vuelta para nada. */}
+          {hayDestacados && !categoriaActiva && (
+            <li>
+              <EnlaceRail href="#mas-vendidos" activo={false} tono={null} destacado>
+                Los más vendidos
+              </EnlaceRail>
+            </li>
+          )}
           <li>
             <EnlaceRail href="/catalogo" activo={!categoriaActiva} tono={null}>
-              Todos los productos
+              Todo el catálogo
               <Cuantos n={productos.length} />
             </EnlaceRail>
           </li>
@@ -320,11 +335,13 @@ function EnlaceRail({
   href,
   activo,
   tono,
+  destacado = false,
   children,
 }: {
   href: string;
   activo: boolean;
   tono: string | null;
+  destacado?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -332,15 +349,30 @@ function EnlaceRail({
       href={href}
       aria-current={activo ? "page" : undefined}
       className={`${tono ? claseTono(tono) : ""} flex items-center gap-2.5 rounded-md px-2 py-2 text-[15px] transition-colors ${
-        activo ? "bg-paper font-semibold text-ink" : "text-ink-2 hover:bg-paper hover:text-ink"
+        activo
+          ? "bg-paper font-semibold text-ink"
+          : destacado
+            ? "font-semibold text-sun-ink hover:bg-sun-soft"
+            : "text-ink-2 hover:bg-paper hover:text-ink"
       }`}
     >
-      <span
-        aria-hidden="true"
-        className={`h-2.5 w-2.5 shrink-0 rounded-full ${
-          tono ? "bg-[var(--tono-punto)]" : "bg-line-2"
-        }`}
-      />
+      {destacado ? (
+        <svg
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+          className="h-3.5 w-3.5 shrink-0 text-sun"
+          fill="currentColor"
+        >
+          <path d="M10 1.8l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4L2.2 7.5l5.4-.8z" />
+        </svg>
+      ) : (
+        <span
+          aria-hidden="true"
+          className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+            tono ? "bg-[var(--tono-punto)]" : "bg-line-2"
+          }`}
+        />
+      )}
       <span className="flex min-w-0 flex-1 items-center justify-between gap-2">{children}</span>
     </Link>
   );

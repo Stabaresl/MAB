@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { CategoryBelt } from "@/components/category-belt";
 import { ClientWall } from "@/components/client-wall";
 import { Counters } from "@/components/counters";
 import { HeroMedia } from "@/components/hero-media";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
-import { ReferenceIndex } from "@/components/reference-index";
+import { ProductCard } from "@/components/product-card";
 import { ReviewCard } from "@/components/review-card";
 import {
   getAllProducts,
   getCategories,
   getClients,
+  getFeaturedProducts,
   getReviews,
   getSettings,
   getStats,
@@ -62,15 +62,16 @@ const PASOS = [
 
 const VALORES = ["Calidad", "Responsabilidad", "Honestidad", "Compromiso", "Servicio"] as const;
 
-/** Cuántas referencias se enseñan en la portada: dos filas de cuatro. */
-const DESTACADOS = 8;
+/** Cuántos artículos enseña la vitrina de la portada: dos filas de cuatro. */
+const EN_VITRINA = 8;
 
 /**
  * Una referencia por categoría, hasta llenar la rejilla.
  *
- * Coger las ocho primeras de la lista daría ocho rejillas seguidas, porque
- * vienen ordenadas por nombre. Repartiendo por categoría, la portada enseña de
- * qué va el catálogo: una ducha, un lavadero, un panel LED, una cámara.
+ * Es el relleno de la vitrina mientras MAB no haya marcado ningún artículo como
+ * más vendido. Coger los ocho primeros de la lista daría ocho rejillas
+ * seguidas, porque vienen ordenados por nombre. Repartiendo por categoría, la
+ * portada enseña de qué va el catálogo: una ducha, un lavadero, un panel LED.
  */
 function repartirPorCategoria(productos: ProductCardData[], cuantos: number): ProductCardData[] {
   const porCategoria = new Map<string, ProductCardData[]>();
@@ -100,16 +101,23 @@ function repartirPorCategoria(productos: ProductCardData[], cuantos: number): Pr
 }
 
 export default async function HomePage() {
-  const [categories, settings, productos, indicadores, clientes, resenas] = await Promise.all([
-    getCategories(),
-    getSettings(),
-    getAllProducts(),
-    getStats(),
-    getClients(),
-    getReviews(),
-  ]);
+  const [categories, settings, productos, masVendidos, indicadores, clientes, resenas] =
+    await Promise.all([
+      getCategories(),
+      getSettings(),
+      getAllProducts(),
+      getFeaturedProducts(EN_VITRINA),
+      getStats(),
+      getClients(),
+      getReviews(),
+    ]);
 
-  const destacados = repartirPorCategoria(productos, DESTACADOS);
+  // Si MAB todavía no ha marcado ninguno, la vitrina no se queda vacía ni se
+  // inventa un ranking: enseña una muestra repartida y lo dice en el rótulo.
+  const hayMasVendidos = masVendidos.length > 0;
+  const vitrina = hayMasVendidos
+    ? masVendidos
+    : repartirPorCategoria(productos, EN_VITRINA);
   const totalArticulos = categories.reduce((suma, c) => suma + c.productCount, 0);
 
   return (
@@ -220,66 +228,34 @@ export default async function HomePage() {
         </Stagger>
       </section>
 
-      {/* Categorías en cinturón ---------------------------------------------- */}
+      {/* Los más vendidos ----------------------------------------------------
+          Aquí estaba el cinturón de categorías: diez pastillas pasando solas
+          con el nombre de cada grupo de material. Enseñaba la estantería, no lo
+          que hay en ella, y quien entra a la portada todavía no sabe si «zona
+          húmeda» es donde está lo que busca. Producto real, con su foto y su
+          precio a un clic de distancia, responde antes.
+
+          Cuáles son los más vendidos lo marca MAB en el panel. Si no hay
+          ninguno marcado, la sección no miente: cambia el rótulo y enseña una
+          muestra repartida por categoría. */}
       <section className="lavado lavado-arena">
-        {/* El relleno lo ponía antes la onda del separador. Sin ella, el
-            degradado necesita sitio para entrar y salir: pegado al contenido no
-            se ve la transición, se ve una franja. */}
-        <div className="page pt-16 md:pt-24">
-          <Reveal>
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="label text-accent-ink">Todo para tu proyecto</p>
-                <h2 className="mt-3 max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-                  Elige por <span className="remate">tipo de material</span>
-                </h2>
-              </div>
-              <Link
-                href="/catalogo"
-                className="group inline-flex items-center gap-2 font-semibold text-accent-ink"
-              >
-                Ver todas las categorías
-                <span
-                  aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                >
-                  →
-                </span>
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-
-        {/* La cinta va de borde a borde: encerrada en el contenedor parecería
-            una fila cortada, y así se entiende que sigue más allá. */}
-        <div className="mt-10 pb-16 md:pb-24">
-          <CategoryBelt
-            categorias={categories.map((c) => ({
-              id: c.id,
-              slug: c.slug,
-              name: c.name,
-              description: c.description,
-              imageUrl: c.image_url,
-              productCount: c.productCount,
-            }))}
-          />
-        </div>
-      </section>
-
-      {/* Artículos del catálogo ----------------------------------------------
-          Aquí estaba el visor de 360°, que enseñaba un grifo de demostración
-          que MAB no vende: gastaba la mejor posición de la portada en algo que
-          no llevaba a ninguna parte. Estas son referencias reales, con su foto
-          y su enlace, y salen de la misma base que administra la empresa: al
-          publicar un artículo nuevo, entra aquí solo. */}
-      <section className="lavado lavado-frio">
         <div className="page py-16 md:py-24">
           <Reveal>
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="label text-accent-ink">Del catálogo</p>
-                <h2 className="mt-3 max-w-[18ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-                  Algunas de las <span className="remate">referencias</span>
+                <p className="label text-sun-ink">
+                  {hayMasVendidos ? "Lo más pedido" : "Del catálogo"}
+                </p>
+                <h2 className="mt-3 max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
+                  {hayMasVendidos ? (
+                    <>
+                      Los más <span className="remate">vendidos</span>
+                    </>
+                  ) : (
+                    <>
+                      Algunos de <span className="remate">nuestros artículos</span>
+                    </>
+                  )}
                 </h2>
                 <p className="mt-5 max-w-[54ch] text-ink-2">
                   {totalArticulos} artículos publicados en {categories.length} categorías.
@@ -302,11 +278,62 @@ export default async function HomePage() {
             </div>
           </Reveal>
 
-          <Reveal className="mt-10">
-            <ReferenceIndex productos={destacados} />
-          </Reveal>
+          <Stagger as="ul" className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4" paso={0.06}>
+            {vitrina.map((producto) => (
+              <StaggerItem as="li" key={producto.id} className="min-w-0">
+                <ProductCard product={producto} showCategory />
+              </StaggerItem>
+            ))}
+          </Stagger>
         </div>
       </section>
+
+      {/* Reseñas -------------------------------------------------------------
+          En este hueco estaba el índice de referencias, que repetía con otra
+          maquetación lo que la sección de arriba ya enseña. Aquí va lo que dicen
+          los clientes, que es lo que un visitante busca justo después de ver el
+          producto y antes de escribir.
+
+          La sección solo existe si hay reseñas publicadas. Un bloque «Lo que
+          dicen nuestros clientes» con tres tarjetas de ejemplo es peor que no
+          tener el bloque: quien lo ve entiende que no hay ninguna.
+
+          Las sube MAB desde el panel, con la captura del mensaje y el texto
+          transcrito, porque las opiniones llegan por WhatsApp y por correo. No
+          hay formulario público a propósito: sería una puerta abierta a que
+          cualquiera publique en la portada. */}
+      {resenas.length > 0 && (
+        <section className="lavado lavado-frio">
+          <div className="page py-16 md:py-24">
+            <Reveal>
+              <p className="label text-accent-ink">Reseñas</p>
+              <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
+                Lo que dicen <span className="remate">quienes ya compraron</span>
+              </h2>
+            </Reveal>
+
+            <Stagger
+              as="ul"
+              className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+              paso={0.08}
+            >
+              {resenas.map((resena) => (
+                <StaggerItem as="li" key={resena.id} className="min-w-0">
+                  <ReviewCard
+                    resena={{
+                      author: resena.author,
+                      role: resena.role,
+                      quote: resena.quote,
+                      imageUrl: resena.image_url,
+                      rating: resena.rating,
+                    }}
+                  />
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      )}
 
       {/* Cómo trabajamos ---------------------------------------------------- */}
       <section className="page py-16 md:py-24">
@@ -492,47 +519,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Reseñas -------------------------------------------------------------
-          La sección solo existe si hay reseñas publicadas. Un bloque «Lo que
-          dicen nuestros clientes» con tres tarjetas de ejemplo es peor que no
-          tener el bloque: quien lo ve entiende que no hay ninguna.
-
-          Las sube MAB desde el panel, con la captura del mensaje y el texto
-          transcrito, porque las opiniones llegan por WhatsApp y por correo. No
-          hay formulario público a propósito: sería una puerta abierta a que
-          cualquiera publique en la portada. */}
-      {resenas.length > 0 && (
-        <section className="lavado lavado-frio">
-          <div className="page py-16 md:py-24">
-            <Reveal>
-              <p className="label text-accent-ink">Reseñas</p>
-              <h2 className="mt-3 max-w-[20ch] text-[clamp(1.9rem,4.6vw,3rem)] leading-[1.1] text-ink">
-                Lo que dicen <span className="remate">quienes ya compraron</span>
-              </h2>
-            </Reveal>
-
-            <Stagger
-              as="ul"
-              className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-              paso={0.08}
-            >
-              {resenas.map((resena) => (
-                <StaggerItem as="li" key={resena.id} className="min-w-0">
-                  <ReviewCard
-                    resena={{
-                      author: resena.author,
-                      role: resena.role,
-                      quote: resena.quote,
-                      imageUrl: resena.image_url,
-                      rating: resena.rating,
-                    }}
-                  />
-                </StaggerItem>
-              ))}
-            </Stagger>
-          </div>
-        </section>
-      )}
     </>
   );
 }

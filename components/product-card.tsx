@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { claseTono } from "@/lib/tono";
 import { thumbUrl } from "@/lib/storage-url";
 import type { ProductCard as ProductCardData } from "@/lib/catalog";
 
@@ -11,17 +10,24 @@ import type { ProductCard as ProductCardData } from "@/lib/catalog";
  * Toda la tarjeta es el enlace, no solo el título: en móvil nadie apunta a un
  * texto de 15px.
  *
- * El hueco de la foto NO lleva el color de la categoría, y esa es la corrección
- * importante. Las fotos que sube MAB no vienen recortadas sobre transparencia:
- * llegan de un estudio, cada una con su propio fondo gris muy claro. Puestas
- * sobre un pastel, ese fondo se veía como un recorte pegado encima de la
- * tarjeta —un rectángulo gris dentro de un marco azul—. Ahora el hueco imita
- * ese mismo gris de estudio y la foto va a sangre, sin relleno alrededor: una
- * foto cuadrada llena el hueco exacto y no hay costura que ver.
+ * Dos decisiones de color, y las dos vienen de haber probado lo contrario:
  *
- * El color de la categoría se va abajo, a la banda del texto. Sigue habiendo
- * rejilla de colores —que es lo que hacía falta para que el catálogo no se lea
- * como una hoja de cálculo— pero ninguna foto se apoya sobre un tinte.
+ * 1. El hueco de la foto no lleva color. Las fotos que sube MAB no vienen
+ *    recortadas sobre transparencia: llegan de estudio, cada una con su propio
+ *    fondo gris muy claro, y sobre un tinte ese fondo se veía como un recorte
+ *    pegado encima de la tarjeta. El hueco imita el gris de estudio y la foto va
+ *    a sangre: una foto cuadrada llena el hueco exacto y no hay costura.
+ *
+ * 2. La banda del texto es el mismo azul en todas. Estuvo un tiempo tomando el
+ *    tono de su categoría —seis pasteles distintos— y el efecto en una rejilla
+ *    de cuarenta y cinco tarjetas no era «cada categoría tiene su color», era
+ *    «algunas azules están más subidas que otras». Seis tonos repartidos entre
+ *    diez categorías no llegan a leerse como un código, solo como una
+ *    irregularidad. El nombre de la categoría, que sí es el dato, está escrito
+ *    justo encima.
+ *
+ * El color por categoría sigue vivo donde sí significa algo y hay una sola
+ * categoría a la vista: la cabecera de su página y el punto del rail.
  */
 export function ProductCard({
   product,
@@ -33,11 +39,7 @@ export function ProductCard({
   const image = thumbUrl(product.image_url) ?? product.image_url;
 
   return (
-    <article
-      className={`card card-hover group relative flex h-full flex-col overflow-hidden ${claseTono(
-        product.category.slug,
-      )}`}
-    >
+    <article className="card card-hover group relative flex h-full flex-col overflow-hidden">
       <div className="pozo-foto relative aspect-square w-full">
         {image ? (
           <Image
@@ -54,10 +56,8 @@ export function ProductCard({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 border-t border-[var(--tono-linea)] bg-[var(--tono-fondo)] p-4">
-        {showCategory && (
-          <span className="label text-[var(--tono-tinta)]">{product.category.name}</span>
-        )}
+      <div className="flex flex-1 flex-col gap-1.5 border-t border-sky-line bg-sky-soft p-4">
+        {showCategory && <span className="label text-sky-ink">{product.category.name}</span>}
         <h3 className="font-text text-[16px] font-semibold leading-snug text-ink transition-colors group-hover:text-accent-ink">
           <Link href={`/producto/${product.slug}`} className="after:absolute after:inset-0">
             {product.name}

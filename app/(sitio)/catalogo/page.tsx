@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
+import { CatalogBanner } from "@/components/catalog-banner";
 import { CatalogBrowser } from "@/components/catalog-browser";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { ProductCard } from "@/components/product-card";
@@ -32,31 +32,23 @@ export default async function CatalogoPage() {
   return (
     <>
       {/*
-        Banner de la empresa, a sangre.
+        Banner de la empresa.
 
-        Va fuera del contenedor de página a propósito: es una pieza gráfica
-        entera, con su propio encuadre y su propio texto, y encerrarla en los
-        1240px del contenido la habría dejado con dos franjas de lienzo a los
-        lados como si fuera una foto pegada. La imagen es el ancho de la
-        pantalla y ahí se acaba la discusión.
+        Estuvo a sangre, del ancho de la pantalla, y salía mal por dos motivos:
+        ocupaba media portada del catálogo, y en un monitor ancho la imagen —de
+        1376px— se estiraba a 1920 y se veía blanda. Dentro del contenedor nunca
+        se amplía por encima de su tamaño real, así que se ve nítida, y deja de
+        comerse la pantalla.
 
-        Es decorativa en el sentido estricto —el titular de la página va debajo,
-        en texto de verdad— pero lleva `alt` porque el rótulo que trae dentro
-        dice algo que no está escrito en ninguna otra parte de la página.
+        Es decorativo en el sentido estricto —el titular va debajo, en texto de
+        verdad— pero cada pieza lleva `alt` porque el rótulo que traen dentro
+        dice cosas que no están escritas en ninguna otra parte de la página.
       */}
-      <section className="relative w-full overflow-hidden bg-paper">
-        <Image
-          src="/banners/banner-obra.webp"
-          alt="Sala de exhibición de Distribuciones M.A.B: 15 años de experiencia, todo para tu obra"
-          width={1376}
-          height={728}
-          priority
-          sizes="100vw"
-          className="h-auto w-full"
-        />
-      </section>
-
       <section className="lavado lavado-sale">
+        <div className="page pt-8 md:pt-10">
+          <CatalogBanner />
+        </div>
+
         <div className="page py-12 md:py-16">
           <Reveal>
             <p className="label text-accent-ink">Catálogo</p>
@@ -85,7 +77,7 @@ export default async function CatalogoPage() {
         de sus propios datos sería inventado.
       */}
       {destacados.length > 0 && (
-        <section className="lavado lavado-calido">
+        <section id="mas-vendidos" className="lavado lavado-calido scroll-mt-24">
           <div className="page py-14 md:py-20">
             <Reveal>
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -129,6 +121,7 @@ export default async function CatalogoPage() {
             productCount: c.productCount,
           }))}
           productos={productos}
+          hayDestacados={destacados.length > 0}
         />
       </section>
 

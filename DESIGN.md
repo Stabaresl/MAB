@@ -103,6 +103,13 @@ Reglas de color:
   no es decoración: es cómo se reconoce una categoría antes de leer su nombre.
   Sin ellos el catálogo eran cuarenta y cinco recuadros del mismo hueso y se
   leía como una hoja de cálculo.
+- **El tono de categoría no entra en la rejilla del catálogo.** Vive donde hay
+  una sola categoría a la vista y el color puede significar algo: la cabecera de
+  su página, la franja de ruta de una ficha y el punto del rail. En una rejilla
+  de cuarenta y cinco tarjetas, seis pasteles repartidos entre diez categorías
+  no se leían como un código sino como una irregularidad —«algunas azules están
+  más subidas que otras»—, así que ahí todas las tarjetas llevan la misma banda
+  azul y el nombre de la categoría escrito encima, que es el dato de verdad.
 - **El tono nunca toca el hueco de la foto.** Tiñe la banda del texto y el
   filete, y ahí se acaba. Las fotos que sube MAB no vienen recortadas sobre
   transparencia: llegan de estudio, cada una con su propio fondo gris muy claro,

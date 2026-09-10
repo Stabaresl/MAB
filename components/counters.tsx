@@ -26,19 +26,29 @@ import type { StatCard } from "@/lib/catalog";
  *     once, veintitrés…» sesenta veces.
  */
 
-/** Cuánto dura la subida. Lo bastante para verla, poco para no estorbar. */
-const DURACION = 1800;
+/**
+ * Cuánto dura la subida.
+ *
+ * Subió de 1,8 a 3,2 segundos. Con la duración anterior, los números pequeños
+ * —10 categorías, 13 clientes— llegaban a su valor casi de golpe: la cuenta
+ * existía pero no daba tiempo a leerla. Tres segundos largos es lo que hace
+ * falta para que el ojo siga la última decena en vez de encontrarse el número
+ * ya puesto.
+ */
+const DURACION = 3200;
 
 /**
  * Frenada.
  *
- * `1 - (1-t)⁴` recorre el 68% del camino en el primer cuarto del tiempo y
- * dedica el último cuarto a los últimos 4 números. Con una cúbica la frenada se
- * notaba poco; con una quinta el final se hacía largo y parecía atascado.
+ * `1 - (1-t)⁵` recorre el 76% del camino en el primer cuarto del tiempo y
+ * dedica el último cuarto a los últimos dígitos. Con una cuarta potencia y la
+ * duración nueva el final quedaba plano —el número se quedaba quieto en el
+ * penúltimo valor—; con una quinta, la frenada se reparte hasta el último
+ * fotograma.
  */
 function frenar(t: number): number {
   const resto = 1 - t;
-  return 1 - resto * resto * resto * resto;
+  return 1 - resto * resto * resto * resto * resto;
 }
 
 export function Counters({ indicadores }: { indicadores: StatCard[] }) {
