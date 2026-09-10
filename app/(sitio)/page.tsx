@@ -293,7 +293,11 @@ export default async function HomePage() {
           hay formulario público a propósito: sería una puerta abierta a que
           cualquiera publique en la portada. */}
       {resenas.length > 0 && (
-        <section className="lavado lavado-frio">
+        // Sin lavado de color: el azul de aquí competía con las capturas, que
+        // llegan con fondo blanco, y hacía que cada tarjeta se leyera como un
+        // recorte. Sobre el lienzo limpio, la tarjeta blanca es lo único que
+        // destaca, que es lo que tiene que destacar.
+        <section>
           <div className="page py-16 md:py-24">
             <Reveal>
               <p className="label text-accent-ink">Reseñas</p>

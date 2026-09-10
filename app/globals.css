@@ -117,6 +117,22 @@
   --color-foto-hondo: #e3e3e3;
 
   /*
+   * Blanco puro, y solo para las reseñas.
+   *
+   * El sistema no usa blanco de fondo en ninguna otra parte: el lienzo es un
+   * hueso muy pálido porque el blanco de pantalla es luz, no papel. Aquí es la
+   * excepción, y por un motivo concreto: lo que MAB sube en una reseña es una
+   * captura de WhatsApp o de un correo, y esas capturas vienen con fondo
+   * blanco. Sobre el lienzo —y peor sobre un lavado azul— la captura se
+   * recortaba como un rectángulo pegado encima de la tarjeta, el mismo problema
+   * que tenían las fotos de producto sobre los pasteles.
+   *
+   * Con la tarjeta y el hueco de la imagen en blanco, la captura no tiene borde
+   * que enseñar.
+   */
+  --color-resena: #ffffff;
+
+  /*
    * Colores de lavado. Van un punto más vivos que los tintes de las tarjetas:
    * un lavado ocupa media pantalla y se diluye por los dos extremos, así que
    * con el pastel de tarjeta se quedaba en nada.
@@ -543,6 +559,14 @@
   .banner-fundido {
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
     mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+  }
+
+  /*
+   * Tarjeta de reseña: blanca, para que la captura que se sube no se recorte
+   * contra el fondo. Ver `--color-resena`.
+   */
+  .card-resena {
+    background-color: var(--color-resena);
   }
 
   /*

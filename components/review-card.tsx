@@ -15,6 +15,10 @@ import Image from "next/image";
  * La imagen es opcional y se dibuja con `object-contain`: lo que sube MAB suele
  * ser una captura de WhatsApp, que es alta y estrecha, y recortarla al ancho de
  * la tarjeta se comería justo el texto que se quiere enseñar.
+ *
+ * La tarjeta es blanca —la única del sitio— porque esas capturas vienen con
+ * fondo blanco. Sobre el hueso del lienzo se recortaban como un rectángulo
+ * pegado encima; en blanco, la captura no tiene borde que enseñar.
  */
 
 export type Resena = {
@@ -33,9 +37,9 @@ export function ReviewCard({ resena }: { resena: Resena }) {
     .join("");
 
   return (
-    <figure className="card flex h-full flex-col overflow-hidden">
+    <figure className="card card-resena flex h-full flex-col overflow-hidden">
       {resena.imageUrl && (
-        <div className="relative aspect-[4/3] w-full border-b border-line bg-paper">
+        <div className="card-resena relative aspect-[4/3] w-full border-b border-line">
           <Image
             src={resena.imageUrl}
             alt={`Mensaje de ${resena.author}`}
