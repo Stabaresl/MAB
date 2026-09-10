@@ -44,11 +44,12 @@ export default async function CatalogoPage() {
       <h1 className="sr-only">Catálogo de {site.name}</h1>
 
       <section className="lavado lavado-sale">
-        <div className="page pt-8 md:pt-10">
-          <CatalogBanner />
-        </div>
+        {/* Fuera del contenedor: la franja va de borde a borde de la pantalla y
+            se difumina por arriba y por abajo, así que se lee como parte de la
+            página y no como una foto metida en una caja. */}
+        <CatalogBanner />
 
-        <div className="page pb-10 pt-10 md:pb-14 md:pt-14">
+        <div className="page pb-10 pt-8 md:pb-14 md:pt-10">
           {/*
             La vitrina de más vendidos ya no es una sección aparte encima de la
             rejilla: es la vista con la que abre el navegador. Duplicar los

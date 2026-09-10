@@ -12,7 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * de 3×1376px obliga a repintar en cada fotograma para no ganar nada aquí: son
  * tres piezas independientes, no una cinta continua.
  *
- * Las tres están recortadas al mismo encuadre (1376×400) para que la sección no
+ * Las tres están recortadas al mismo encuadre (1920×558) para que la sección no
  * cambie de alto al pasar de una a otra. Ese salto es el defecto clásico de un
  * carrusel con imágenes de proporciones distintas: el contenido de debajo pega
  * un brinco cada pocos segundos.
@@ -74,13 +74,17 @@ export function CatalogBanner() {
       onMouseLeave={() => setDetenido(false)}
       onFocusCapture={() => setDetenido(true)}
       onBlurCapture={() => setDetenido(false)}
-      // Ancho acotado, y no por gusto: la pieza mide 1376px de origen, así que
-      // estirada al ancho del contenedor en un monitor grande se veía blanda, y
-      // de paso se comía media pantalla. A 1000px siempre se sirve reducida
-      // —nunca ampliada— y ocupa lo que tiene que ocupar una cabecera.
-      className="relative mx-auto max-w-[1000px] overflow-hidden rounded-xl border border-line"
+      // A sangre, sin recuadro ni filete: la franja se difumina por arriba y
+      // por abajo y se lee como continuación de las secciones vecinas.
+      //
+      // Los archivos se rehicieron a 1920px justo para esto. Antes medían
+      // 1376 —el ancho de la pieza original— y a sangre en un monitor grande el
+      // navegador los ampliaba y se veían blandos. Las fuentes no dan más de
+      // 1836, así que hay interpolación, pero se hace una sola vez con lanczos
+      // al generar el archivo en lugar de en cada pintado.
+      className="banner-fundido relative w-full overflow-hidden"
     >
-      <div className="relative aspect-[4/3] w-full sm:aspect-[2/1] md:aspect-[1376/400]">
+      <div className="relative aspect-[4/3] w-full sm:aspect-[2/1] md:aspect-[1920/558]">
         {PIEZAS.map((pieza, indice) => (
           <Image
             key={pieza.archivo}
@@ -90,7 +94,7 @@ export function CatalogBanner() {
             // La primera se carga con prioridad porque es lo primero que se ve
             // del catálogo; las otras dos pueden esperar su turno.
             priority={indice === 0}
-            sizes="(max-width: 1000px) 100vw, 1000px"
+            sizes="100vw"
             aria-hidden={indice !== activa}
             className={`object-cover object-right transition-opacity duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] md:object-center ${
               indice === activa ? "opacity-100" : "opacity-0"
@@ -102,7 +106,7 @@ export function CatalogBanner() {
       {/* Los puntos van sobre una pastilla clara: sobre las tres imágenes hay
           zonas blancas y zonas oscuras, y sin fondo desaparecían en unas y en
           otras no. */}
-      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-canvas/85 px-2.5 py-2 backdrop-blur md:bottom-5">
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-canvas/85 px-2.5 py-2 backdrop-blur md:bottom-10">
         {PIEZAS.map((pieza, indice) => (
           <button
             key={pieza.archivo}

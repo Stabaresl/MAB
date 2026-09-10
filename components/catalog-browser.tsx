@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 
 import { ProductCard } from "@/components/product-card";
 import type { ProductCard as ProductCardData } from "@/lib/catalog";
-import { contarMateriales, materialesDe } from "@/lib/materiales";
 import { fold } from "@/lib/slug";
 import { claseTono } from "@/lib/tono";
 
@@ -58,7 +57,6 @@ export function CatalogBrowser({
   categoriaActiva?: string;
 }) {
   const [consulta, setConsulta] = useState("");
-  const [materiales, setMateriales] = useState<string[]>([]);
   const [orden, setOrden] = useState<Orden>("recomendado");
   const [panelAbierto, setPanelAbierto] = useState(false);
 
@@ -84,11 +82,6 @@ export function CatalogBrowser({
     return hayDestacados && vista === "destacados" ? destacados : productos;
   }, [productos, destacados, categoriaActiva, hayDestacados, vista]);
 
-  // Los materiales se cuentan sobre `base` y no sobre el resultado: si se
-  // recalcularan con los filtros puestos, marcar «ABS» dejaría la lista con una
-  // sola opción y no habría manera de añadir «Cromado» sin desmarcar primero.
-  const familias = useMemo(() => contarMateriales(base), [base]);
-
   const resultados = useMemo(() => {
     const aguja = fold(consulta.trim());
 
@@ -100,21 +93,13 @@ export function CatalogBrowser({
         if (!texto.includes(aguja)) return false;
       }
 
-      if (materiales.length > 0) {
-        const suyos = materialesDe(producto);
-        // Cualquiera de los marcados, no todos: un lavaplatos es «ABS» o es
-        // «Acero inoxidable», nunca las dos cosas, así que exigir la
-        // intersección dejaría la rejilla vacía en cuanto se marcan dos.
-        if (!materiales.some((m) => suyos.includes(m))) return false;
-      }
-
       return true;
     });
 
     if (orden === "recomendado") return filtrados;
     const factor = orden === "az" ? 1 : -1;
     return [...filtrados].sort((a, b) => factor * a.name.localeCompare(b.name, "es"));
-  }, [base, consulta, materiales, orden]);
+  }, [base, consulta, orden]);
 
   /*
    * Buscar o filtrar sale de la vitrina y pasa al catálogo entero.
@@ -126,21 +111,9 @@ export function CatalogBrowser({
    */
   const buscarEnTodo = () => setVista("todo");
 
-  const alternarMaterial = (etiqueta: string) => {
-    buscarEnTodo();
-    setMateriales((actuales) =>
-      actuales.includes(etiqueta)
-        ? actuales.filter((m) => m !== etiqueta)
-        : [...actuales, etiqueta],
-    );
-  };
+  const hayFiltros = consulta.trim().length > 0;
 
-  const hayFiltros = consulta.trim().length > 0 || materiales.length > 0;
-
-  const limpiar = () => {
-    setConsulta("");
-    setMateriales([]);
-  };
+  const limpiar = () => setConsulta("");
 
   const panel = (
     <div className="flex flex-col gap-8">
@@ -189,28 +162,6 @@ export function CatalogBrowser({
         </ul>
       </nav>
 
-      {familias.length > 0 && (
-        <div>
-          <h2 className="label text-ink-3">Filtrar por material</h2>
-          <ul className="mt-4 flex flex-col gap-1">
-            {familias.map((familia) => (
-              <li key={familia.etiqueta}>
-                <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 text-[15px] text-ink-2 transition-colors hover:bg-paper">
-                  <input
-                    type="checkbox"
-                    checked={materiales.includes(familia.etiqueta)}
-                    onChange={() => alternarMaterial(familia.etiqueta)}
-                    className="h-4 w-4 shrink-0 accent-[var(--color-accent)]"
-                  />
-                  <span className="flex-1">{familia.etiqueta}</span>
-                  <span className="spec text-ink-3">{familia.cuantos}</span>
-                </label>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       {hayFiltros && (
         <button
           type="button"
@@ -230,10 +181,9 @@ export function CatalogBrowser({
         lado y se pliega tras un botón.
 
         El panel se escribe una sola vez y lo que cambia es si se muestra. La
-        alternativa —uno para móvil dentro de un `<details>` y otro para
-        escritorio— dejaba dos juegos de casillas en el documento: el lector de
-        pantalla anunciaba «Filtrar por material» dos veces y el tabulador
-        pasaba por catorce casillas para siete filtros.
+        alternativa —uno para móvil y otro para escritorio— dejaba dos juegos de
+        enlaces en el documento: el lector de pantalla anunciaba las categorías
+        dos veces y el tabulador pasaba por todas ellas dos veces.
       */}
       <aside className="lg:sticky lg:top-24 lg:self-start">
         <button
@@ -243,13 +193,8 @@ export function CatalogBrowser({
           aria-controls="panel-catalogo"
           className="btn btn-secondary w-full justify-between lg:hidden"
         >
-          Explorar y filtrar
+          Explorar el catálogo
           <span className="flex items-center gap-2">
-            {materiales.length > 0 && (
-              <span className="spec rounded-full bg-accent-soft px-2.5 py-0.5 text-accent-ink">
-                {materiales.length}
-              </span>
-            )}
             <span
               aria-hidden="true"
               className={`transition-transform duration-200 ${panelAbierto ? "rotate-180" : ""}`}

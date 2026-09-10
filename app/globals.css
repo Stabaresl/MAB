@@ -528,6 +528,24 @@
   }
 
   /*
+   * Banner del catálogo, a sangre.
+   *
+   * Se difumina por arriba y por abajo para que no se lea como un recuadro
+   * pegado sino como una franja que sale de la sección anterior y entra en la
+   * siguiente — el mismo lenguaje que los lavados de color del resto del sitio,
+   * donde ninguna sección empieza con un corte.
+   *
+   * Los lados se quedan intactos a propósito. En las tres piezas el rótulo vive
+   * en la mitad derecha y llega casi al borde: difuminar ahí se comería la
+   * última línea de texto. Además, por los lados no hay nada hacia lo que
+   * continuar; el que difumina de verdad es el borde del monitor.
+   */
+  .banner-fundido {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+  }
+
+  /*
    * Hueco de la foto de producto.
    *
    * Reproduce el fondo de estudio de las fotos que sube MAB: gris muy claro con
