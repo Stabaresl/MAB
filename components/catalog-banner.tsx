@@ -74,7 +74,11 @@ export function CatalogBanner() {
       onMouseLeave={() => setDetenido(false)}
       onFocusCapture={() => setDetenido(true)}
       onBlurCapture={() => setDetenido(false)}
-      className="relative overflow-hidden rounded-xl border border-line"
+      // Ancho acotado, y no por gusto: la pieza mide 1376px de origen, así que
+      // estirada al ancho del contenedor en un monitor grande se veía blanda, y
+      // de paso se comía media pantalla. A 1000px siempre se sirve reducida
+      // —nunca ampliada— y ocupa lo que tiene que ocupar una cabecera.
+      className="relative mx-auto max-w-[1000px] overflow-hidden rounded-xl border border-line"
     >
       <div className="relative aspect-[4/3] w-full sm:aspect-[2/1] md:aspect-[1376/400]">
         {PIEZAS.map((pieza, indice) => (
@@ -86,7 +90,7 @@ export function CatalogBanner() {
             // La primera se carga con prioridad porque es lo primero que se ve
             // del catálogo; las otras dos pueden esperar su turno.
             priority={indice === 0}
-            sizes="(max-width: 1240px) 100vw, 1240px"
+            sizes="(max-width: 1000px) 100vw, 1000px"
             aria-hidden={indice !== activa}
             className={`object-cover object-right transition-opacity duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] md:object-center ${
               indice === activa ? "opacity-100" : "opacity-0"

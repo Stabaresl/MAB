@@ -545,80 +545,72 @@
   }
 
   /*
-   * Cinturón de categorías.
+   * Pista de artículos.
    *
-   * Es una pista con desplazamiento real, no una animación: así el visitante
-   * puede empujarla —dedo, rueda, arrastre, flechas— y el avance automático es
-   * solo alguien más sumando a `scrollLeft`. Con una animación de `transform`
-   * el movimiento salía gratis pero la cinta era intocable.
+   * Hereda del cinturón de categorías que estaba aquí, pero sin el paseo
+   * automático. Una cinta que avanza sola tiene sentido para diez etiquetas de
+   * categoría, que se leen de un vistazo; para ocho fotos de producto no: la
+   * gente se para a mirar una y la cinta se la lleva. Aquí el movimiento
+   * siempre lo pide alguien —dedo, rueda, arrastre o flechas—.
    *
-   * La lista va duplicada; el componente resta la mitad al pasarla, y como la
-   * segunda copia empieza igual que la primera el salto no se ve.
+   * Con el paseo fuera, el imán de desplazamiento ya no pelea con nada y puede
+   * estar puesto a todos los anchos: cada tarjeta se planta alineada con el
+   * margen del texto y la siguiente asoma lo justo para que se vea que hay más.
    *
-   * Sin ajuste a rejilla (`scroll-snap`): la cinta está siempre en marcha y el
-   * imán pelearía con ella tirando de vuelta a cada cuadro.
+   * El difuminado es solo del lado derecho. Por la izquierda no hay nada
+   * cortado que suavizar, y desvanecer la primera tarjeta la haría parecer a
+   * medio cargar.
    */
-  .cinturon {
+  .pista {
     display: flex;
     overflow-x: auto;
-    /* La barra sobra: hay flechas, y la cinta ya se ve que se mueve. */
+    scroll-snap-type: x mandatory;
+    /* La barra sobra: hay flechas, y el difuminado ya dice que sigue. */
     scrollbar-width: none;
     /* Sin esto, el gesto lateral del móvil dispara el «atrás» del navegador. */
     overscroll-behavior-x: contain;
-    /* Las piezas no aparecen ni desaparecen de golpe en los bordes. */
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
-    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-image: linear-gradient(to right, #000 92%, transparent);
+    mask-image: linear-gradient(to right, #000 92%, transparent);
   }
 
-  .cinturon::-webkit-scrollbar {
+  .pista::-webkit-scrollbar {
     display: none;
   }
 
-  /*
-   * En móvil la cinta deja de pasear y se convierte en algo que se empuja con
-   * el dedo.
-   *
-   * Con el avance automático, en una pantalla de 360px la cinta se quedaba casi
-   * siempre con media tarjeta cortada a cada lado: la de la izquierda mostraba
-   * el final de una palabra y la de la derecha se iba por el filo. Con el
-   * imán de desplazamiento cada tarjeta se planta alineada con el margen del
-   * texto, y la siguiente asoma lo justo para que se vea que hay más.
-   *
-   * El difuminado pasa a ser solo del lado derecho: por la izquierda ya no hay
-   * nada cortado que suavizar, y desvanecer la primera tarjeta la haría parecer
-   * a medio cargar.
-   */
-  @media (max-width: 767px) {
-    .cinturon {
-      scroll-snap-type: x mandatory;
-      padding-inline-start: 20px;
-      scroll-padding-inline-start: 20px;
-      -webkit-mask-image: linear-gradient(to right, #000 86%, transparent);
-      mask-image: linear-gradient(to right, #000 86%, transparent);
-    }
+  .pista > * {
+    scroll-snap-align: start;
+  }
 
-    .cinturon > * {
-      scroll-snap-align: start;
+  /*
+   * La pista sangra hasta el borde de la pantalla y devuelve el relleno por
+   * dentro. Cortada en el contenedor parecería una fila truncada; así se
+   * entiende que sigue más allá, y la primera tarjeta queda igualmente alineada
+   * con el titular de la sección.
+   */
+  .pista-sangrada {
+    --margen: 20px;
+    margin-inline: calc(-1 * var(--margen));
+    padding-inline: var(--margen);
+    scroll-padding-inline-start: var(--margen);
+  }
+
+  @media (min-width: 768px) {
+    .pista-sangrada {
+      --margen: 32px;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cinturon {
+    .pista {
       -webkit-mask-image: none;
       mask-image: none;
       scrollbar-width: thin;
       scrollbar-color: var(--color-line-2) transparent;
     }
 
-    .cinturon::-webkit-scrollbar {
+    .pista::-webkit-scrollbar {
       display: block;
       height: 6px;
-    }
-
-    /* Sin avance automático la copia sobra: duplicaría la lista para quien la
-       recorre a mano. */
-    .cinturon-copia {
-      display: none;
     }
   }
 

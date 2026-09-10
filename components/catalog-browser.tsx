@@ -48,29 +48,41 @@ const ORDENES: { valor: Orden; etiqueta: string }[] = [
 export function CatalogBrowser({
   categorias,
   productos,
+  destacados = [],
   categoriaActiva,
-  hayDestacados = false,
 }: {
   categorias: CategoriaRail[];
   productos: ProductCardData[];
+  /** Los más vendidos. Son la vista con la que abre el catálogo. */
+  destacados?: ProductCardData[];
   categoriaActiva?: string;
-  /** Si hay vitrina de más vendidos arriba, el rail la encabeza con un enlace. */
-  hayDestacados?: boolean;
 }) {
   const [consulta, setConsulta] = useState("");
   const [materiales, setMateriales] = useState<string[]>([]);
   const [orden, setOrden] = useState<Orden>("recomendado");
   const [panelAbierto, setPanelAbierto] = useState(false);
 
-  // Lo que hay antes de tocar ningún filtro: el catálogo entero, o el de una
-  // categoría si se entró por su página.
-  const base = useMemo(
-    () =>
-      categoriaActiva
-        ? productos.filter((p) => p.category.slug === categoriaActiva)
-        : productos,
-    [productos, categoriaActiva],
+  /*
+   * Con qué se abre el catálogo.
+   *
+   * Con los más vendidos, no con los treinta y cuatro artículos. Quien entra
+   * todavía no sabe cómo se llama lo que busca, y una rejilla completa ordenada
+   * por nombre no responde nada: empieza por accesorios de baño porque empieza
+   * por A. Un puñado de piezas que sí salen hacia obra dice de qué va esto en
+   * dos segundos, y «Todo el catálogo» está justo al lado para quien quiera la
+   * lista entera.
+   */
+  const hayDestacados = destacados.length > 0 && !categoriaActiva;
+  const [vista, setVista] = useState<"destacados" | "todo">(
+    hayDestacados ? "destacados" : "todo",
   );
+
+  // Lo que hay antes de tocar ningún filtro: la vitrina, el catálogo entero, o
+  // el de una categoría si se entró por su página.
+  const base = useMemo(() => {
+    if (categoriaActiva) return productos.filter((p) => p.category.slug === categoriaActiva);
+    return hayDestacados && vista === "destacados" ? destacados : productos;
+  }, [productos, destacados, categoriaActiva, hayDestacados, vista]);
 
   // Los materiales se cuentan sobre `base` y no sobre el resultado: si se
   // recalcularan con los filtros puestos, marcar «ABS» dejaría la lista con una
@@ -104,7 +116,18 @@ export function CatalogBrowser({
     return [...filtrados].sort((a, b) => factor * a.name.localeCompare(b.name, "es"));
   }, [base, consulta, materiales, orden]);
 
+  /*
+   * Buscar o filtrar sale de la vitrina y pasa al catálogo entero.
+   *
+   * Si no, escribir «ducha» estando en los más vendidos buscaría entre ocho
+   * artículos y devolvería «ningún artículo coincide» con el catálogo lleno de
+   * duchas. Nadie entiende un buscador que solo busca en un trozo de lo que
+   * está mirando.
+   */
+  const buscarEnTodo = () => setVista("todo");
+
   const alternarMaterial = (etiqueta: string) => {
+    buscarEnTodo();
     setMateriales((actuales) =>
       actuales.includes(etiqueta)
         ? actuales.filter((m) => m !== etiqueta)
@@ -124,23 +147,32 @@ export function CatalogBrowser({
       <nav aria-label="Categorías del catálogo">
         <h2 className="label text-ink-3">Explorar por</h2>
         <ul className="mt-4 flex flex-col gap-0.5">
-          {/* Lo más vendido encabeza el rail porque es lo que responde a la
-              pregunta con la que entra casi todo el mundo. Es un ancla y no una
-              página aparte: la vitrina está ahí arriba, en esta misma pantalla,
-              y mandar a otra ruta para enseñar lo que ya está a la vista sería
-              un viaje de ida y vuelta para nada. */}
-          {hayDestacados && !categoriaActiva && (
+          {/* Las dos primeras cambian lo que se ve sin recargar; las
+              categorías son enlaces de verdad porque sus páginas existen. */}
+          {hayDestacados && (
             <li>
-              <EnlaceRail href="#mas-vendidos" activo={false} tono={null} destacado>
+              <BotonRail
+                activo={vista === "destacados"}
+                destacado
+                onClick={() => setVista("destacados")}
+              >
                 Los más vendidos
-              </EnlaceRail>
+                <Cuantos n={destacados.length} />
+              </BotonRail>
             </li>
           )}
           <li>
-            <EnlaceRail href="/catalogo" activo={!categoriaActiva} tono={null}>
-              Todo el catálogo
-              <Cuantos n={productos.length} />
-            </EnlaceRail>
+            {categoriaActiva ? (
+              <EnlaceRail href="/catalogo" activo={false} tono={null}>
+                Todo el catálogo
+                <Cuantos n={productos.length} />
+              </EnlaceRail>
+            ) : (
+              <BotonRail activo={vista === "todo"} onClick={() => setVista("todo")}>
+                Todo el catálogo
+                <Cuantos n={productos.length} />
+              </BotonRail>
+            )}
           </li>
           {categorias.map((categoria) => (
             <li key={categoria.id}>
@@ -255,7 +287,10 @@ export function CatalogBrowser({
               id="buscar-articulo"
               type="search"
               value={consulta}
-              onChange={(e) => setConsulta(e.target.value)}
+              onChange={(e) => {
+                setConsulta(e.target.value);
+                if (e.target.value) buscarEnTodo();
+              }}
               placeholder="Buscar: sifón, ducha, panel…"
               autoComplete="off"
               className="field pl-11"
@@ -327,54 +362,98 @@ export function CatalogBrowser({
 }
 
 /**
- * Fila del rail. La activa se marca con el punto del tono de su categoría y con
- * el fondo, nunca solo con el color: quien no distingue el pastel del lienzo
- * sigue viendo cuál está señalada por el peso de la letra.
+ * Cómo se pinta una fila del rail, la pulse quien la pulse.
+ *
+ * La activa se marca con el fondo y con el peso de la letra, nunca solo con el
+ * color: quien no distingue el pastel del lienzo sigue viendo cuál está
+ * señalada.
  */
+function claseFila(activo: boolean, destacado: boolean, tono: string | null): string {
+  const base =
+    "flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left text-[15px] transition-colors";
+  const estado = activo
+    ? destacado
+      ? "bg-sun-soft font-semibold text-sun-ink"
+      : "bg-paper font-semibold text-ink"
+    : destacado
+      ? "font-semibold text-sun-ink hover:bg-sun-soft"
+      : "text-ink-2 hover:bg-paper hover:text-ink";
+  return `${tono ? claseTono(tono) : ""} ${base} ${estado}`;
+}
+
+function Marca({ destacado, tono }: { destacado: boolean; tono: string | null }) {
+  if (destacado) {
+    return (
+      <svg
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+        className="h-3.5 w-3.5 shrink-0 text-sun"
+        fill="currentColor"
+      >
+        <path d="M10 1.8l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4L2.2 7.5l5.4-.8z" />
+      </svg>
+    );
+  }
+  return (
+    <span
+      aria-hidden="true"
+      className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+        tono ? "bg-[var(--tono-punto)]" : "bg-line-2"
+      }`}
+    />
+  );
+}
+
+/** Categoría: es una página de verdad, así que es un enlace. */
 function EnlaceRail({
   href,
   activo,
   tono,
-  destacado = false,
   children,
 }: {
   href: string;
   activo: boolean;
   tono: string | null;
-  destacado?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
       aria-current={activo ? "page" : undefined}
-      className={`${tono ? claseTono(tono) : ""} flex items-center gap-2.5 rounded-md px-2 py-2 text-[15px] transition-colors ${
-        activo
-          ? "bg-paper font-semibold text-ink"
-          : destacado
-            ? "font-semibold text-sun-ink hover:bg-sun-soft"
-            : "text-ink-2 hover:bg-paper hover:text-ink"
-      }`}
+      className={claseFila(activo, false, tono)}
     >
-      {destacado ? (
-        <svg
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-          className="h-3.5 w-3.5 shrink-0 text-sun"
-          fill="currentColor"
-        >
-          <path d="M10 1.8l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4L2.2 7.5l5.4-.8z" />
-        </svg>
-      ) : (
-        <span
-          aria-hidden="true"
-          className={`h-2.5 w-2.5 shrink-0 rounded-full ${
-            tono ? "bg-[var(--tono-punto)]" : "bg-line-2"
-          }`}
-        />
-      )}
+      <Marca destacado={false} tono={tono} />
       <span className="flex min-w-0 flex-1 items-center justify-between gap-2">{children}</span>
     </Link>
+  );
+}
+
+/**
+ * Vitrina y catálogo completo: cambian lo que se ve en esta misma pantalla, sin
+ * recargar, así que son botones. Un enlace que no lleva a ninguna parte y solo
+ * cambia el estado de la página miente al teclado y al lector de pantalla.
+ */
+function BotonRail({
+  activo,
+  destacado = false,
+  onClick,
+  children,
+}: {
+  activo: boolean;
+  destacado?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={activo}
+      className={claseFila(activo, destacado, null)}
+    >
+      <Marca destacado={destacado} tono={null} />
+      <span className="flex min-w-0 flex-1 items-center justify-between gap-2">{children}</span>
+    </button>
   );
 }
 

@@ -5,7 +5,7 @@ import { ClientWall } from "@/components/client-wall";
 import { Counters } from "@/components/counters";
 import { HeroMedia } from "@/components/hero-media";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
-import { ProductCard } from "@/components/product-card";
+import { ProductCarousel } from "@/components/product-carousel";
 import { ReviewCard } from "@/components/review-card";
 import {
   getAllProducts,
@@ -278,13 +278,12 @@ export default async function HomePage() {
             </div>
           </Reveal>
 
-          <Stagger as="ul" className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4" paso={0.06}>
-            {vitrina.map((producto) => (
-              <StaggerItem as="li" key={producto.id} className="min-w-0">
-                <ProductCard product={producto} showCategory />
-              </StaggerItem>
-            ))}
-          </Stagger>
+          {/* Carrusel y no rejilla: en una rejilla de dos filas, la segunda
+              se lee como relleno. En una pista, las ocho piezas tienen el mismo
+              peso y la que asoma por la derecha invita a seguir empujando. */}
+          <Reveal className="mt-10">
+            <ProductCarousel productos={vitrina} />
+          </Reveal>
         </div>
       </section>
 
