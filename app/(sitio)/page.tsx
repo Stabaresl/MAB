@@ -9,7 +9,6 @@ import { ProductCarousel } from "@/components/product-carousel";
 import { ReviewCard } from "@/components/review-card";
 import {
   getAllProducts,
-  getCategories,
   getClients,
   getFeaturedProducts,
   getReviews,
@@ -101,16 +100,14 @@ function repartirPorCategoria(productos: ProductCardData[], cuantos: number): Pr
 }
 
 export default async function HomePage() {
-  const [categories, settings, productos, masVendidos, indicadores, clientes, resenas] =
-    await Promise.all([
-      getCategories(),
-      getSettings(),
-      getAllProducts(),
-      getFeaturedProducts(EN_VITRINA),
-      getStats(),
-      getClients(),
-      getReviews(),
-    ]);
+  const [settings, productos, masVendidos, indicadores, clientes, resenas] = await Promise.all([
+    getSettings(),
+    getAllProducts(),
+    getFeaturedProducts(EN_VITRINA),
+    getStats(),
+    getClients(),
+    getReviews(),
+  ]);
 
   // Si MAB todavía no ha marcado ninguno, la vitrina no se queda vacía ni se
   // inventa un ranking: enseña una muestra repartida y lo dice en el rótulo.
@@ -118,7 +115,6 @@ export default async function HomePage() {
   const vitrina = hayMasVendidos
     ? masVendidos
     : repartirPorCategoria(productos, EN_VITRINA);
-  const totalArticulos = categories.reduce((suma, c) => suma + c.productCount, 0);
 
   return (
     <>
@@ -257,11 +253,6 @@ export default async function HomePage() {
                     </>
                   )}
                 </h2>
-                <p className="mt-5 max-w-[54ch] text-ink-2">
-                  {totalArticulos} artículos publicados en {categories.length} categorías.
-                  Trabajamos con más referencias de las que caben aquí: si no ves la tuya,
-                  pregúntanos.
-                </p>
               </div>
               <Link
                 href="/catalogo"
